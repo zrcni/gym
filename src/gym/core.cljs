@@ -6,7 +6,16 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:start-date (t/now)}))
+(defn start-of-week [date]
+  (let [week-starts-on 1
+        day (.getDay date)
+        name-this-pls (if (< day week-starts-on) 7 0)
+        diff (- (+ name-this-pls day) week-starts-on)]
+    (.setDate date (- (.getDate date) diff))
+    (.setHours date 0 0 0 0)
+    date))
+
+(defonce app-state (atom {:start-date (start-of-week (t/now))}))
 
 (defn dd-mm-yyyy [date]
   (let [day (t/day date)
@@ -14,20 +23,9 @@
         year (t/year date)]
     (apply str [day "-" month "-" year])))
 
-; WIP
-(defn start-of-week [date]
-  (let [week-starts-on 0
-        day (.getDay date)
-        what (if (< day week-starts-on) 7 0)
-        diff (- (+ what day) week-starts-on)]
-    (.setDate date (- (.getDate date) diff))
-    (.setHours date 0 0 0 0)
-    date))
-
 (defn calculate-weeks [start-date num-weeks]
   (let [cursor (atom -1)
         days-in-week 7]
-    ; TODO: get start of week
     (reduce-kv
      (fn [weeks i]
        (let [data {:date (t/plus start-date (t/days i))}]
