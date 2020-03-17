@@ -6,7 +6,7 @@
 
 (enable-console-print!)
 
-(defonce app-state (atom {:text "Hello world!"}))
+(defonce app-state (atom {:start-date (t/now)}))
 
 (defn dd-mm-yyyy [date]
   (let [day (t/day date)
@@ -14,9 +14,20 @@
         year (t/year date)]
     (apply str [day "-" month "-" year])))
 
+; WIP
+(defn start-of-week [date]
+  (let [week-starts-on 0
+        day (.getDay date)
+        what (if (< day week-starts-on) 7 0)
+        diff (- (+ what day) week-starts-on)]
+    (.setDate date (- (.getDate date) diff))
+    (.setHours date 0 0 0 0)
+    date))
+
 (defn calculate-weeks [start-date num-weeks]
   (let [cursor (atom -1)
         days-in-week 7]
+    ; TODO: get start of week
     (reduce-kv
      (fn [weeks i]
        (let [data {:date (t/plus start-date (t/days i))}]
@@ -94,12 +105,12 @@
 ;; - - - - - - -
 
 (defn calendar []
-  (let [start-date (atom (t/now))
-        num-weeks 5
-        show-earlier (fn []  (reset! start-date (t/minus @start-date (t/days (* num-weeks 7)))))
-        show-later (fn [] (reset! start-date (t/plus @start-date (t/days (* num-weeks 7)))))]
+  (let [num-weeks 5
+        show-earlier (fn []  (swap! app-state assoc :start-date (t/minus (:start-date @app-state) (t/days (* num-weeks 7)))))
+        show-later (fn [] (swap! app-state assoc :start-date (t/plus (:start-date @app-state) (t/days (* num-weeks 7)))))]
     (fn []
-      (let [weeks (calculate-weeks @start-date num-weeks)]
+      (let [start-date (:start-date @app-state)
+            weeks (calculate-weeks start-date num-weeks)]
         [:<>
          [:div.Calendar
           [weekdays]
@@ -117,18 +128,19 @@
                                                           ; TODO: display data about the date's activities
                    [:div.Day_minutes
                     [:button.Calendar_add_post_button "+"]]
-                   (when (is-same-day? (:date day) (t/now)) [:div.Day_today "Today"])])
+                   (when (is-same-day? (:date day) (t/now))
+                     [:div.Day_today "Today"])])
                 week)])
             weeks)]]
-         [calendar-nav {:show-later (not (is-same-day? @start-date (t/now)))
+         [calendar-nav {:show-later (not (is-same-day? start-date (t/now)))
                         :on-earlier-click show-earlier
                         :on-later-click show-later}]]))))
 
-(defn hello-world []
+(defn app []
   [:div
    [calendar]])
 
-(reagent/render-component [hello-world]
+(reagent/render-component [app]
   (. js/document (getElementById "app")))
 
 (defn on-js-reload []
