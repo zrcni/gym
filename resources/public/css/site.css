@@ -19,6 +19,10 @@ body {
   color: var(--gray);
 }
 
+#content {
+  margin: 8px;
+}
+
 [data-reach-dialog-overlay] {
   background: none;
 }

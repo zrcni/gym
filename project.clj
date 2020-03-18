@@ -1,97 +1,110 @@
-(defproject gym "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
+(defproject react-cljs "0.1.0-SNAPSHOT"
+  :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :min-lein-version "2.9.1"
+  :dependencies [[org.clojure/clojure "1.10.1"]
+                 [ring-server "0.5.0"]
+                 [reagent "0.9.0-rc3"]
+                 [reagent-utils "0.3.3"]
+                 [re-frame "0.11.0"]
+                 [ring "1.8.0"]
+                 [ring/ring-defaults "0.3.2"]
+                 [hiccup "1.0.5"]
+                 [yogthos/config "1.1.7"]
+                 [org.clojure/clojurescript "1.10.597"
+                  :scope "provided"]
+                 [metosin/reitit "0.4.2"]
+                 [metosin/reitit-spec "0.4.2"]
+                 [pez/clerk "1.0.0"]
+                 [cljs-http "0.1.46"]
+                 [cljs-ajax "0.7.3"]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
+                 [day8.re-frame/http-fx "v0.2.0"]
+                 [venantius/accountant "0.2.5"
+                  :exclusions [org.clojure/tools.reader]]]
 
-  :dependencies [[org.clojure/clojure "1.10.0"]
-                 [org.clojure/clojurescript "1.10.520"]
-                 [org.clojure/core.async  "0.4.500"]
-                 [reagent "0.8.1"]
-                 [com.andrewmcveigh/cljs-time "0.5.2"]]
+  :plugins [[lein-environ "1.1.0"]
+            [lein-cljsbuild "1.1.7"]
+            [lein-asset-minifier "0.4.6"
+             :exclusions [org.clojure/clojure]]]
 
-  :plugins [[lein-figwheel "0.5.19"]
-            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+  :ring {:handler react-cljs.handler/app
+         :uberwar-name "react-cljs.war"}
 
-  :source-paths ["src"]
+  :min-lein-version "2.5.0"
+  :uberjar-name "react-cljs.jar"
+  :main react-cljs.server
+  :clean-targets ^{:protect false}
+  [:target-path
+   [:cljsbuild :builds :app :compiler :output-dir]
+   [:cljsbuild :builds :app :compiler :output-to]]
 
-  :cljsbuild {:builds
-              [{:id "dev"
-                :source-paths ["src"]
+  :source-paths ["src/clj" "src/cljc" "src/cljs"]
+  :resource-paths ["resources" "target/cljsbuild"]
 
-                ;; The presence of a :figwheel configuration here
-                ;; will cause figwheel to inject the figwheel client
-                ;; into your build
-                :figwheel {:on-jsload "gym.core/on-js-reload"
-                           ;; :open-urls will pop open your application
-                           ;; in the default browser once Figwheel has
-                           ;; started and compiled your application.
-                           ;; Comment this out once it no longer serves you.
-                           :open-urls ["http://localhost:3449/index.html"]}
+  :minify-assets
+  [[:css {:source "resources/public/css/site.css"
+          :target "resources/public/css/site.min.css"}]]
 
-                :compiler {:main gym.core
-                           :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/gym.js"
-                           :output-dir "resources/public/js/compiled/out"
-                           :source-map-timestamp true
-                           ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
-                           ;; https://github.com/binaryage/cljs-devtools
-                           :preloads [devtools.preload]}}
-               ;; This next build is a compressed minified build for
-               ;; production. You can build this with:
-               ;; lein cljsbuild once min
-               {:id "min"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/gym.js"
-                           :main gym.core
-                           :optimizations :advanced
-                           :pretty-print false}}]}
+  :cljsbuild
+  {:builds {:min
+            {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
+             :compiler
+             {:output-to        "target/cljsbuild/public/js/app.js"
+              :output-dir       "target/cljsbuild/public/js"
+              :source-map       "target/cljsbuild/public/js/app.js.map"
+              :optimizations :advanced
+              :infer-externs true
+              :pretty-print  false}}
+            :app
+            {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+             :figwheel {:on-jsload "react-cljs.core/mount-root"}
+             :compiler
+             {:main "react-cljs.dev"
+              :asset-path "/js/out"
+              :output-to "target/cljsbuild/public/js/app.js"
+              :output-dir "target/cljsbuild/public/js/out"
+              :source-map true
+              :optimizations :none
+              :pretty-print  true
+              :install-deps true}}}}
 
-  :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
-             ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1"
+  :figwheel
+  {:http-server-root "public"
+   :server-port 3449
+   :nrepl-port 7002
+   :nrepl-middleware [cider.piggieback/wrap-cljs-repl
+]
+   :css-dirs ["resources/public/css"]
+   :ring-handler react-cljs.handler/app}
 
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
 
-             ;; Start an nREPL server into the running figwheel process
-             ;; :nrepl-port 7888
 
-             ;; Server Ring Handler (optional)
-             ;; if you want to embed a ring handler into the figwheel http-kit
-             ;; server, this is for simple ring servers, if this
+  :profiles {:dev {:repl-options {:init-ns react-cljs.repl}
+                   :dependencies [[cider/piggieback "0.4.2"]
+                                  [binaryage/devtools "0.9.11"]
+                                  [ring/ring-mock "0.4.0"]
+                                  [ring/ring-devel "1.8.0"]
+                                  [prone "2019-07-08"]
+                                  [figwheel-sidecar "0.5.19"]
+                                  [nrepl "0.6.0"]
+                                  [re-frisk "0.5.3"]
+                                  [pjstadig/humane-test-output "0.10.0"]]
 
-             ;; doesn't work for you just run your own server :) (see lein-ring)
+                   :source-paths ["env/dev/clj"]
+                   :plugins [[lein-figwheel "0.5.19"]]
 
-             ;; :ring-handler hello_world.server/handler
+                   :compiler {:preloads [re-frisk.preload]}
+                   :injections [(require 'pjstadig.humane-test-output)
+                                (pjstadig.humane-test-output/activate!)]
 
-             ;; To be able to open files in your editor from the heads up display
-             ;; you will need to put a script on your path.
-             ;; that script will have to take a file path and a line number
-             ;; ie. in  ~/bin/myfile-opener
-             ;; #! /bin/sh
-             ;; emacsclient -n +$2 $1
-             ;;
-             ;; :open-file-command "myfile-opener"
+                   :env {:dev true}}
 
-             ;; if you are using emacsclient you can just use
-             ;; :open-file-command "emacsclient"
-
-             ;; if you want to disable the REPL
-             ;; :repl false
-
-             ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
-
-             ;; to pipe all the output to the repl
-             ;; :server-logfile false
-             }
-
-  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.10"]
-                                  [figwheel-sidecar "0.5.19"]]
-                   ;; need to add dev source path here to get user.clj loaded
-                   :source-paths ["src" "dev"]
-                   ;; need to add the compliled assets to the :clean-targets
-                   :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                                     :target-path]}})
+             :uberjar {:hooks [minify-assets.plugin/hooks]
+                       :source-paths ["env/prod/clj"]
+                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+                       :env {:production true}
+                       :aot :all
+                       :omit-source true}})

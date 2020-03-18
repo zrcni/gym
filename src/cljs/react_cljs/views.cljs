@@ -1,10 +1,30 @@
-(ns gym.core
-    (:require
-     [reagent.core :as reagent :refer [atom]]
-      [goog.date :refer [isLeapYear]]
-      [cljs-time.core :as t]))
+(ns react-cljs.views
+   (:require
+    [goog.string.format]
+    [react-cljs.events]
+    [react-cljs.subs]
+    [reagent.core :as reagent :refer [atom]]
+    [goog.date :refer [isLeapYear]]
+    [cljs-time.core :as t]
+    [cljsjs/react-modal :as Modal]))
 
-(enable-console-print!)
+(defn form-field-errors [{:keys [errors]}]
+  [:div.error-messages
+   (for [error errors]
+     ^{:key error} [:p {:style {:color "red" :font-size "80%" :margin-bottom 4 :margin-top 4}} error])])
+
+;; -------------------------
+;; Routes
+
+(defn layout []
+  (fn [_ & children]
+    [:<>
+     [:header {:id "header" :class "navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar"}]
+     [:main {:id "content"}
+      children]]))
+
+;; -------------------------
+;; Page components
 
 (defn start-of-week [date]
   (let [week-starts-on 1
@@ -134,15 +154,30 @@
                         :on-earlier-click show-earlier
                         :on-later-click show-later}]]))))
 
-(defn app []
-  [:div
-   [calendar]])
+ (defn home-page []
+   [calendar])
 
-(reagent/render-component [app]
-  (. js/document (getElementById "app")))
 
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+((.-setAppElement Modal) "#app")
+
+(defn modal []
+  (fn [{:keys [disable-auto-close is-open close title]} & children]
+    [:> Modal {:is-open (if (nil? is-open) true is-open)
+               :style {:content {:margin 0 :padding 0}}
+               :on-request-close #(if (not (nil? close)) (close))
+               :content-label title
+               :should-close-on-overlay-click (not disable-auto-close)}
+     [:div {:class "container-fluid"}
+      (when title
+        [:div {:class "row"
+               :style {:padding 12
+                       :background-color "#581845"
+                       :color "white"
+                       :display "flex"
+                       :justify-content "space-between"}}
+         [:span title]
+         (when-not disable-auto-close
+                [:button {:style {:background "none" :border "none" :color "white"} :on-click #(when-not (nil? close) (close))}
+                 [:strong "X"]])])
+      [:div {:style {:margin 8}}
+       children]]]))
