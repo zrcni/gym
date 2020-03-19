@@ -1,21 +1,39 @@
 (ns react-cljs.views
-   (:require
-    [goog.string.format]
-    [react-cljs.events]
-    [react-cljs.subs]
-    [reagent.core :as reagent :refer [atom]]
-    [goog.date :refer [isLeapYear]]
-    [cljs-time.core :as t]
-    [cljsjs/react-modal :as Modal]))
+  (:require
+   [reagent.core :as reagent :refer [atom]]
+   [goog.string.format]
+   [react-cljs.events]
+   [react-cljs.subs]
+   [goog.date :refer [isLeapYear]]
+   [cljs-time.core :as t]
+   ["react-modal" :as Modal]))
 
-(defn form-field-errors [{:keys [errors]}]
-  [:div.error-messages
-   (for [error errors]
-     ^{:key error} [:p {:style {:color "red" :font-size "80%" :margin-bottom 4 :margin-top 4}} error])])
+((.-setAppElement Modal) "#app")
+
+(defn modal []
+  (fn [{:keys [disable-auto-close is-open close title]} & children]
+    [:> Modal {:is-open (if (nil? is-open) true is-open)
+               :style {:content {:margin 0 :padding 0}}
+               :on-request-close #(when-not (nil? close) (close))
+               :content-label title
+               :should-close-on-overlay-click (not disable-auto-close)}
+     [:div {:class "container-fluid"}
+      (when title
+        [:div {:class "row"
+               :style {:padding 12
+                       :background-color "#581845"
+                       :color "white"
+                       :display "flex"
+                       :justify-content "space-between"}}
+         [:span title]
+         (when-not disable-auto-close
+           [:button {:style {:background "none" :border "none" :color "white"} :on-click #(when-not (nil? close) (close))}
+            [:i.fas.fa-times]])])
+      [:div {:style {:margin 8}}
+       children]]]))
 
 ;; -------------------------
 ;; Routes
-
 (defn layout []
   (fn [_ & children]
     [:<>
@@ -79,9 +97,11 @@
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
   [:div.Calendar_nav
    [:button.Calendar_earlier.icon_button {:on-click on-earlier-click}
+    [:i.fas.fa-chevron-up]
     [:span "Earlier"]]
    (when show-later
      [:button.Calendar_later.icon_button {:on-click on-later-click}
+      [:i.fas.fa-chevron-down]
       [:span "Later"]])])
 
 (defn is-first-day-of-month [date]
@@ -145,39 +165,14 @@
                     [:div.Day_number (t/day (:date day))]]
                                                           ; TODO: display data about the date's activities
                    [:div.Day_minutes
-                    [:button.Calendar_add_post_button "+"]]
+                    [:button.Calendar_add_post_button [:i.fas.fa-plus]]]
                    (when (is-same-day? (:date day) (t/now))
                      [:div.Day_today "Today"])])
                 week)])
             weeks)]]
-         [calendar-nav {:show-later (not (is-same-day? start-date (t/now)))
+         [calendar-nav {:show-later (not (is-same-day? start-date (start-of-week (t/now))))
                         :on-earlier-click show-earlier
                         :on-later-click show-later}]]))))
 
- (defn home-page []
-   [calendar])
-
-
-((.-setAppElement Modal) "#app")
-
-(defn modal []
-  (fn [{:keys [disable-auto-close is-open close title]} & children]
-    [:> Modal {:is-open (if (nil? is-open) true is-open)
-               :style {:content {:margin 0 :padding 0}}
-               :on-request-close #(if (not (nil? close)) (close))
-               :content-label title
-               :should-close-on-overlay-click (not disable-auto-close)}
-     [:div {:class "container-fluid"}
-      (when title
-        [:div {:class "row"
-               :style {:padding 12
-                       :background-color "#581845"
-                       :color "white"
-                       :display "flex"
-                       :justify-content "space-between"}}
-         [:span title]
-         (when-not disable-auto-close
-                [:button {:style {:background "none" :border "none" :color "white"} :on-click #(when-not (nil? close) (close))}
-                 [:strong "X"]])])
-      [:div {:style {:margin 8}}
-       children]]]))
+(defn home-page []
+  [calendar])

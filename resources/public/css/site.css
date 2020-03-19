@@ -1,3 +1,48 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-areas: header content footer;
+  grid-template-columns: auto;
+  grid-template-rows: 50px auto;
+}
+
+#header {
+  padding: 8px;
+  background-color: #581845;
+}
+
+#content {
+  padding: 16px;
+}
+
+.purple-button {
+  background-color: #581845;
+  border-color: #581845;
+  color: #fff;
+}
+
+.logout-button {
+  background-color: #581845;
+  border-color: #900c3f;
+  color: #fff;
+}
+
 :root {
   --gray: hsl(197, 10%, 45%);
   --middle-gray: hsl(240, 6%, 92%);

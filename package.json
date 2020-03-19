@@ -13,7 +13,6 @@
     "@cljs-oss/module-deps": "^1.1.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-icons": "^3.9.0",
     "react-modal": "^3.11.1",
     "toastr": "^2.1.4"
   }

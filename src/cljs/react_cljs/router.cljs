@@ -11,21 +11,37 @@
 
 ;; register re-frame effects etc.
 (reg-event-fx :navigate
- (fn [_ [_ & route]]
-   {:navigate! route}))
+              (fn [_ [_ & route]]
+                {:navigate! route}))
 
 (reg-fx :navigate!
-  (fn [route]
-    (apply rfe/push-state route)))
+        (fn [route]
+          (apply rfe/push-state route)))
 
 (reg-event-db :navigated
- (fn [db [_ new-match]]
-    (assoc db :current-route new-match)))
+              (fn [db [_ new-match]]
+                (assoc db :current-route new-match)))
 
 "Navigate on render"
 (defn navigate [{:keys [to]}]
   (dispatch [:navigate to])
   (fn [] nil))
+
+"Navigate to /login if logged out"
+(defn private-route []
+  (let [status @(subscribe [:auth-status])]
+    (fn [& children]
+      (if (= status "LOGGED_OUT")
+        [navigate {:to :login}]
+        [:<> children]))))
+
+"Navigate to / if logged in"
+(defn public-route []
+  (let [status @(subscribe [:auth-status])]
+    (fn [& children]
+      (if (= status "LOGGED_IN")
+        [navigate {:to :home}]
+        [:<> children]))))
 
 (defonce routes
   ["/"
@@ -51,8 +67,8 @@
 (defn root []
   (let [current-route @(subscribe [:current-route])]
     [views/layout {:disabled false}
-      (when current-route
-        ^{:key (:template current-route)} [current-page {:route current-route}])]))
+     (when current-route
+       [current-page {:route current-route}])]))
 
 (defn on-navigate [new-match]
   (let [old-match (subscribe [:current-route])]
