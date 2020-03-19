@@ -24,21 +24,25 @@ body {
 
 #header {
   padding: 8px;
-  background-color: #581845;
+  background-color: var(--accent);
 }
 
 #content {
   padding: 16px;
 }
 
+.purple-icon {
+  color: var(--accent);
+}
+
 .purple-button {
-  background-color: #581845;
-  border-color: #581845;
+  background-color: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 
 .logout-button {
-  background-color: #581845;
+  background-color: var(--accent);
   border-color: #900c3f;
   color: #fff;
 }
@@ -47,9 +51,9 @@ body {
   --gray: hsl(197, 10%, 45%);
   --middle-gray: hsl(240, 6%, 92%);
   --light-gray: hsl(240, 6%, 97%);
-  --accent: hsl(197, 100%, 44%);
-  --accent-hover: hsl(197, 100%, 40%);
-  --accent-active: hsl(197, 100%, 35%);
+  --accent: hsl(318, 58%, 24%);
+  --accent-hover: hsl(318, 58%, 30%);
+  --accent-active: hsl(318, 58%, 46%);
   --focus-shadow: 0px 0px 2px var(--accent);
   --focus-border: solid 1px var(--accent);
   --focus-border-inactive: solid 1px transparent;
@@ -432,7 +436,7 @@ button {
 }
 
 .NewPost_form > *:first-child {
-  margin-top: 0;
+  margin-top: 1.25rem;
 }
 
 .NewPost_input {
@@ -444,7 +448,6 @@ button {
   font: inherit;
   font-size: 125%;
   padding: 0.75rem;
-  padding-top: 1.5rem;
   height: 8.5rem;
   border-radius: 0.25rem;
   border-bottom: solid 2px transparent;
@@ -469,6 +472,7 @@ button {
 .NewPost_buttons {
   display: flex;
   align-items: center;
+  padding: 0.5rem;
 }
 
 .NewPost_error .NewPost_input {
@@ -948,6 +952,11 @@ h2 {
   margin: 1rem;
 }
 
+.Calendar_edit_day {
+  width: 100%;
+  height: 150px;
+}
+
 .RecentPostsDropdownButton {
   position: absolute;
   top: 0;
@@ -962,4 +971,40 @@ h2 {
 
 [data-reach-menu-item][data-selected] {
   background: var(--accent);
+}
+
+.modal-overlay-custom {
+  /* transition: background-color 200ms ease; */
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  color: white;
+}
+
+.modal-content-custom {
+  margin: 10vh auto;
+  width: 800px;
+  padding: 0px;
+  position: initial;
+  border: 1px solid rgb(204, 204, 204);
+  background: rgb(255, 255, 255);
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+}
+
+.modal-title {
+  padding: 12px;
+  background-color: var(--accent);
+  color: white;
+  display: flex;
+  justify-content: space-between;
 }

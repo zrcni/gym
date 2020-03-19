@@ -21,21 +21,18 @@
 (defn modal []
   (fn [{:keys [disable-auto-close is-open on-close title]} & children]
     [:> Modal {:is-open (if (nil? is-open) true is-open)
-               :style {:content {:margin 0 :padding 0}}
                :on-request-close #(when-not (nil? on-close) (on-close))
                :content-label title
-               :should-close-on-overlay-click (not disable-auto-close)}
-     [:div {:class "container-fluid"}
+               :should-close-on-overlay-click (not disable-auto-close)
+               :overlay-class-name "modal-overlay-custom"
+               :class "modal-content-custom"
+               }
+     [:div.container-fluid
       (when title
-        [:div {:class "row"
-               :style {:padding 12
-                       :background-color "#581845"
-                       :color "white"
-                       :display "flex"
-                       :justify-content "space-between"}}
+        [:div.row.modal-title
          [:span title]
          (when-not disable-auto-close
-           [:button {:style {:background "none" :border "none" :color "white"} :on-click #(when-not (nil? on-close) (on-close))}
+           [:button.modal-close-button {:on-click #(when-not (nil? on-close) (on-close))}
             [:i.fas.fa-times]])])
       [:div {:style {:margin 8}}
        children]]]))
@@ -81,11 +78,11 @@
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
   [:div.Calendar_nav
    [:button.Calendar_earlier.icon_button {:on-click on-earlier-click}
-    [:i.fas.fa-chevron-up]
+    [:i.fas.fa-chevron-up.purple-icon]
     [:span "Earlier"]]
    (when show-later
      [:button.Calendar_later.icon_button {:on-click on-later-click}
-      [:i.fas.fa-chevron-down]
+      [:i.fas.fa-chevron-down.purple-icon]
       [:span "Later"]])])
 
 (defn is-first-displayed-day [day-index week-index]
@@ -104,8 +101,13 @@
       (str title " - today")
     title)))
 
-;; (defn day-title [date]
-;;   (str (day-month-year date) (when (is-same-day? date (t/now)) " - Today")))
+(defn new-post []
+  (fn [{:keys [date]}]
+    [:form.NewPost_form
+     [:div.NewPost_]
+     [:textarea.NewPost_input {:placeholder "How did you workout?"}]
+     [:div.NewPost_buttons
+      [:button.icon_button.cta "Submit"]]]))
 
 ; renders a calendar which is displayed in the following format (days-in-week * n)
 ;  m t w t f s s
@@ -142,12 +144,12 @@
                                                           ; TODO: display data about the date's activities
                [:div.Day_minutes
                 [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
-                 [:i.fas.fa-plus]]]
+                 [:i.fas.fa-plus.purple-icon]]]
                (when (is-same-day? (:date day) (t/now))
                  [:div.Day_today "Today"])
                (when (= editing-index (+ (* week-index days-in-week) day-index))
                  [modal {:title (day-title (:date day)) :on-close stop-editing}
-                  [:div]])])
+                  [new-post {:date (:date day)}]])])
             week)])
         weeks)]]
      [calendar-nav {:show-later (not (is-same-day? start-date (start-of-week (t/now))))
