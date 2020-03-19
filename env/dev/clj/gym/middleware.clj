@@ -1,4 +1,4 @@
-(ns react-cljs.middleware
+(ns gym.middleware
   (:require
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.params :refer [wrap-params]]

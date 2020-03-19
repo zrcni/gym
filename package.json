@@ -1,7 +1,7 @@
 {
-  "name": "react-cljs",
+  "name": "gym",
   "version": "1.0.0",
-  "description": "This is the react-cljs project.",
+  "description": "This is the gym project.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,6 +1,6 @@
-(ns react-cljs.server
+(ns gym.server
     (:require
-     [react-cljs.handler :refer [app]]
+     [gym.handler :refer [app]]
      [config.core :refer [env]]
      [ring.adapter.jetty :refer [run-jetty]])
     (:gen-class))

@@ -1,6 +1,6 @@
-(ns ^:figwheel-no-load react-cljs.dev
+(ns ^:figwheel-no-load gym.dev
   (:require
-   [react-cljs.core :as core]
+   [gym.core :as core]
    [re-frisk.core :refer [enable-re-frisk!]]
    [devtools.core :as devtools]))
 

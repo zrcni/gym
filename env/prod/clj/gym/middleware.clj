@@ -1,4 +1,4 @@
-(ns react-cljs.middleware
+(ns gym.middleware
   (:require
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 

@@ -1,13 +1,13 @@
-(ns react-cljs.handler
+(ns gym.handler
   (:require
    [reitit.ring :as reitit-ring]
-   [react-cljs.middleware :refer [middleware]]
+   [gym.middleware :refer [middleware]]
    [hiccup.page :refer [include-js include-css html5]]
    [config.core :refer [env]]))
 
 (def mount-target
   [:div#app
-   [:h2 "Welcome to react-cljs"]
+   [:h2 "Welcome to gym"]
    [:p "please wait while Figwheel is waking up ..."]
    [:p "(Check the js console for hints if nothing exciting happens.)"]])
 

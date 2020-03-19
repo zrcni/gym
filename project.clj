@@ -1,4 +1,4 @@
-(defproject react-cljs "0.1.0-SNAPSHOT"
+(defproject gym "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -30,12 +30,12 @@
             [lein-asset-minifier "0.4.6"
              :exclusions [org.clojure/clojure]]]
 
-  :ring {:handler react-cljs.handler/app
-         :uberwar-name "react-cljs.war"}
+  :ring {:handler gym.handler/app
+         :uberwar-name "gym.war"}
 
   :min-lein-version "2.5.0"
-  :uberjar-name "react-cljs.jar"
-  :main react-cljs.server
+  :uberjar-name "gym.jar"
+  :main gym.server
   :clean-targets ^{:protect false}
   [:target-path
    [:cljsbuild :builds :app :compiler :output-dir]
@@ -60,9 +60,9 @@
               :pretty-print  false}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-             :figwheel {:on-jsload "react-cljs.core/mount-root"}
+             :figwheel {:on-jsload "gym.core/mount-root"}
              :compiler
-             {:main "react-cljs.dev"
+             {:main "gym.dev"
               :asset-path "/js/out"
               :output-to "target/cljsbuild/public/js/app.js"
               :output-dir "target/cljsbuild/public/js/out"
@@ -78,11 +78,11 @@
    :nrepl-middleware [cider.piggieback/wrap-cljs-repl
 ]
    :css-dirs ["resources/public/css"]
-   :ring-handler react-cljs.handler/app}
+   :ring-handler gym.handler/app}
 
 
 
-  :profiles {:dev {:repl-options {:init-ns react-cljs.repl}
+  :profiles {:dev {:repl-options {:init-ns gym.repl}
                    :dependencies [[cider/piggieback "0.4.2"]
                                   [binaryage/devtools "0.9.11"]
                                   [ring/ring-mock "0.4.0"]

@@ -1,8 +1,8 @@
-(ns react-cljs.router
+(ns gym.router
   (:require
    [reagent.core :as reagent]
    [clerk.core :as clerk]
-   [react-cljs.views :as views]
+   [gym.views :as views]
    [reitit.frontend.easy :as rfe]
    [reitit.frontend :as rf]
    [reitit.frontend.controllers :as rfc]
@@ -27,22 +27,6 @@
   (dispatch [:navigate to])
   (fn [] nil))
 
-"Navigate to /login if logged out"
-(defn private-route []
-  (let [status @(subscribe [:auth-status])]
-    (fn [& children]
-      (if (= status "LOGGED_OUT")
-        [navigate {:to :login}]
-        [:<> children]))))
-
-"Navigate to / if logged in"
-(defn public-route []
-  (let [status @(subscribe [:auth-status])]
-    (fn [& children]
-      (if (= status "LOGGED_IN")
-        [navigate {:to :home}]
-        [:<> children]))))
-
 (defonce routes
   ["/"
    ["" {:name :home
@@ -57,18 +41,18 @@
    {:data {:coercion rss/coercion}}))
 
 (defn current-page [{:keys [route]}]
-  (let [view (get-in route [:data :view])
-        name (get-in route [:data :name])
-        wrapper (get-in route [:data :wrapper])]
+  (let [view (-> route :data :view)
+        name (-> route :data :name)
+        wrapper (-> route :data :wrapper)]
     (if (not (nil? wrapper))
-      [wrapper ^{:key name} [view]]
+      ^{:key name} [wrapper [view]]
       ^{:key name} [view])))
 
 (defn root []
   (let [current-route @(subscribe [:current-route])]
     [views/layout {:disabled false}
      (when current-route
-       [current-page {:route current-route}])]))
+       ^{:key (:path current-route)} [current-page {:route current-route}])]))
 
 (defn on-navigate [new-match]
   (let [old-match (subscribe [:current-route])]

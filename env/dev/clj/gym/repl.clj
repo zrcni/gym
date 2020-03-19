@@ -1,5 +1,5 @@
-(ns react-cljs.repl
-  (:use react-cljs.handler
+(ns gym.repl
+  (:use gym.handler
         figwheel-sidecar.repl-api
         ring.server.standalone
         [ring.middleware file-info file]))

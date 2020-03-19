@@ -1,6 +1,6 @@
-# react-cljs
+# gym
 
-This is the react-cljs project.
+This is the gym project.
 
 ## Development mode
 

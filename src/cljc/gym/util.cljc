@@ -1,4 +1,4 @@
-(ns react-cljs.util)
+(ns gym.util)
 
 (defn foo-cljc [x]
   "I don't do a whole lot."

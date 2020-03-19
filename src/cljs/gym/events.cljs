@@ -1,8 +1,10 @@
-(ns react-cljs.events
+(ns gym.events
   (:require
-   [react-cljs.db :refer [default-db]]
+   [gym.db :refer [default-db]]
    [day8.re-frame.http-fx]
    ["toastr" :as toastr]
+   [cljs-time.core :as t]
+   [gym.calendar-utils :refer [add-time subtract-time]]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx]]))
 
 (reg-event-db :initialize-db
@@ -31,6 +33,16 @@
 (reg-fx :toast-error!
   (fn [_ message]
     (toastr/error message)))
+
+(reg-event-db :calendar-show-later
+  (fn [db [_ time]]
+    (let [start-date (-> db :calendar :start-date)]
+      (assoc-in db [:calendar :start-date] (add-time start-date time)))))
+
+(reg-event-db :calendar-show-earlier
+  (fn [db [_ time]]
+    (let [start-date (-> db :calendar :start-date)]
+      (assoc-in db [:calendar :start-date] (subtract-time start-date time)))))
 
 ;; this is used for http requests that don't need failure or success handlers
 (reg-event-fx :no-op (fn []))

@@ -1,8 +1,8 @@
-(ns react-cljs.core
+(ns gym.core
   (:require
    [reagent.core :as reagent]
    [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
-   [react-cljs.router :as router]))
+   [gym.router :as router]))
 
 (defn mount-root []
   (reagent/render [router/root] (.getElementById js/document "app")))

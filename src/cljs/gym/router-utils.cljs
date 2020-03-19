@@ -1,4 +1,4 @@
-(ns react-cljs.router-utils
+(ns gym.router-utils
   (:require
    [reitit.frontend.easy :as rfe]))
 

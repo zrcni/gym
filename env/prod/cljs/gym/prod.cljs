@@ -1,5 +1,5 @@
-(ns react-cljs.prod
-  (:require [react-cljs.core :as core]))
+(ns gym.prod
+  (:require [gym.core :as core]))
 
 ;;ignore println statements in prod
 (set! *print-fn* (fn [& _]))

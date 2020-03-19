@@ -1,4 +1,4 @@
-(ns react-cljs.subs
+(ns gym.subs
   (:require
    [re-frame.core :refer [reg-sub]]))
 
@@ -16,3 +16,8 @@
  :error  ;; usage: (subscribe [:error])
  (fn [db _]
    (:error db)))
+
+(reg-sub
+ :calendar-start-date
+ (fn [db _]
+   (-> db :calendar :start-date)))
