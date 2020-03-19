@@ -21,3 +21,8 @@
  :calendar-start-date
  (fn [db _]
    (-> db :calendar :start-date)))
+
+(reg-sub
+ :calendar-editing-index
+ (fn [db _]
+   (-> db :calendar :editing-index)))

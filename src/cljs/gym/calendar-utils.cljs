@@ -18,11 +18,11 @@
     (.setHours date 0 0 0 0)
     date))
 
-(defn ^{:private true} dd-mm-yyyy [date]
+(defn day-month-year [date]
   (let [day (t/day date)
         month (t/month date)
         year (t/year date)]
-    (apply str [day "-" month "-" year])))
+    (apply str [day "." month "." year])))
 
 (defn is-first-day-of-month [date]
   (= 1 (t/day date)))
@@ -52,4 +52,4 @@
     12 "Dec"))
 
 (defn is-same-day? [a b]
-  (= (dd-mm-yyyy a) (dd-mm-yyyy b)))
+  (= (day-month-year a) (day-month-year b)))

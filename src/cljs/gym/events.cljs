@@ -44,5 +44,13 @@
     (let [start-date (-> db :calendar :start-date)]
       (assoc-in db [:calendar :start-date] (subtract-time start-date time)))))
 
+(reg-event-db :calendar-edit-day
+  (fn [db [_ day-index]]
+    (assoc-in db [:calendar :editing-index] day-index)))
+
+(reg-event-db :calendar-stop-editing
+  (fn [db]
+    (assoc-in db [:calendar :editing-index] nil)))
+
 ;; this is used for http requests that don't need failure or success handlers
 (reg-event-fx :no-op (fn []))
