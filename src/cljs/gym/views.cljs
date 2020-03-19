@@ -7,7 +7,12 @@
    [gym.subs]
    [cljs-time.core :as t]
    ["react-modal" :as Modal]
-   [gym.calendar-utils :refer [day-month-year start-of-week is-same-day? is-first-day-of-month human-month-short]]))
+   [gym.calendar-utils :refer [human-weekday-short
+                               day-month-year
+                               start-of-week
+                               is-same-day?
+                               is-first-day-of-month
+                               human-month-short]]))
 
 ((.-setAppElement Modal) "#app")
 
@@ -46,6 +51,9 @@
 
 ;; -------------------------
 ;; Page components
+
+; Basically copy-pasted the calendar functionality (and look) from this repo:
+; https://github.com/ReactTraining/hooks-workshop
 
 (defn calculate-weeks [start-date num-weeks]
   (let [cursor (atom -1)]
@@ -90,6 +98,15 @@
     true
     false))
 
+(defn day-title [date]
+  (as-> (str (human-weekday-short date) " " (day-month-year date)) title
+    (if (is-same-day? date (t/now))
+      (str title " - today")
+    title)))
+
+;; (defn day-title [date]
+;;   (str (day-month-year date) (when (is-same-day? date (t/now)) " - Today")))
+
 ; renders a calendar which is displayed in the following format (days-in-week * n)
 ;  m t w t f s s
 ;; - - - - - - -
@@ -108,6 +125,7 @@
         show-earlier #(dispatch [:calendar-show-earlier (t/days (* num-weeks days-in-week))])
         show-later #(dispatch [:calendar-show-later (t/days (* num-weeks days-in-week))])]
     [:<>
+     [:div.Calendar_year (t/year start-date)]
      [:div.Calendar
       [weekdays]
       [:div.Calendar_animation_overflow
@@ -128,7 +146,7 @@
                (when (is-same-day? (:date day) (t/now))
                  [:div.Day_today "Today"])
                (when (= editing-index (+ (* week-index days-in-week) day-index))
-                 [modal {:title (day-month-year (:date day)) :on-close stop-editing}
+                 [modal {:title (day-title (:date day)) :on-close stop-editing}
                   [:div]])])
             week)])
         weeks)]]

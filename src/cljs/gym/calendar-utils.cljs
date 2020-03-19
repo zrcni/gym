@@ -36,6 +36,16 @@
     10 30
     :else 31))
 
+(defn human-weekday-short [date]
+  (case (t/day-of-week date)
+    1 "Mon"
+    2 "Tue"
+    3 "Wed"
+    4 "Thu"
+    5 "Fri"
+    6 "Sat"
+    7 "Sun"))
+
 (defn human-month-short [date]
   (case (t/month date)
     1 "Jan"

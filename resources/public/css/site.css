@@ -943,6 +943,11 @@ h2 {
   position: absolute;
 }
 
+.Calendar_year {
+  width: 100%;
+  margin: 1rem;
+}
+
 .RecentPostsDropdownButton {
   position: absolute;
   top: 0;
