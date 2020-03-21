@@ -10,10 +10,12 @@
                  [reagent "0.9.0-rc3"]
                  [reagent-utils "0.3.3"]
                  [re-frame "0.11.0"]
-                 [org.clojure/java.jdbc "0.7.11"]
+                 [seancorfield/next.jdbc "1.0.409"]
                  [migratus "1.2.8"]
                  [ring "1.8.0"]
+                 [ring-cors "0.1.13"]
                  [ring/ring-defaults "0.3.2"]
+                 [ring/ring-json "0.5.0"]
                  [hiccup "1.0.5"]
                  [yogthos/config "1.1.7"]
                  [org.clojure/clojurescript "1.10.597"
@@ -34,8 +36,8 @@
             [lein-asset-minifier "0.4.6"
              :exclusions [org.clojure/clojure]]]
 
-  :ring {:handler gym.handler/app
-         :uberwar-name "gym.war"}
+  :ring {:handler gym.handler/web-handler
+         :uberwar-name "gym.jar"}
 
   :min-lein-version "2.5.0"
   :uberjar-name "gym.jar"
@@ -81,7 +83,7 @@
    :nrepl-port 7002
    :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
    :css-dirs ["resources/public/css"]
-   :ring-handler gym.handler/app}
+   :ring-handler gym.handler/web-handler}
 
 
 

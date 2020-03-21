@@ -1,18 +1,15 @@
 (ns gym.web
   (:require
    [hiccup.page :refer [include-js include-css html5]]
-   [config.core :refer [env]]
-   [gym.database :refer [db]]))
+   [config.core :refer [env]]))
 
-(prn db)
-
-(def ^{:private true} mount-target
+(def mount-target
   [:div#app
    [:h2 "Welcome to gym"]
    [:p "please wait while Figwheel is waking up ..."]
    [:p "(Check the js console for hints if nothing exciting happens.)"]])
 
-(defn ^{:private true} head []
+(defn head []
   [:head
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
@@ -22,7 +19,7 @@
    (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
    (include-css (if (env :dev) "/css/site.css" "/css/site.min.css"))])
 
-(defn ^{:private true} loading-page []
+(defn loading-page []
   (html5
    (head)
    [:body.body-container

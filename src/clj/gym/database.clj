@@ -1,8 +1,14 @@
-(ns gym.database)
+(ns gym.database
+  (:require  [next.jdbc :as jdbc]))
 
-; clojure.java.jdbc config map
-(def db {:classname "org.postgresql.Driver"
-         :subprotocol "postgresql"
-         :subname "//localhost:5432/postgres"
+;; clojure.java.jdbc config map
+(def db {:dbtype "postgresql"
+         :classname "org.postgresql.Driver"
+         :dbname "postgres"
+         :host "localhost"
+         :port 5432
          :user "postgres"
          :password "postgres"})
+
+(defn get-db []
+  (jdbc/get-datasource db))

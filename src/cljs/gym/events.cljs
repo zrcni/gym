@@ -3,9 +3,11 @@
    [gym.db :refer [default-db]]
    [day8.re-frame.http-fx]
    ["toastr" :as toastr]
-   [cljs-time.core :as t]
    [gym.calendar-utils :refer [add-time subtract-time]]
+   [ajax.core :refer [text-request-format json-request-format json-response-format]]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx]]))
+
+(def ^:private api-url (atom "http://localhost:3001/api"))
 
 (reg-event-db :initialize-db
  (fn [_ _] default-db))
@@ -51,6 +53,19 @@
 (reg-event-db :calendar-stop-editing
   (fn [db]
     (assoc-in db [:calendar :editing-index] nil)))
+
+(reg-event-db :calendar-update-workouts
+  (fn [db [_ workouts]]
+    (assoc-in db [:calendar :workouts] workouts)))
+
+(reg-event-fx :fetch-all-workouts
+              (fn [_ _]
+                {:http-xhrio {:method :get
+                              :uri (str @api-url "/workouts")
+                              :format (text-request-format)
+                              :response-format (json-response-format {:keywords? true})
+                              :on-success [:calendar-update-workouts]
+                              :on-failure [:no-op]}}))
 
 ;; this is used for http requests that don't need failure or success handlers
 (reg-event-fx :no-op (fn []))
