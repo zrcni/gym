@@ -1,9 +1,12 @@
 (ns gym.db
   (:require
    [cljs-time.core :as t]
-   [gym.calendar-utils :refer [start-of-week]]))
+   [gym.calendar-utils :refer [calculate-weeks start-of-week]]))
 
 (def default-db
-  {:current-route nil
-   :calendar {:start-date (start-of-week (t/now))
-              :editing-index nil}})
+  (let [start-date (start-of-week (t/now))]
+    {:current-route nil
+     :calendar {:start-date start-date
+                :editing-index nil
+                :weeks (calculate-weeks start-date)
+                :workouts nil}}))

@@ -26,3 +26,8 @@
  :calendar-editing-index
  (fn [db _]
    (-> db :calendar :editing-index)))
+
+(reg-sub
+ :calendar-weeks
+ (fn [db _]
+   (-> db :calendar :weeks)))
