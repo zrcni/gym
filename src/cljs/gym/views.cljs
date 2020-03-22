@@ -11,9 +11,9 @@
                                m->ms
                                num-weeks
                                days-in-week
-                               to-year-month-day
+                               local-date->date-time
+                               date-time->dd-mm-yyyy
                                human-weekday-short
-                               day-month-year
                                start-of-week
                                is-same-day?
                                is-first-day-of-month
@@ -77,18 +77,19 @@
 (defn is-first-displayed-day [day-index week-index]
   (= 0 (+ day-index week-index)))
 
-(defn should-show-month? [day-index week-index date]
+(defn should-show-month? [day-index week-index local-date]
   (if (or
        (is-first-displayed-day day-index week-index)
-       (is-first-day-of-month date))
+       (is-first-day-of-month (local-date->date-time local-date)))
     true
     false))
 
-(defn day-title [date]
-  (as-> (str (human-weekday-short date) " " (day-month-year date)) title
-    (if (is-same-day? date (t/now))
-      (str title " - today")
-    title)))
+(defn day-title [local-date]
+  (let [date (local-date->date-time local-date)]
+    (as-> (str (human-weekday-short date) " " (date-time->dd-mm-yyyy date)) title
+      (if (is-same-day? date (t/now))
+        (str title " - today")
+        title))))
 
 (defn to-number
   "Converts a string into a number or just returns the number. Returns 0 if the parsed string converts into NaN"
@@ -98,7 +99,7 @@
     (let [n (js/parseInt v)]
       (if (= n js/NaN) 0 n))))
 
-(defn new-workout [{:keys [date]}]
+(defn new-workout [{:keys [local-date]}]
   ;; TODO: persist state, so closing the modal doesn't wipe the data
   (let [state (reagent/atom {:minutes 30
                              :description ""})
@@ -114,7 +115,7 @@
                          (update-minutes (dec n))))
         handle-submit #(do
                          (.preventDefault %)
-                         (dispatch [:create-workout {:date (to-year-month-day date)
+                         (dispatch [:create-workout {:date local-date
                                                      :description (:description @state)
                                                      :duration (-> (:minutes @state)
                                                                    (to-number)
@@ -147,7 +148,7 @@
   (let [adding (reagent/atom false)
         delete-workout #(dispatch [:delete-workout %])]
 
-    (fn [{:keys [date workouts]}]
+    (fn [{:keys [local-date workouts]}]
       [:div.Posts_content
        [:div.Posts_posts
         (map
@@ -163,7 +164,7 @@
          workouts)]
        (if @adding
          [:div.Posts_adding
-          [new-workout {:date date}]]
+          [new-workout {:local-date local-date}]]
 
          [:div.Posts_add
           [:button.Posts_add_button.icon_button {:on-click #(reset! adding true)}
@@ -205,28 +206,29 @@
             ^{:key week-index} [:div.Calendar_week
              (map-indexed
               (fn [day-index day]
-                ^{:key (:date day)} [:div.Day.Day_is_future.Day_no_minutes
-                 [:div.Day_date
-                  (when (should-show-month? day-index week-index (:date day))
-                    [:div.Day_month (human-month-short (:date day))])
-                  [:div.Day_number (t/day (:date day))]]
+                (let [parsed-date (local-date->date-time (:local-date day))]
+                  ^{:key (:local-date day)} [:div.Day.Day_is_future.Day_no_minutes
+                                             [:div.Day_date
+                                              (when (should-show-month? day-index week-index (:local-date day))
+                                                [:div.Day_month (human-month-short parsed-date)])
+                                              [:div.Day_number (t/day parsed-date)]]
                                                           ; TODO: display data about the date's activities
-                 [:div.Day_minutes
-                  [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
-                   (if (:workouts day)
-                     (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
-                       [:div total-minutes])
-                     [:i.fas.fa-plus.purple-icon])]]
+                                             [:div.Day_minutes
+                                              [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
+                                               (if (:workouts day)
+                                                 (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
+                                                   [:div total-minutes])
+                                                 [:i.fas.fa-plus.purple-icon])]]
 
-                 (when (is-same-day? (:date day) (t/now))
-                   [:div.Day_today "Today"])
+                                             (when (is-same-day? parsed-date (t/now))
+                                               [:div.Day_today "Today"])
 
-                 (when (= editing-index (+ (* week-index days-in-week) day-index))
-                   [modal {:title (day-title (:date day)) :on-close stop-editing}
-                    (if (:workouts day)
-                      ^{:key "created-workouts"} [created-workouts {:date (:date day)
-                                         :workouts (:workouts day)}]
-                      ^{:key "new-workout"} [new-workout {:date (:date day)}])])])
+                                             (when (= editing-index (+ (* week-index days-in-week) day-index))
+                                               [modal {:title (day-title (:local-date day)) :on-close stop-editing}
+                                                (if (:workouts day)
+                                                  ^{:key "created-workouts"} [created-workouts {:local-date (:local-date day)
+                                                                                                :workouts (:workouts day)}]
+                                                  ^{:key "new-workout"} [new-workout {:local-date (:local-date day)}])])]))
               week)])
           weeks)]]
        [calendar-nav {:show-later (not (is-same-day? start-date (start-of-week (t/now))))

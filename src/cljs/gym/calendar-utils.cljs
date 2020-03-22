@@ -12,6 +12,11 @@
 
 (defn m->ms [ms] (* ms 1000 60))
 
+(defn iso->ms [iso-date]
+  (-> iso-date
+      (js/Date.)
+      (.valueOf)))
+
 (defn add-duration [date duration]
   (t/plus date duration))
 
@@ -27,12 +32,11 @@
     (.setHours date 0 0 0 0)
     date))
 
-(defn from-year-month-day [date-string]
-  (let [[year month day] (as-> date-string s
+(defn local-date->date-time [local-date]
+  (let [[year month day] (as-> local-date s
                            (.split s "-")
                            (map #(js/parseInt %) s))]
     (t/date-time year month day)))
-
 
 (defn pad-n
   "If a number only has one digit, add 0 to the beginning and return it as a string."
@@ -41,17 +45,18 @@
     (str "0" (.toString n))
     (.toString n)))
 
-(defn to-year-month-day [date]
+(defn date-time->local-date [date]
   (let [day (t/day date)
         month (t/month date)
         year (t/year date)]
     (apply str [year "-" (pad-n month) "-" (pad-n day)])))
 
-(defn day-month-year [date]
-  (let [day (t/day date)
+(defn date-time->dd-mm-yyyy [date & [separator]]
+  (let [sep (if separator separator ".")
+        day (t/day date)
         month (t/month date)
         year (t/year date)]
-    (apply str [day "." month "." year])))
+    (apply str [day sep month sep year])))
 
 (defn is-first-day-of-month [date]
   (= 1 (t/day date)))
@@ -91,7 +96,7 @@
     12 "Dec"))
 
 (defn is-same-day? [a b]
-  (= (day-month-year a) (day-month-year b)))
+  (= (date-time->local-date a) (date-time->local-date b)))
 
 (defn map-workouts-by-day [workouts]
   (reduce
@@ -107,14 +112,18 @@
   (let [cursor (atom -1)
         workouts-by-day (map-workouts-by-day workouts)]
     (reduce-kv
-     (fn [weeks i]
+     (fn [weeks week-index]
        (let [local-date (-> start-date
                             (start-of-week)
-                            (t/plus (t/days i))
-                            (to-year-month-day))
-             day-data {:date (from-year-month-day local-date)
-                       :workouts (get workouts-by-day local-date)}]
-         (if (< 0 (mod i days-in-week))
+                            (t/plus (t/days week-index))
+                            (date-time->local-date))
+             workouts (get workouts-by-day local-date)
+             day-data {:local-date local-date
+                       :workouts (when workouts
+                                   (->> workouts
+                                        (sort #(compare (iso->ms (:modified_at %1))
+                                                        (iso->ms (:modified_at %1))))))}]
+         (if (< 0 (mod week-index days-in-week))
            (assoc weeks @cursor (conj (get weeks @cursor) day-data))
            (do
              (swap! cursor inc)
