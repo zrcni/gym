@@ -8,8 +8,10 @@
    [cljs-time.core :as t]
    ["react-modal" :as Modal]
    [gym.calendar-utils :refer [ms->m
+                               m->ms
                                num-weeks
                                days-in-week
+                               to-year-month-day
                                human-weekday-short
                                day-month-year
                                start-of-week
@@ -89,32 +91,80 @@
       (str title " - today")
     title)))
 
-(defn new-workout []
-  (fn [{:keys [date]}]
-    [:form.NewPost_form
-     [:div.NewPost_]
-     [:textarea.NewPost_input {:placeholder "How did you workout?"}]
-     [:div.NewPost_buttons
-      [:button.icon_button.cta "Submit"]]]))
+(defn to-number
+  "Converts a string into a number or just returns the number. Returns 0 if the parsed string converts into NaN"
+  [v]
+  (if (and (number? v) (not= v js/NaN))
+    v
+    (let [n (js/parseInt v)]
+      (if (= n js/NaN) 0 n))))
+
+(defn new-workout [{:keys [date]}]
+  ;; TODO: persist state, so closing the modal doesn't wipe the data
+  (let [state (reagent/atom {:minutes 30
+                             :description ""})
+        min-minutes 0
+        update-minutes #(swap! state assoc :minutes %)
+        update-description #(swap! state assoc :description %)
+        handle-description-change #(update-description (-> % .-target .-value))
+        handle-minutes-change #(update-minutes (-> % .-target .-value))
+        inc-minutes #(let [n (to-number (:minutes @state))]
+                       (update-minutes (inc n)))
+        dec-minutes #(let [n (to-number (:minutes @state))]
+                       (when (> n min-minutes)
+                         (update-minutes (dec n))))
+        handle-submit #(do
+                         (.preventDefault %)
+                         (dispatch [:create-workout {:date (to-year-month-day date)
+                                                     :description (:description @state)
+                                                     :duration (-> (:minutes @state)
+                                                                   (to-number)
+                                                                   (m->ms))}]))]
+    (fn []
+      [:form.NewPost_form {:on-submit handle-submit}
+       [:div.NewPost_]
+       [:textarea.NewPost_input {:placeholder "How did you workout?"
+                                 :value (:description @state)
+                                 :on-change handle-description-change}]
+       [:div.NewPost_buttons
+        [:div.Minutes
+         [:div
+          [:button.Minutes_button.icon_button {:type "button"
+                                               :on-click #(dec-minutes)}
+           [:i.fas.fa-minus]]]
+         [:input.Minutes_input {:id "minutes"
+                                ;; Even though this input controls a number I don't want to use a number input type,
+                                ;; because that would add the DOM's own increment and decrement buttons which I don't want.
+                                :type "text"
+                                :value (:minutes @state)
+                                :on-change handle-minutes-change}]
+         [:button.Minutes_button.icon_button {:type "button"
+                                              :on-click #(inc-minutes)}
+          [:i.fas.fa-plus]]
+         [:label.Minutes_label {:for "minutes"} "minutes"]]
+        [:button.icon_button.cta "Submit"]]])))
 
 (defn created-workouts []
-  (let [adding (reagent/atom false)]
+  (let [adding (reagent/atom false)
+        delete-workout #(dispatch [:delete-workout %])]
+
     (fn [{:keys [date workouts]}]
       [:div.Posts_content
        [:div.Posts_posts
         (map
-         (fn [workout] [:div.Post
-                        [:div.Post_title
-                         [:div.Post_minutes
-                          [:span (str (ms->m (:duration workout)) " minutes")]]
-                         [:button.Post_delete_button.icon_button
-                          [:i.fas.fa-trash-alt
-                           [:span " Delete"]]]]
-                        [:div.Post_message (:description workout)]])
+         (fn [workout]
+           [:div.Post
+            [:div.Post_title
+             [:div.Post_minutes
+              [:span (str (ms->m (:duration workout)) " minutes")]]
+             [:button.Post_delete_button.icon_button {:on-click #(delete-workout (:workout_id workout))}
+              [:i.fas.fa-trash-alt
+               [:span " Delete"]]]]
+            [:div.Post_message (:description workout)]])
          workouts)]
        (if @adding
          [:div.Posts_adding
-          [new-workout]]
+          [new-workout {:date date}]]
 
          [:div.Posts_add
           [:button.Posts_add_button.icon_button {:on-click #(reset! adding true)}

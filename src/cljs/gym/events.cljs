@@ -87,5 +87,38 @@
                   :on-success [:fetch-all-workouts-success]
                   :on-failure [:no-op]}}))
 
+(reg-event-fx :create-workout-success
+  (fn [{:keys [db]} [_ workout]]
+    {:db (update-in db [:calendar :workouts] conj workout)
+     :dispatch [:calendar-update-weeks]}))
+
+(reg-event-fx :create-workout
+  (fn [_ [_ workout]]
+    {:http-xhrio {:method :post
+                  :params workout
+                  :uri (str @api-url "/workouts")
+                  :format (json-request-format)
+                  :response-format (json-response-format {:keywords? true})
+                  :on-success [:create-workout-success]
+                  :on-failure [:no-op]}}))
+
+(reg-event-fx :delete-workout-success
+  (fn [{:keys [db]} [_ workout-id]]
+    {:db (assoc-in
+          db
+          [:calendar :workouts]
+          (->> (get-in db [:calendar :workouts])
+               (filter #(not= workout-id (:workout_id %)))))
+     :dispatch [:calendar-update-weeks]}))
+
+(reg-event-fx :delete-workout
+  (fn [_ [_ workout-id]]
+    {:http-xhrio {:method :delete
+                  :uri (str @api-url "/workouts/" workout-id)
+                  :format (text-request-format)
+                  :response-format (json-response-format {:keywords? true})
+                  :on-success [:delete-workout-success workout-id]
+                  :on-failure [:no-op]}}))
+
 ;; this is used for http requests that don't need failure or success handlers
 (reg-event-fx :no-op (fn []))

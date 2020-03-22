@@ -10,6 +10,8 @@
 
 (defn ms->m [ms] (/ ms 1000 60))
 
+(defn m->ms [ms] (* ms 1000 60))
+
 (defn add-duration [date duration]
   (t/plus date duration))
 
