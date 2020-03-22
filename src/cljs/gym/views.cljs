@@ -28,8 +28,7 @@
                :content-label title
                :should-close-on-overlay-click (not disable-auto-close)
                :overlay-class-name "modal-overlay-custom"
-               :class "modal-content-custom"
-               }
+               :class "modal-content-custom"}
      [:div.container-fluid
       (when title
         [:div.row.modal-title
@@ -153,7 +152,7 @@
        [:div.Posts_posts
         (map
          (fn [workout]
-           [:div.Post
+           ^{:key (:workout_id workout)} [:div.Post
             [:div.Post_title
              [:div.Post_minutes
               [:span (str (ms->m (:duration workout)) " minutes")]]
@@ -203,10 +202,10 @@
         [:div.Calendar_animation_overflow
          (map-indexed
           (fn [week-index week]
-            [:div.Calendar_week {:key week-index}
+            ^{:key week-index} [:div.Calendar_week
              (map-indexed
               (fn [day-index day]
-                [:div.Day.Day_is_future.Day_no_minutes {:key (:date day)}
+                ^{:key (:date day)} [:div.Day.Day_is_future.Day_no_minutes
                  [:div.Day_date
                   (when (should-show-month? day-index week-index (:date day))
                     [:div.Day_month (human-month-short (:date day))])
@@ -225,9 +224,9 @@
                  (when (= editing-index (+ (* week-index days-in-week) day-index))
                    [modal {:title (day-title (:date day)) :on-close stop-editing}
                     (if (:workouts day)
-                      [created-workouts {:date (:date day)
+                      ^{:key "created-workouts"} [created-workouts {:date (:date day)
                                          :workouts (:workouts day)}]
-                      [new-workout {:date (:date day)}])])])
+                      ^{:key "new-workout"} [new-workout {:date (:date day)}])])])
               week)])
           weeks)]]
        [calendar-nav {:show-later (not (is-same-day? start-date (start-of-week (t/now))))
