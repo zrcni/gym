@@ -121,8 +121,8 @@
              day-data {:local-date local-date
                        :workouts (when workouts
                                    (->> workouts
-                                        (sort #(compare (iso->ms (:modified_at %1))
-                                                        (iso->ms (:modified_at %1))))))}]
+                                        (sort #(compare (iso->ms (:created_at %1))
+                                                        (iso->ms (:created_at %2))))))}]
          (if (< 0 (mod week-index days-in-week))
            (assoc weeks @cursor (conj (get weeks @cursor) day-data))
            (do
