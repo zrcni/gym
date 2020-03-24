@@ -2,6 +2,18 @@
 
 This is the gym project.
 
+## TODO
+
+- validate inputs in the frontend before submitting (done?)
+- validate inputs in the backend
+- handle api errors in the frontend
+- handle api errors in the backend
+- fix toast style
+- create a workout for the current day outside of the calendar itself
+- record workout time in-app (in-memory or database? I don't want to add redis, though)
+- tags ("gym", "jog" etc.)
+- record weight in the calendar?
+
 ## Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:

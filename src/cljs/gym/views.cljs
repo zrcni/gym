@@ -115,7 +115,7 @@
                          (update-minutes (dec n))))
         handle-submit #(do
                          (.preventDefault %)
-                         (dispatch [:create-workout {:date local-date
+                         (dispatch [:create-workout-request {:date local-date
                                                      :description (:description @state)
                                                      :duration (-> (:minutes @state)
                                                                    (to-number)
@@ -221,7 +221,7 @@
                                                  [:i.fas.fa-plus.purple-icon])]]
 
                                              (when (is-same-day? parsed-date (t/now))
-                                               [:div.Day_today "Today"])
+                                               [:div.Day_today "Now"])
 
                                              (when (= editing-index (+ (* week-index days-in-week) day-index))
                                                [modal {:title (day-title (:local-date day)) :on-close stop-editing}

@@ -1,6 +1,10 @@
 (ns gym.events
   (:require
+   [clojure.spec.alpha :as spec]
    [gym.db :refer [default-db]]
+   [gym.specs]
+   [goog.string :as gstring]
+   [goog.string.format]
    [day8.re-frame.http-fx]
    ["toastr" :as toastr]
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
@@ -13,7 +17,7 @@
  (fn [_ _] default-db))
 
 (reg-fx :set-local-storage!
-  (fn [_ [key value]]
+  (fn [key value]
     (js/localStorage.setItem key value)))
 
 (reg-event-fx :set-local-storage
@@ -21,7 +25,7 @@
     {:set-local-storage! params}))
 
 (reg-fx :remove-local-storage!
-  (fn [_ key]
+  (fn [key]
     (js/localStorage.removeItem key)))
 
 (reg-event-fx :remove-local-storage
@@ -29,11 +33,11 @@
     {:remove-local-storage! params}))
 
 (reg-fx :toast-success!
-  (fn [_ message]
+  (fn [message]
     (toastr/success message)))
 
 (reg-fx :toast-error!
-  (fn [_ message]
+  (fn [message]
     (toastr/error message)))
 
 (reg-event-db :calendar-update-start-date
@@ -92,15 +96,21 @@
     {:db (update-in db [:calendar :workouts] conj workout)
      :dispatch [:calendar-update-weeks]}))
 
-(reg-event-fx :create-workout
-  (fn [_ [_ workout]]
-    {:http-xhrio {:method :post
-                  :params workout
-                  :uri (str @api-url "/workouts")
-                  :format (json-request-format)
-                  :response-format (json-response-format {:keywords? true})
-                  :on-success [:create-workout-success]
-                  :on-failure [:no-op]}}))
+(reg-event-fx :create-workout-request
+              (fn [_ [_ workout]]
+                (let [result (spec/explain-data :gym.specs/workout-new workout)]
+                  (if result
+                    (let [problems (:cljs.spec.alpha/problems result)
+                          keys (mapcat #(as-> % v (:in v) (map name v)) problems)]
+                      {:toast-error! (gstring/format "%s is invalid" (first keys))})
+
+                    {:http-xhrio {:method :post
+                                  :params workout
+                                  :uri (str @api-url "/workouts")
+                                  :format (json-request-format)
+                                  :response-format (json-response-format {:keywords? true})
+                                  :on-success [:create-workout-success]
+                                  :on-failure [:no-op]}}))))
 
 (reg-event-fx :delete-workout-success
   (fn [{:keys [db]} [_ workout-id]]
