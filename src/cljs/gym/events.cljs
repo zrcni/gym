@@ -3,15 +3,17 @@
    [clojure.spec.alpha :as spec]
    [gym.db :refer [default-db]]
    [gym.specs]
+   [gym.util :refer [includes?]]
    [goog.string :as gstring]
    [goog.string.format]
    [day8.re-frame.http-fx]
    ["toastr" :as toastr]
+   [gym.auth :refer [parse-firebase-user get-token firebase-logout]]
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
    [ajax.core :refer [text-request-format json-request-format json-response-format]]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx]]))
 
-(def ^:private api-url (atom "http://localhost:3001/api"))
+(def ^:private api-url "http://localhost:3001/api")
 
 (reg-event-db :initialize-db
  (fn [_ _] default-db))
@@ -21,7 +23,7 @@
     (js/localStorage.setItem key value)))
 
 (reg-event-fx :set-local-storage
-  (fn [_ params]
+  (fn [_ [_ params]]
     {:set-local-storage! params}))
 
 (reg-fx :remove-local-storage!
@@ -29,7 +31,7 @@
     (js/localStorage.removeItem key)))
 
 (reg-event-fx :remove-local-storage
-  (fn [_ params]
+  (fn [_ [_ params]]
     {:remove-local-storage! params}))
 
 (reg-fx :toast-success!
@@ -43,6 +45,18 @@
 (reg-event-db :calendar-update-start-date
   (fn [db [_ date]]
     (assoc-in db [:calendar :start-date] date)))
+
+(defn make-default-fetch-params [cofx]
+  {:headers {:authorization (str "Bearer " (-> cofx :db :token))}
+   :format (text-request-format)
+   :response-format (json-response-format {:keywords? true})
+   :on-failure [:no-op]})
+
+(reg-event-fx :fetch
+  (fn [cofx [_ params]]
+    {:http-xhrio (merge-with into
+                             (make-default-fetch-params cofx)
+                             params)}))
 
 ;; reuse logic for updating start date when adding/subtracting a duration from the date
 (defn reg-start-date-update-event-fx
@@ -84,12 +98,9 @@
 
 (reg-event-fx :fetch-all-workouts
   (fn [_ _]
-    {:http-xhrio {:method :get
-                  :uri (str @api-url "/workouts")
-                  :format (text-request-format)
-                  :response-format (json-response-format {:keywords? true})
-                  :on-success [:fetch-all-workouts-success]
-                  :on-failure [:no-op]}}))
+    {:dispatch [:fetch {:method :get
+                        :uri (str api-url "/workouts")
+                        :on-success [:fetch-all-workouts-success]}]}))
 
 (reg-event-fx :create-workout-success
   (fn [{:keys [db]} [_ workout]]
@@ -104,31 +115,69 @@
                           keys (mapcat #(as-> % v (:in v) (map name v)) problems)]
                       {:toast-error! (gstring/format "%s is invalid" (first keys))})
 
-                    {:http-xhrio {:method :post
-                                  :params workout
-                                  :uri (str @api-url "/workouts")
-                                  :format (json-request-format)
-                                  :response-format (json-response-format {:keywords? true})
-                                  :on-success [:create-workout-success]
-                                  :on-failure [:no-op]}}))))
+                    {:dispatch [:fetch {:method :post
+                                        :params workout
+                                        :uri (str api-url "/workouts")
+                                        :format (json-request-format)
+                                        :on-success [:create-workout-success]}]}))))
 
 (reg-event-fx :delete-workout-success
   (fn [{:keys [db]} [_ workout-id]]
     {:db (assoc-in
           db
           [:calendar :workouts]
-          (->> (get-in db [:calendar :workouts])
+          (->> (-> db :calendar :workouts)
                (filter #(not= workout-id (:workout_id %)))))
      :dispatch [:calendar-update-weeks]}))
 
 (reg-event-fx :delete-workout
   (fn [_ [_ workout-id]]
-    {:http-xhrio {:method :delete
-                  :uri (str @api-url "/workouts/" workout-id)
-                  :format (text-request-format)
-                  :response-format (json-response-format {:keywords? true})
-                  :on-success [:delete-workout-success workout-id]
-                  :on-failure [:no-op]}}))
+    {:dispatch [:fetch {:method :delete
+                        :uri (str api-url "/workouts/" workout-id)
+                        :on-success [:delete-workout-success workout-id]}]}))
+
+(reg-event-fx :verify-authentication
+  (fn [_ _]
+    (let [firebase-user (-> js/firebase .auth .-app .auth .-currentUser)]
+      (if firebase-user
+        (let [user (parse-firebase-user firebase-user)
+              token (get-token)]
+          (.then token (fn [token] {:dispatch [:verify-authentication-success user token]})))
+        {:dispatch [:verify-authentication-failure]}))))
+
+(reg-event-fx :verify-authentication-success
+  (fn [_ [_ user token]]
+    {:dispatch [:login-success user token]}))
+
+(reg-event-fx :verify-authentication-failure
+  (fn [_ [_ error]]
+    {:navigate! [:login]}))
+
+(reg-event-fx :login-success
+  (fn [{:keys [db]} [_ user token]]
+    (let [events {:db (-> db
+                          (assoc :user user)
+                          (assoc :token token))}]
+      (if (includes? ["/login" "/login_success"] (-> js/window .-location .-pathname))
+        (assoc events :navigate! [:home])
+        events))))
+
+(reg-event-fx :login-failure
+  (fn [_ [_ error]]
+    {:toast-error! error}))
+
+(reg-event-fx :logout
+  (fn [_ [_ _]]
+    (firebase-logout)))
+
+(reg-event-fx :logout-success
+  (fn [{:keys [db]} [_ _]]
+    (let [events {:db (-> db
+                          (assoc :user nil)
+                          (assoc :token nil))}]
+      (if-not (= (-> js/window .-location .-pathname) "/login")
+        (assoc events :navigate! [:login])
+        events))))
 
 ;; this is used for http requests that don't need failure or success handlers
-(reg-event-fx :no-op (fn []))
+(reg-event-fx :no-op (fn [] nil))

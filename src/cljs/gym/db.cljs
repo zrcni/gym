@@ -6,6 +6,8 @@
 (def default-db
   (let [start-date (start-of-week (t/now))]
     {:current-route nil
+     :user nil
+     :token nil
      :calendar {:start-date start-date
                 :editing-index nil
                 :weeks (calculate-weeks start-date)

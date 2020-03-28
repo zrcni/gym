@@ -31,3 +31,7 @@
  :calendar-weeks
  (fn [db _]
    (-> db :calendar :weeks)))
+
+(reg-sub
+ :user
+ (fn [db _] (:user db)))

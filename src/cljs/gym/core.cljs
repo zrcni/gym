@@ -1,5 +1,6 @@
 (ns gym.core
   (:require
+   [gym.auth :refer [init-firebase-app start-firebase-auth-state-listener]]
    [reagent.core :as reagent]
    [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
    [gym.router :as router]))
@@ -11,4 +12,6 @@
   (dispatch-sync [:initialize-db])
   (clear-subscription-cache!)
   (router/start!)
-  (mount-root))
+  (init-firebase-app)
+  (mount-root)
+  (start-firebase-auth-state-listener))

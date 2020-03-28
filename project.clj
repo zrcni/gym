@@ -12,6 +12,8 @@
                  [re-frame "0.11.0"]
                  [seancorfield/next.jdbc "1.0.409"]
                  [migratus "1.2.8"]
+                 [buddy/buddy-core "1.6.0"]
+                 [buddy/buddy-sign "3.1.0"]
                  [ring "1.8.0"]
                  [ring-cors "0.1.13"]
                  [ring/ring-defaults "0.3.2"]

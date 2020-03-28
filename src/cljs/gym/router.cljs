@@ -27,13 +27,39 @@
   (dispatch [:navigate to])
   (fn [] nil))
 
+"Navigate to /login if logged out"
+(defn private-route []
+  (let [user @(subscribe [:user])]
+    (fn [& children]
+      (if-not user
+        [navigate {:to :login}]
+        [:<> children]))))
+
+"Navigate to / if logged in"
+(defn public-route []
+  (let [user @(subscribe [:user])]
+    (fn [& children]
+      (if user
+       [navigate {:to :home}]
+        [:<> children]))))
+
 (defonce routes
   ["/"
    ["" {:name :home
         :view views/home-page
-        :wrapper  nil
+        :wrapper  private-route
         :title "Home"
-        :controllers []}]])
+        :controllers []}]
+    ["login" {:name :login
+          :view views/login-page
+          :wrapper  public-route
+          :title "Login"
+          :controllers []}]
+   ["login_success" {:name :login-success
+                     :view (fn [] [:div "Verifying login..."])
+                     :wrapper  public-route
+                     :title "Login succ"
+                     :controllers []}]])
 
 (def router
   (rf/router

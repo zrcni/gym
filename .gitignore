@@ -16,3 +16,5 @@ pom.xml.asc
 node_modules
 .history
 resources/public/js/compiled
+certs/*
+!certs/.gitkeep

@@ -3,10 +3,13 @@
    [clojure.walk :refer [keywordize-keys]]
    [gym.workouts :as workouts]))
 
-(defn get-workouts-handler [_request]
+(defn get-user-id [request]
+  (-> request :token-payload :user_id))
+
+(defn get-user-workouts-handler [request]
   {:status 200
-    :headers {"Content-Type" "application/json"}
-    :body (workouts/get-all)})
+   :headers {"Content-Type" "application/json"}
+   :body (workouts/get-by-user-id (get-user-id request))})
 
 (defn get-workout-by-id-handler [request]
   (let [workout-id (get-in request [:path-params :workout-id])
@@ -17,14 +20,15 @@
 
 (defn create-workout-handler [request]
   (let [body (keywordize-keys (:body request))
-        workout (workouts/create! body)]
+        user (assoc body :user_id (get-user-id request))
+        workout (workouts/create! user)]
     {:status 201
      :headers {"Content-Type" "application/json"}
      :body workout}))
 
 (defn delete-workout-by-id-handler [request]
-  (let [workout-id (get-in request [:path-params :workout-id])
-        deleted-count (workouts/delete-by-id! workout-id)]
-    (if (> deleted-count 0)
+  (let [workout-id (-> request :path-params :workout-id)
+        workout (workouts/get-by-id workout-id)]
+    (if (and workout (> (workouts/delete-by-id! workout-id) 0))
       {:status 204}
       {:status 404})))

@@ -1,5 +1,6 @@
 (ns gym.views
   (:require
+   [gym.auth :refer [init-firebase-auth]]
    [re-frame.core :refer [subscribe dispatch]]
    [reagent.core :as reagent]
    [goog.string.format]
@@ -237,3 +238,9 @@
 
 (defn home-page []
   [calendar])
+
+(defn login-page []
+  ;; wait just enough for the first render to go through first
+  (js/setTimeout init-firebase-auth 50)
+  (fn []
+    [:div#auth-ui]))

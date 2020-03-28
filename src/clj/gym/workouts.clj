@@ -15,9 +15,9 @@
   (-> workout
       (update :date local-date->string)))
 
-(defn get-all []
+(defn get-by-user-id [user-id]
   (let [workouts (sql/query (get-db)
-                            ["SELECT * FROM workouts"]
+                            ["SELECT * FROM workouts WHERE user_id = ?" user-id]
                             {:builder-fn rs/as-unqualified-maps})]
     (map from-db workouts)))
 
@@ -29,12 +29,13 @@
                                {:builder-fn rs/as-unqualified-maps})]
     (when workout (from-db workout))))
 
-(defn create! [{:keys [description duration date]}]
+(defn create! [{:keys [description duration date user_id]}]
   (let [workout (sql/insert! (get-db)
                              "workouts"
                              {:description description
                               :duration duration
-                              :date (LocalDate/parse date)}
+                              :date (LocalDate/parse date)
+                              :user_id user_id}
                              {:return-keys true
                               :builder-fn rs/as-unqualified-maps})]
     (when workout (from-db workout))))
