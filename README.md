@@ -7,12 +7,12 @@ This is the gym project.
 - validate inputs in the frontend before submitting (done?)
 - validate inputs in the backend
 - handle api errors in the frontend
-- handle api errors in the backend
-- fix toast style
-- create a workout for the current day outside of the calendar itself
+- handle api errors in the backend (ring middleware w/ try-catch)
+- fix toast style (while in modal)
 - record workout time in-app (in-memory or database? I don't want to add redis, though)
 - tags ("gym", "jog" etc.)
 - record weight in the calendar?
+- Currently workouts from all time are retrieved. Need to paginate in some way.
 
 ## Development mode
 

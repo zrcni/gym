@@ -13,7 +13,6 @@
 (def token-kid (keys/public-key "./certs/public-key.pem"))
 
 (defn parse-token [token]
-  (prn (str "Token: " token))
   (jwt/unsign token token-kid {:alg :rs256}))
 
 (def web-middlewares
