@@ -20,7 +20,7 @@
                                is-first-day-of-month
                                human-month-short]]))
 
-((.-setAppElement Modal) "#app")
+(.setAppElement Modal "#app")
 
 (defn modal []
   (fn [{:keys [disable-auto-close is-open on-close title]} & children]

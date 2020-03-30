@@ -1,5 +1,6 @@
 (ns gym.auth
   (:require
+   [gym.config :as cfg]
    [re-frame.core :refer [dispatch]]))
 
 (defn get-token []
@@ -18,7 +19,7 @@
    :api-key (.-apiKey token-manager)
    :expiration-time (.-expirationTime token-manager)})
 
-(def auth-config {:signInSuccessUrl "http://localhost:3449/login_success"
+(def auth-config {:signInSuccessUrl (str cfg/frontend-url "/login_success")
                   :signInOptions [js/firebase.auth.GoogleAuthProvider.PROVIDER_ID]
                   :callbacks {:signInSuccessWithAuthResult (fn [auth-result]
                                                              (let [firebase-user (.-user auth-result)

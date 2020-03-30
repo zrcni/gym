@@ -22,7 +22,7 @@
 
 (def api-middlewares
   [#(wrap-cors % :access-control-allow-origin #"http://localhost:3449"
-               :access-control-allow-methods [:get :put :post :delete])
+               :access-control-allow-methods [:get :post :delete])
    wrap-json-response
    wrap-json-body])
 

@@ -3,6 +3,7 @@
    [clojure.spec.alpha :as spec]
    [gym.db :refer [default-db]]
    [gym.specs]
+   [gym.config :as cfg]
    [gym.util :refer [includes?]]
    [goog.string :as gstring]
    [goog.string.format]
@@ -12,8 +13,6 @@
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
    [ajax.core :refer [text-request-format json-request-format json-response-format]]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx]]))
-
-(def ^:private api-url "http://localhost:3001/api")
 
 (reg-event-db :initialize-db
  (fn [_ _] default-db))
@@ -99,7 +98,7 @@
 (reg-event-fx :fetch-all-workouts
   (fn [_ _]
     {:dispatch [:fetch {:method :get
-                        :uri (str api-url "/workouts")
+                        :uri (str cfg/api-url "/workouts")
                         :on-success [:fetch-all-workouts-success]}]}))
 
 (reg-event-fx :create-workout-success
@@ -117,7 +116,7 @@
 
                     {:dispatch [:fetch {:method :post
                                         :params workout
-                                        :uri (str api-url "/workouts")
+                                        :uri (str cfg/api-url "/workouts")
                                         :format (json-request-format)
                                         :on-success [:create-workout-success]}]}))))
 
@@ -133,7 +132,7 @@
 (reg-event-fx :delete-workout
   (fn [_ [_ workout-id]]
     {:dispatch [:fetch {:method :delete
-                        :uri (str api-url "/workouts/" workout-id)
+                        :uri (str cfg/api-url "/workouts/" workout-id)
                         :on-success [:delete-workout-success workout-id]}]}))
 
 (reg-event-fx :verify-authentication
