@@ -46,3 +46,5 @@
 (defn stop-api-server []
   (.stop @server)
   (reset! api-server nil))
+
+(start-api-server)

@@ -6,8 +6,8 @@
    [goog.string.format]
    [gym.events]
    [gym.subs]
+   [react-modal]
    [cljs-time.core :as t]
-   ["react-modal" :as Modal]
    [gym.calendar-utils :refer [ms->m
                                m->ms
                                num-weeks
@@ -20,16 +20,16 @@
                                is-first-day-of-month
                                human-month-short]]))
 
-(.setAppElement Modal "#app")
+(.setAppElement js/ReactModal "#app")
 
 (defn modal []
   (fn [{:keys [disable-auto-close is-open on-close title]} & children]
-    [:> Modal {:is-open (if (nil? is-open) true is-open)
-               :on-request-close #(when-not (nil? on-close) (on-close))
-               :content-label title
-               :should-close-on-overlay-click (not disable-auto-close)
-               :overlay-class-name "modal-overlay-custom"
-               :class "modal-content-custom"}
+    [:> js/ReactModal {:is-open (if (nil? is-open) true is-open)
+          :on-request-close #(when-not (nil? on-close) (on-close))
+          :content-label title
+          :should-close-on-overlay-click (not disable-auto-close)
+          :overlay-class-name "modal-overlay-custom"
+          :class "modal-content-custom"}
      [:div.container-fluid
       (when title
         [:div.row.modal-title

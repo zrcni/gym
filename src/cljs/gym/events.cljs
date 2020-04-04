@@ -8,7 +8,8 @@
    [goog.string :as gstring]
    [goog.string.format]
    [day8.re-frame.http-fx]
-   ["toastr" :as toastr]
+   [toastr]
+   [firebase]
    [gym.auth :refer [parse-firebase-user get-token firebase-logout]]
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
    [ajax.core :refer [text-request-format json-request-format json-response-format]]
@@ -35,11 +36,11 @@
 
 (reg-fx :toast-success!
   (fn [message]
-    (toastr/success message)))
+    (.success js/toastr message)))
 
 (reg-fx :toast-error!
   (fn [message]
-    (toastr/error message)))
+    (.error js/toastr message)))
 
 (reg-event-db :calendar-update-start-date
   (fn [db [_ date]]

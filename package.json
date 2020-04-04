@@ -4,16 +4,21 @@
   "description": "This is the gym project.",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cljs-oss/module-deps": "^1.1.1",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "react-modal": "^3.11.1",
-    "toastr": "^2.1.4"
+    "@cljs-oss/module-deps": "1.1.1",
+    "firebase": "7.13.1",
+    "firebaseui": "4.5.0",
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "react-modal": "3.11.1",
+    "toastr": "2.1.4",
+    "webpack": "4.42.1",
+    "webpack-cli": "3.3.11"
   }
 }

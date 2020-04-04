@@ -19,3 +19,4 @@ resources/public/js/compiled
 certs/*
 !certs/.gitkeep
 test-server
+dist

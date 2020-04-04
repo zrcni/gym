@@ -1,6 +1,8 @@
 (ns gym.auth
   (:require
    [gym.config :as cfg]
+   [firebase]
+   [firebaseui]
    [re-frame.core :refer [dispatch]]))
 
 (defn get-token []
@@ -20,7 +22,7 @@
    :expiration-time (.-expirationTime token-manager)})
 
 (def auth-config {:signInSuccessUrl (str cfg/frontend-url "/login_success")
-                  :signInOptions [js/firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+                  :signInOptions [(-> js/firebase .-auth .-GoogleAuthProvider .-PROVIDER_ID)]
                   :callbacks {:signInSuccessWithAuthResult (fn [auth-result]
                                                              (let [firebase-user (.-user auth-result)
                                                                    user (parse-firebase-user firebase-user)
@@ -40,8 +42,8 @@
 
 (defn get-firebase-auth-ui []
   (or 
-   (js/firebaseui.auth.AuthUI.getInstance)
-   (new js/firebaseui.auth.AuthUI (.auth js/firebase))))
+   (-> js/firebaseui .-auth .-AuthUI .getInstance)
+   (new (-> js/firebaseui .-auth .-AuthUI) (.auth js/firebase))))
 
 (defn init-firebase-app []
   (when (= 0 (count (.-apps js/firebase)))

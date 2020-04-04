@@ -8,7 +8,7 @@
                  [org.postgresql/postgresql "42.2.11"]
                  [ring-server "0.5.0"]
                  [environ "1.1.0"]
-                 [reagent "0.9.0-rc3"]
+                 [reagent "0.10.0" :exclusions [cljsjs/react cljsjs/react-dom]]
                  [reagent-utils "0.3.3"]
                  [re-frame "0.11.0"]
                  [seancorfield/next.jdbc "1.0.409"]
@@ -63,12 +63,26 @@
              :compiler
              {:output-to        "target/cljsbuild/public/js/app.js"
               :output-dir       "target/cljsbuild/public/js"
-            ;;   :source-map       "target/cljsbuild/public/js/app.js.map"
+              :source-map       "target/cljsbuild/public/js/app.js.map"
               :optimizations :advanced
               :infer-externs true
               :pretty-print  false
-              :closure-defines {gym.config/frontend-url ~(System/getenv "FRONTEND_URL")
-                                gym.config/api-url ~(System/getenv "API_URL")}}}
+              :npm-deps false
+              :foreign-libs [{:file "dist/bundle.js"
+                              :provides ["react"
+                                         "react-dom"
+                                         "react-modal"
+                                         "toastr"
+                                         "firebase"
+                                         "firebaseui"]
+                              :global-exports {react React
+                                               react-dom ReactDOM
+                                               react-modal ReactModal
+                                               toastr toastr
+                                               firebase firebase
+                                               firebaseui firebaseui}}]
+              :closure-defines {gym.config/frontend-url ~(or (System/getenv "FRONTEND_URL") "")
+                                gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"}
@@ -80,7 +94,21 @@
               :source-map true
               :optimizations :none
               :pretty-print  true
-              :install-deps true
+              :npm-deps false
+              :infer-externs true
+              :foreign-libs [{:file "dist/bundle.js"
+                              :provides ["react"
+                                         "react-dom"
+                                         "react-modal"
+                                         "toastr"
+                                         "firebase"
+                                         "firebaseui"]
+                              :global-exports {react React
+                                               react-dom ReactDOM
+                                               react-modal ReactModal
+                                               toastr toastr
+                                               firebase firebase
+                                               firebaseui firebaseui}}]
               :closure-defines {gym.config/frontend-url "http://localhost:3449"
                                 gym.config/api-url "http://localhost:3001/api"}}}}}
 
