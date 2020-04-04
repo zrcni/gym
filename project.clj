@@ -26,6 +26,7 @@
                  [metosin/reitit "0.4.2"]
                  [metosin/reitit-spec "0.4.2"]
                  [pez/clerk "1.0.0"]
+                 [clj-http "3.10.0"]
                  [cljs-http "0.1.46"]
                  [cljs-ajax "0.7.3"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]

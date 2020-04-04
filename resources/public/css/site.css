@@ -25,6 +25,7 @@ body {
 #header {
   padding: 8px;
   background-color: var(--accent);
+  justify-content: flex-end;
 }
 
 #content {

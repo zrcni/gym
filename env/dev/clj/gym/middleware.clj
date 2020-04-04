@@ -6,14 +6,13 @@
    [clojure.string :as string]
    [buddy.sign.jwt :as jwt]
    [buddy.core.keys :as keys]
+   [gym.jwt :refer [get-token]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
-;; source: https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com
-(def token-kid (keys/public-key "./certs/public-key.pem"))
 
 (defn parse-token [token]
-  (jwt/unsign token token-kid {:alg :rs256}))
+  (jwt/unsign token (keys/str->public-key (get-token)) {:alg :rs256}))
 
 (def web-middlewares
   [#(wrap-defaults % site-defaults)

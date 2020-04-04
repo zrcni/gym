@@ -44,10 +44,12 @@
 ;; Routes
 (defn layout []
   (fn [_ & children]
-    [:<>
-     [:header {:id "header" :class "navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar"}]
-     [:main {:id "content"}
-      children]]))
+    (let [user @(subscribe [:user])]
+      [:<>
+       [:header {:id "header" :class "navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar"}
+        (when user [:button.logout_button {:on-click #(dispatch [:logout])} "Logout"])]
+       [:main {:id "content"}
+        children]])))
 
 ;; -------------------------
 ;; Page components
