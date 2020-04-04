@@ -8,7 +8,7 @@
                  [org.postgresql/postgresql "42.2.11"]
                  [ring-server "0.5.0"]
                  [environ "1.1.0"]
-                 [reagent "0.10.0" :exclusions [cljsjs/react cljsjs/react-dom]]
+                 [reagent "0.10.0"]
                  [reagent-utils "0.3.3"]
                  [re-frame "0.11.0"]
                  [seancorfield/next.jdbc "1.0.409"]
@@ -69,15 +69,11 @@
               :pretty-print  false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["react"
-                                         "react-dom"
-                                         "react-modal"
+                              :provides ["react-modal"
                                          "toastr"
                                          "firebase"
                                          "firebaseui"]
-                              :global-exports {react React
-                                               react-dom ReactDOM
-                                               react-modal ReactModal
+                              :global-exports {react-modal ReactModal
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
@@ -97,15 +93,11 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["react"
-                                         "react-dom"
-                                         "react-modal"
+                              :provides ["react-modal"
                                          "toastr"
                                          "firebase"
                                          "firebaseui"]
-                              :global-exports {react React
-                                               react-dom ReactDOM
-                                               react-modal ReactModal
+                              :global-exports {react-modal ReactModal
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
