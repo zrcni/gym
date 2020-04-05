@@ -21,5 +21,4 @@ dev-api:
 	lein repl
 
 run-api:
- java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.server
- 
+	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.server
