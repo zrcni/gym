@@ -34,7 +34,8 @@
                  [venantius/accountant "0.2.5"
                   :exclusions [org.clojure/tools.reader]]]
 
-  :plugins [[lein-environ "1.1.0"]
+  :plugins [[lein-shell "0.5.0"]
+            [lein-environ "1.1.0"]
             [lein-cljsbuild "1.1.7"]
             [migratus-lein "0.7.3"]
             [lein-asset-minifier "0.4.6"
@@ -141,9 +142,11 @@
                          :pg-password "postgres"
                          :frontend-url "http://localhost:3449"}}
 
-             :uberjar {:hooks [minify-assets.plugin/hooks leiningen.cljsbuild]
+             :uberjar {:hooks [minify-assets.plugin/hooks]
+                  ;;      :hooks [minify-assets.plugin/hooks leiningen.cljsbuild]
                        :source-paths ["env/prod/clj"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+                  ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+                       :prep-tasks ["compile"]
                        :env {:production true
                              :pg-host ~(System/getenv "PG_HOST")
                              :pg-port ~(System/getenv "PG_PORT")
