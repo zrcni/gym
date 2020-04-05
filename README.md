@@ -12,6 +12,10 @@
 - record weight in the calendar?
 - Currently workouts from all time are retrieved. Need to paginate in some way.
 
+mobile:
+- M instead of Monday
+- 100% width, rectangle
+
 ## Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:
