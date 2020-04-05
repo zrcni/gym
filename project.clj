@@ -145,8 +145,8 @@
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :prep-tasks ["compile"]
                        :env {:production true
-                             ;; jdbc connection uri
-                             :pg-connection-uri ~(System/getenv "PG_URL")
+                             ;; jdbc connection uri supplied by Heroku
+                             :pg-connection-uri ~(System/getenv "JDBC_DATABASE_URL")
                              :frontend-url ~(System/getenv "FRONTEND_URL")}
                        :aot :all
                        :omit-source true}}
