@@ -22,3 +22,6 @@ dev-api:
 
 run-api:
 	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.server
+
+deploy-api:
+	git push heroku master
