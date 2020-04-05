@@ -1,6 +1,4 @@
-# gym
-
-This is the gym project.
+# Exercise tracker
 
 ## TODO
 
