@@ -1,6 +1,7 @@
-(ns gym.config)
+(ns gym.config
+  (:require [environ.core :refer [env]]))
 
-(def frontend-url (System/getenv "FRONTEND_URL"))
-(def jdbc-database-url (System/getenv "JDBC_DATABASE_URL"))
-(def port (System/getenv "PORT"))
-(def host-url (System/getenv "HOST_URL"))
+(def frontend-url (:frontend-url env))
+(def jdbc-database-url (:jdbc-database-url env))
+(def port (:port env))
+(def host-url (:host-url env))
