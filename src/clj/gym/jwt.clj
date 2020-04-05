@@ -42,7 +42,6 @@
    (>= 0 (.compareTo instant (Instant/now)))))
 
 (defn get-token []
-  (println @expires-at)
   (when (or (not @cert) (has-expired @expires-at))
     (refresh-certificate))
   @cert)

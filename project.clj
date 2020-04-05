@@ -137,33 +137,19 @@
                                 (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev true
-                         :pg-host "localhost"
-                         :pg-port 5432
-                         :pg-db "postgres"
-                         :pg-user "postgres"
-                         :pg-password "postgres"
+                         ;; jdbc connection uri
+                         :pg-connection-uri "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
                          :frontend-url "http://localhost:3449"}}
 
-             :uberjar {:hooks [minify-assets.plugin/hooks]
-                  ;;      :hooks [minify-assets.plugin/hooks leiningen.cljsbuild]
-                       :source-paths ["env/prod/clj"]
+             :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :prep-tasks ["compile"]
                        :env {:production true
-                             :pg-host ~(System/getenv "PG_HOST")
-                             :pg-port ~(System/getenv "PG_PORT")
-                             :pg-db ~(System/getenv "PG_DB")
-                             :pg-user ~(System/getenv "PG_USER")
-                             :pg-password ~(System/getenv "PG_PASSWORD")
+                             ;; jdbc connection uri
+                             :pg-connection-uri ~(System/getenv "PG_URL")
                              :frontend-url ~(System/getenv "FRONTEND_URL")}
                        :aot :all
                        :omit-source true}}
-  ;; Currently only doing (convenient) migrations in dev so I'm not bothering with
-  ;; figuring out the setup for different environments yet
-  :migratus {:store :database
-             :migration-dir "migrations"
-             :db {:classname "org.postgresql.Driver"
-                  :subprotocol "postgresql"
-                  :subname "//localhost:5432/postgres"
-                  :user "postgres"
-                  :password "postgres"}})
+    :migratus {:store :database
+               :migration-dir "migrations"
+               :db ~(System/getenv "PG_URL")})
