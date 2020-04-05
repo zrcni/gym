@@ -33,7 +33,6 @@
   [wrap-log
    ;; TODO: provide server url via environment
    #(wrap-cors % :access-control-allow-origin [(re-pattern cfg/frontend-url) (re-pattern cfg/host-url)]
-               :access-control-allow-credentials true
                :access-control-allow-methods [:get :post :put :delete :options])
    wrap-json-response
    wrap-json-body])
