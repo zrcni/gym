@@ -38,7 +38,7 @@
 
 (defn start-api-server [& [port]]
     (reset! server
-            (run-jetty #'api-handler {:port port
+            (run-jetty #'api-handler {:port (Integer/parseInt port)
                                       :auto-reload? true
                                       :join? false}))
     (println (str "API server listening on port " port)))
