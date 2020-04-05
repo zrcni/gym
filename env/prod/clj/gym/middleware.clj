@@ -31,8 +31,9 @@
 
 (def api-middlewares
   [wrap-log
-   #(wrap-cors % :access-control-allow-origin (re-pattern (str "$" cfg/frontend-url))
-               :access-control-allow-methods [:get :post :delete])
+   ;; TODO: provide server url via environment
+   #(wrap-cors % :access-control-allow-origin (re-pattern (str "(^" cfg/frontend-url "|" "https://damp-thicket-94785.herokuapp.com" ")"))
+               :access-control-allow-methods [:get :post :delete :options])
    wrap-json-response
    wrap-json-body])
 
