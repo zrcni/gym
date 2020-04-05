@@ -29,11 +29,15 @@
 (defn parse-token [token]
   (jwt/unsign token (keys/str->public-key (get-token)) {:alg :rs256}))
 
+(println (str "frontend url " cfg/frontend-url))
+(println (str "host url: " cfg/host-url))
+
 (def api-middlewares
   [wrap-log
    ;; TODO: provide server url via environment
    #(wrap-cors % :access-control-allow-origin (re-pattern (str "(^" cfg/frontend-url "|" cfg/host-url ")"))
-               :access-control-allow-methods [:get :post :delete :options])
+               :access-control-allow-credentials true
+               :access-control-allow-methods [:get :post :put :delete :options])
    wrap-json-response
    wrap-json-body])
 
