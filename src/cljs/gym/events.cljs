@@ -99,7 +99,7 @@
 (reg-event-fx :fetch-all-workouts
   (fn [_ _]
     {:dispatch [:fetch {:method :get
-                        :uri (str cfg/api-url "/workouts")
+                        :uri (str cfg/api-url "/api/workouts")
                         :on-success [:fetch-all-workouts-success]}]}))
 
 (reg-event-fx :create-workout-success
@@ -117,7 +117,7 @@
 
                     {:dispatch [:fetch {:method :post
                                         :params workout
-                                        :uri (str cfg/api-url "/workouts")
+                                        :uri (str cfg/api-url "/api/workouts")
                                         :format (json-request-format)
                                         :on-success [:create-workout-success]}]}))))
 
@@ -133,7 +133,7 @@
 (reg-event-fx :delete-workout
   (fn [_ [_ workout-id]]
     {:dispatch [:fetch {:method :delete
-                        :uri (str cfg/api-url "/workouts/" workout-id)
+                        :uri (str cfg/api-url "/api/workouts/" workout-id)
                         :on-success [:delete-workout-success workout-id]}]}))
 
 (reg-event-fx :verify-authentication

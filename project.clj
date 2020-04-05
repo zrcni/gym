@@ -106,7 +106,7 @@
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
-              :closure-defines {gym.config/api-url "http://localhost:3001/api"}}}}}
+              :closure-defines {gym.config/api-url "http://localhost:3001"}}}}}
 
   :figwheel
   {:http-server-root "public"
