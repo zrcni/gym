@@ -139,7 +139,8 @@
                    :env {:dev true
                          ;; jdbc connection uri
                          :pg-connection-uri "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
-                         :frontend-url "http://localhost:3449"}}
+                         :frontend-url "http://localhost:3449"
+                         :server-port 3001}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
@@ -147,7 +148,8 @@
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku
                              :pg-connection-uri ~(System/getenv "JDBC_DATABASE_URL")
-                             :frontend-url ~(System/getenv "FRONTEND_URL")}
+                             :frontend-url ~(System/getenv "FRONTEND_URL")
+                             :server-port 80}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database

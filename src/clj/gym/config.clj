@@ -8,3 +8,4 @@
 ;; (def pg-password (or (:pg-password env) "postgres"))
 (def frontend-url (or (:pg-frontend-url env) "http://localhost:3449"))
 (def pg-connection-uri (or (:pg-connection-uri env) "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"))
+(def server-port (or (:server-port env) 80))

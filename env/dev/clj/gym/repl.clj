@@ -1,5 +1,6 @@
 (ns gym.repl
-  (:require [ring.adapter.jetty :refer [run-jetty]])
+  (:require [ring.adapter.jetty :refer [run-jetty]]
+            [gym.config :as cfg])
   (:use gym.handler
         figwheel-sidecar.repl-api
         ring.server.standalone
@@ -36,15 +37,14 @@
 (defonce api-server (atom nil))
 
 (defn start-api-server [& [port]]
-  (let [port (if port (Integer/parseInt port) 3001)]
     (reset! server
             (run-jetty #'api-handler {:port port
                                       :auto-reload? true
                                       :join? false}))
-    (println (str "API server listening on port " port))))
+    (println (str "API server listening on port " port)))
 
 (defn stop-api-server []
-  (.stop @server)
+  (.stop @api-server)
   (reset! api-server nil))
 
-(start-api-server)
+(start-api-server cfg/server-port)
