@@ -6,11 +6,9 @@ This is the gym project.
 
 - sort out API errors, because I don't want to see a CORS error every time anything goes wrong
 - logout or refresh token if it expires
-- validate inputs in the frontend before submitting (done?)
 - validate inputs in the backend
 - handle api errors in the frontend
 - handle api errors in the backend (ring middleware w/ try-catch)
-- fix toast style (while in modal)
 - record workout time in-app (in-memory or database? I don't want to add redis, though)
 - tags ("gym", "jog" etc.)
 - record weight in the calendar?
