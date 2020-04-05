@@ -16,5 +16,4 @@
 
 (defn -main [& args]
   ;; (start-web)
-  (start-api)
-  (println "no, not here"))
+  (start-api))
