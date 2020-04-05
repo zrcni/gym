@@ -4,7 +4,7 @@
    [ring.middleware.cors :refer [wrap-cors]]
    [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
    [clojure.string :as string]
-  ;;  [gym.config :as cfg]
+   [gym.config :as cfg]
    [buddy.sign.jwt :as jwt]
    [buddy.core.keys :as keys]
    [gym.jwt :refer [get-token]]
@@ -32,10 +32,8 @@
 (def api-middlewares
   [wrap-log
    ;; TODO: provide server url via environment
-   #(wrap-cors % :access-control-allow-origin "*"
-                     :access-control-allow-methods [:get :post :delete :options])
-  ;;  #(wrap-cors % :access-control-allow-origin (re-pattern (str "(^" cfg/frontend-url "|" "https://damp-thicket-94785.herokuapp.com" ")"))
-  ;;              :access-control-allow-methods [:get :post :delete :options])
+   #(wrap-cors % :access-control-allow-origin (re-pattern (str "(^" cfg/frontend-url "|" "https://damp-thicket-94785.herokuapp.com" ")"))
+               :access-control-allow-methods [:get :post :delete :options])
    wrap-json-response
    wrap-json-body])
 
