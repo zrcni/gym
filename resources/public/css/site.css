@@ -24,6 +24,7 @@ body {
 
 #header {
   padding: 8px;
+  height: 40px;
   background-color: var(--accent);
   justify-content: flex-end;
 }
@@ -1010,4 +1011,46 @@ h2 {
   color: white;
   display: flex;
   justify-content: space-between;
+}
+
+.circle-loader,
+.circle-loader:after {
+  border-radius: 50%;
+  width: 10em;
+  height: 10em;
+}
+.circle-loader {
+  margin: 60px auto;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 1.1em solid var(--accent);
+  border-right: 1.1em solid var(--accent);
+  border-bottom: 1.1em solid var(--accent);
+  border-left: 1.1em solid #ffffff;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
+  animation: load8 1.1s infinite linear;
+}
+@-webkit-keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes load8 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

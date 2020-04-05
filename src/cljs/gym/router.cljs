@@ -54,12 +54,7 @@
           :view views/login-page
           :wrapper  public-route
           :title "Login"
-          :controllers []}]
-   ["login_success" {:name :login-success
-                     :view (fn [] [:div "Verifying login..."])
-                     :wrapper  public-route
-                     :title "Login succ"
-                     :controllers []}]])
+          :controllers []}]])
 
 (def router
   (rf/router
@@ -75,10 +70,13 @@
       ^{:key name} [view])))
 
 (defn root []
-  (let [current-route @(subscribe [:current-route])]
-    [views/layout {:disabled false}
-     (when current-route
-       ^{:key (:path current-route)} [current-page {:route current-route}])]))
+  (let [login-status @(subscribe [:login-status])
+        current-route @(subscribe [:current-route])]
+    [views/layout {:disabled (when (= login-status "WAITING"))}
+     (if (= login-status "WAITING")
+       [:div.circle-loader]
+       (when current-route
+         ^{:key (:path current-route)} [current-page {:route current-route}]))]))
 
 (defn on-navigate [new-match]
   (let [old-match (subscribe [:current-route])]

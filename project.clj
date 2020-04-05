@@ -83,7 +83,7 @@
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
-              :closure-defines {gym.config/api-url ~(System/getenv "API_URL")}}}
+              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"}

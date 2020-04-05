@@ -157,9 +157,10 @@
   (fn [{:keys [db]} [_ user token]]
     (let [events {:db (-> db
                           (assoc :user user)
-                          (assoc :token token))}]
-      (if (includes? ["/login" "/login_success"] (-> js/window .-location .-pathname))
-        (assoc events :navigate! [:home])
+                          (assoc :token token)
+                          (assoc :login-status "LOGGED_IN"))}]
+      (if (= (-> js/window .-location .-pathname) "/login")
+       (assoc events :navigate! [:home])
         events))))
 
 (reg-event-fx :login-failure
@@ -174,7 +175,8 @@
   (fn [{:keys [db]} [_ _]]
     (let [events {:db (-> db
                           (assoc :user nil)
-                          (assoc :token nil))}]
+                          (assoc :token nil)
+                          (assoc :login-status "LOGGED_OUT"))}]
       (if-not (= (-> js/window .-location .-pathname) "/login")
         (assoc events :navigate! [:login])
         events))))

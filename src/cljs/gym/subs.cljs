@@ -35,3 +35,7 @@
 (reg-sub
  :user
  (fn [db _] (:user db)))
+
+(reg-sub
+ :login-status
+ (fn [db _] (:login-status db)))

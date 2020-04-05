@@ -20,8 +20,7 @@
    :api-key (.-apiKey token-manager)
    :expiration-time (.-expirationTime token-manager)})
 
-(def auth-config {:signInSuccessUrl (str js/window.location.origin "/login_success")
-                  :signInOptions [(-> js/firebase .-auth .-GoogleAuthProvider .-PROVIDER_ID)]
+(def auth-config {:signInOptions [(-> js/firebase .-auth .-GoogleAuthProvider .-PROVIDER_ID)]
                   :callbacks {:signInSuccessWithAuthResult (fn [auth-result]
                                                              (let [firebase-user (.-user auth-result)
                                                                    user (parse-firebase-user firebase-user)

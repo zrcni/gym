@@ -8,6 +8,7 @@
     {:current-route nil
      :user nil
      :token nil
+     :login-status "WAITING"
      :calendar {:start-date start-date
                 :editing-index nil
                 :weeks (calculate-weeks start-date)
