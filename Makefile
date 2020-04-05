@@ -10,7 +10,7 @@ build-server:
 	lein uberjar
 
 dev-site:
-	API_URL=http://localhost:3001
+	API_URL=http://localhost:3001 \
 	lein figwheel
 
 dev-api:
@@ -22,3 +22,4 @@ dev-api:
 
 run-api:
  java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.server
+ 
