@@ -57,15 +57,19 @@
 
   :minify-assets
   [[:css {:source "resources/public/css/site.css"
-          :target "resources/public/css/site.min.css"}]]
+      ;;     :target "resources/public/css/site.min.css"
+          :target "site/css/site.min.css"}]]
 
   :cljsbuild
   {:builds {:min
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler
-             {:output-to        "target/cljsbuild/public/js/app.js"
-              :output-dir       "target/cljsbuild/public/js"
-              :source-map       "target/cljsbuild/public/js/app.js.map"
+             {:output-to        "site/js/app.js"
+              :output-dir       "site/js"
+              :source-map       "site/js/app.js.map"
+            ;;   :output-to        "target/cljsbuild/public/js/app.js"
+            ;;   :output-dir       "target/cljsbuild/public/js"
+            ;;   :source-map       "target/cljsbuild/public/js/app.js.map"
               :optimizations :advanced
               :infer-externs true
               :pretty-print  false

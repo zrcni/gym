@@ -20,3 +20,6 @@ certs/*
 !certs/.gitkeep
 test-server
 dist
+site/css
+site/js
+!site/index.html
