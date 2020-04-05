@@ -83,8 +83,7 @@
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
-              :closure-defines {gym.config/frontend-url ~(or (System/getenv "FRONTEND_URL") "")
-                                gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
+              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"}
@@ -107,8 +106,7 @@
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
-              :closure-defines {gym.config/frontend-url "http://localhost:3449"
-                                gym.config/api-url "http://localhost:3001/api"}}}}}
+              :closure-defines {gym.config/api-url "http://localhost:3001/api"}}}}}
 
   :figwheel
   {:http-server-root "public"
