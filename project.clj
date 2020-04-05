@@ -149,7 +149,7 @@
                              ;; jdbc connection uri supplied by Heroku
                              :pg-connection-uri ~(System/getenv "JDBC_DATABASE_URL")
                              :frontend-url ~(System/getenv "FRONTEND_URL")
-                             :server-port "80"}
+                             :server-port ~(System/getenv "PORT")}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database
