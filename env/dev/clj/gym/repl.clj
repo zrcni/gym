@@ -47,4 +47,4 @@
   (.stop @api-server)
   (reset! api-server nil))
 
-(start-api-server cfg/server-port)
+(start-api-server cfg/port)

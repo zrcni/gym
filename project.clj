@@ -83,7 +83,7 @@
                                                toastr toastr
                                                firebase firebase
                                                firebaseui firebaseui}}]
-              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
+              :closure-defines {gym.config/api-url ~(System/getenv "API_URL")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"}
@@ -138,18 +138,20 @@
 
                    :env {:dev true
                          ;; jdbc connection uri
-                         :pg-connection-uri "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
+                         :jdbc-database-url "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
                          :frontend-url "http://localhost:3449"
-                         :server-port "3001"}}
+                         :port "3001"
+                         :host-url "http://localhost:3001"}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :prep-tasks ["compile"]
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku
-                             :pg-connection-uri ~(System/getenv "JDBC_DATABASE_URL")
+                             :jdbc-database-url ~(System/getenv "JDBC_DATABASE_URL")
                              :frontend-url ~(System/getenv "FRONTEND_URL")
-                             :server-port ~(System/getenv "PORT")}
+                             :port ~(System/getenv "PORT")
+                             :host-url ~(System/getenv "HOST_URL")}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database

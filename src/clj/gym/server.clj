@@ -10,7 +10,7 @@
 ;;     (run-jetty web-handler {:port web-port :join? false})))
 
 (defn start-api []
-  (let [port (Integer/parseInt cfg/server-port)]
+  (let [port (Integer/parseInt cfg/port)]
     (println (str "Starting server on port " port))
     (run-jetty api-handler {:port port :join? true})))
 
