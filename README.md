@@ -1,23 +1,5 @@
 # Exercise tracker
 
-## TODO
-
-- use prod firebase build (individual packages)
-- show exercise time for the current month, week
-- sort out API errors, because I don't want to see a CORS error every time anything goes wrong
-- logout or refresh token if it expires
-- validate inputs in the backend
-- handle api errors in the frontend
-- handle api errors in the backend (ring middleware w/ try-catch)
-- record workout time in-app (in-memory or database? I don't want to add redis, though)
-- tags ("gym", "jog" etc.)
-- record weight in the calendar?
-- Currently workouts from all time are retrieved. Need to paginate in some way.
-
-mobile:
-- M instead of Monday
-- 100% width, rectangle
-
 ## Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:
