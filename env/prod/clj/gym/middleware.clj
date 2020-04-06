@@ -29,7 +29,7 @@
 (defn parse-token [token]
   (jwt/unsign token (keys/str->public-key (get-token)) {:alg :rs256}))
 
-(def allowed-origins (comp vec flatten vector
+(def allowed-origins ((comp vec flatten vector)
                            [(map #(re-pattern %) cfg/frontend-urls) (re-pattern cfg/host-url)]))
 
 (def api-middlewares
