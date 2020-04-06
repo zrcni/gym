@@ -4,7 +4,7 @@ build-site:
 
 build-server:
 	JDBC_DATABASE_URL=${JDBC_DATABASE_URL} \
-	FRONTEND_URL=${FRONTEND_URL} \
+	FRONTEND_URLS=${FRONTEND_URLS} \
 	PORT=${PORT} \
 	HOST_URL=${HOST_URL} \
 	lein uberjar
@@ -15,7 +15,7 @@ dev-site:
 
 dev-api:
 	JDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres \
-	FRONTEND_URL=http://localhost:3449 \
+	FRONTEND_URLS=http://localhost:3449 \
 	PORT=3001 \
 	HOST_URL=http://localhost:3001 \
 	lein repl

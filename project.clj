@@ -86,7 +86,10 @@
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-             :figwheel {:on-jsload "gym.core/mount-root"}
+             :figwheel {:on-jsload "gym.core/mount-root"
+                        ;; I turned this on, because of reagent deprecation warnings
+                        ;; which don't affect anything right now. TODO: update reagent
+                        :load-warninged-code true}
              :compiler
              {:main "gym.dev"
               :asset-path "/js/out"
@@ -139,7 +142,7 @@
                    :env {:dev true
                          ;; jdbc connection uri
                          :jdbc-database-url "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
-                         :frontend-url "http://localhost:3449"
+                         :frontend-urls "http://localhost:3449"
                          :port "3001"
                          :host-url "http://localhost:3001"}}
 
@@ -149,7 +152,7 @@
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku
                              :jdbc-database-url ~(System/getenv "JDBC_DATABASE_URL")
-                             :frontend-url ~(System/getenv "FRONTEND_URL")
+                             :frontend-urls ~(System/getenv "FRONTEND_URLS")
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")}
                        :aot :all

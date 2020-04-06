@@ -29,10 +29,13 @@
 (defn parse-token [token]
   (jwt/unsign token (keys/str->public-key (get-token)) {:alg :rs256}))
 
+(def allowed-origins (comp vec flatten vector
+                           [(map #(re-pattern %) cfg/frontend-urls) (re-pattern cfg/host-url)]))
+
 (def api-middlewares
   [wrap-log
    ;; TODO: provide server url via environment
-   #(wrap-cors % :access-control-allow-origin [(re-pattern cfg/frontend-url) (re-pattern cfg/host-url)]
+   #(wrap-cors % :access-control-allow-origin allowed-origins
                :access-control-allow-methods [:get :post :put :delete :options])
    wrap-json-response
    wrap-json-body])
