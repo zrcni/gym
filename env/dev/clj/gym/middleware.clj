@@ -36,25 +36,28 @@
 (def api-middlewares
   [wrap-log
    #(wrap-cors % :access-control-allow-origin #"http://localhost:3449"
-               :access-control-allow-methods [:get :post :delete])
+               :access-control-allow-methods [:get :put :post :delete :options])
    wrap-json-response
    wrap-json-body])
 
-(defn forbidden-response []
-  {:status 403
-   :body {:error "Forbidden"}})
+(defn unauthorized-response [& [message]]
+  {:status 401
+   :body {:error (or message "Unauthorized")}})
+
 
 (defn handle-auth-header [handler request auth-header]
   (try
-    (let [[_prefix token] (string/split auth-header #" ")
-          token-payload (parse-token token)]
-      (handler (assoc request :token-payload token-payload)))
-    (catch clojure.lang.ExceptionInfo e
-      (println (str "[ERROR] handle-auth-header: " e))
-      (forbidden-response))))
+    (let [[_prefix token] (string/split auth-header #" ")]
+      (if token
+        (let [token-payload (parse-token token)]
+          (handler (assoc request :token-payload token-payload)))
+        (unauthorized-response)))
+    (catch Exception e
+      (println (str "handle-auth-header exception: " (.getMessage e)))
+      (unauthorized-response "Invalid token"))))
 
 (defn wrap-token [handler]
   (fn [request]
     (if-let [auth-header (get-in request [:headers "authorization"])]
       (handle-auth-header handler request auth-header)
-      (forbidden-response))))
+      (unauthorized-response))))

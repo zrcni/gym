@@ -2,6 +2,8 @@
 
 ## TODO
 
+- use prod firebase build (individual packages)
+- show exercise time for the current month, week
 - sort out API errors, because I don't want to see a CORS error every time anything goes wrong
 - logout or refresh token if it expires
 - validate inputs in the backend

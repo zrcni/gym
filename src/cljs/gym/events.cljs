@@ -50,7 +50,7 @@
   {:headers {:authorization (str "Bearer " (-> cofx :db :token))}
    :format (text-request-format)
    :response-format (json-response-format {:keywords? true})
-   :on-failure [:no-op]})
+   :on-failure [:on-request-failure]})
 
 (reg-event-fx :fetch
   (fn [cofx [_ params]]
@@ -150,7 +150,7 @@
     {:dispatch [:login-success user token]}))
 
 (reg-event-fx :verify-authentication-failure
-  (fn [_ [_ error]]
+  (fn [_ [_ _error]]
     {:navigate! [:login]}))
 
 (reg-event-fx :login-success
@@ -180,6 +180,23 @@
       (if-not (= (-> js/window .-location .-pathname) "/login")
         (assoc events :navigate! [:login])
         events))))
+
+(reg-event-fx :handle-unauthorized-request
+  (fn [_ [_ error]]
+    {:toast-error! error
+     :dispatch [:logout]}))
+
+(reg-event-fx :handle-request-error
+  (fn [_ [_ error]]
+    {:toast-error! error}))
+
+(reg-event-fx :on-request-failure []
+  (fn [_ [_ response]]
+    ;; why does the response have a :response key?
+    (let [error (-> response :response :error)]
+      (if (= 401 (-> response :status))
+        {:dispatch [:handle-unauthorized-request error]}
+        {:dispatch [:handle-request-error error]}))))
 
 ;; this is used for http requests that don't need failure or success handlers
 (reg-event-fx :no-op (fn [] nil))
