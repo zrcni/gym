@@ -4,7 +4,6 @@
    [gym.db :refer [default-db]]
    [gym.specs]
    [gym.config :as cfg]
-   [gym.util :refer [includes?]]
    [goog.string :as gstring]
    [goog.string.format]
    [day8.re-frame.http-fx]

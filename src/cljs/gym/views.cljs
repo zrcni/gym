@@ -3,9 +3,11 @@
    [gym.auth :refer [init-firebase-auth]]
    [re-frame.core :refer [subscribe dispatch]]
    [reagent.core :as reagent]
+   [clojure.string :refer [trim blank?]]
    [goog.string.format]
    [gym.events]
    [gym.subs]
+   [gym.util :refer [includes?]]
    [react-modal]
    [cljs-time.core :as t]
    [gym.calendar-utils :refer [ms->m
@@ -102,10 +104,40 @@
     (let [n (js/parseInt v)]
       (if (= n js/NaN) 0 n))))
 
+(defn tag-chip [{:keys [value on-delete]}]
+  [:span.tag
+   value
+   (when on-delete
+     [:span.tag-delete {:role "img"
+                        :aria-label "delete"
+                        :on-click #(on-delete value)} "X"])])
+
+(defn add-tag [{:keys [on-add]}]
+  (let [tag (reagent/atom "")
+        add #(when-not (empty? (trim @tag))
+               (on-add @tag)
+               (reset! tag ""))
+        on-key-down #(when (= 13 (.-keyCode %)) (add))]
+    (fn []
+      [:div
+       [:input.tag-add-input {:type "text"
+                              :value @tag
+                              :on-change #(reset! tag (-> % .-target .-value))
+                              :on-key-down on-key-down}]
+       [:button.tag-add-button {:type "button" :on-click add} "Add"]])))
+
+(defn exercise-tags [{:keys [tags on-add on-delete]}]
+  [:div.NewPost_tags
+   [add-tag {:on-add on-add}]
+   [:div.tags
+    (map (fn [tag] ^{:key tag} [tag-chip {:value tag
+                                          :on-delete on-delete}]) tags)]])
+
 (defn new-workout [{:keys [local-date]}]
   ;; TODO: persist state, so closing the modal doesn't wipe the data
   (let [state (reagent/atom {:minutes 30
-                             :description ""})
+                             :description ""
+                             :tags []})
         min-minutes 0
         update-minutes #(swap! state assoc :minutes %)
         update-description #(swap! state assoc :description %)
@@ -116,19 +148,23 @@
         dec-minutes #(let [n (to-number (:minutes @state))]
                        (when (> n min-minutes)
                          (update-minutes (dec n))))
-        handle-submit #(do
-                         (.preventDefault %)
-                         (dispatch [:create-workout-request {:date local-date
-                                                     :description (:description @state)
-                                                     :duration (-> (:minutes @state)
-                                                                   (to-number)
-                                                                   (m->ms))}]))]
+        add-tag #(when-not (or (includes? (:tags @state) %) (blank? %))
+                   (swap! state assoc :tags (conj (:tags @state) %)))
+                 delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
+        create-exercise #(dispatch [:create-workout-request {:date local-date
+                                                             :description (:description @state)
+                                                             :duration (-> (:minutes @state)
+                                                                           (to-number)
+                                                                           (m->ms))
+                                                             :tags (:tags @state)}])]
     (fn []
-      [:form.NewPost_form {:on-submit handle-submit}
-       [:div.NewPost_]
-       [:textarea.NewPost_input {:placeholder "How did you workout?"
+      [:div.NewPost_form
+       [:textarea.NewPost_input {:placeholder "How did you exercise?"
                                  :value (:description @state)
                                  :on-change handle-description-change}]
+       [exercise-tags {:tags (:tags @state)
+                       :on-add add-tag
+                       :on-delete delete-tag}]
        [:div.NewPost_buttons
         [:div.Minutes
          [:div
@@ -145,7 +181,7 @@
                                               :on-click #(inc-minutes)}
           [:i.fas.fa-plus]]
          [:label.Minutes_label {:for "minutes"} "minutes"]]
-        [:button.icon_button.cta "Submit"]]])))
+        [:button.icon_button.cta {:type "button" :on-click create-exercise} "Submit"]]])))
 
 (defn created-workouts []
   (let [adding (reagent/atom false)
