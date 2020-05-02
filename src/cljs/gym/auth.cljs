@@ -13,6 +13,7 @@
 
 ;; https://auth0.github.io/auth0-spa-js/interfaces/auth0clientoptions.html
 (defn create-auth0-client []
+  (prn "auth0spa: " auth0spa)
   (new (.-Auth0Client auth0spa) (clj->js
                                  {:domain "samulir.eu.auth0.com"
                                   :client_id cfg/auth0-client-id
