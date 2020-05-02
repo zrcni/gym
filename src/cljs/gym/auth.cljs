@@ -15,7 +15,7 @@
 (defn create-auth0-client []
   (new (.-Auth0Client auth0spa) (clj->js
                                  {:domain "samulir.eu.auth0.com"
-                                  :client_id cfg/auth0-client-secret
+                                  :client_id cfg/auth0-client-id
                                   :display "popup"
                                   :useRefreshTokens true
                                   :cacheLocation "localstorage"

@@ -1,8 +1,10 @@
 build-site:
+	AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID} \
 	API_URL=${API_URL} \
 	npm run build && lein minify-assets && lein cljsbuild once min
 
 build-server:
+	AUTH0_PUBLIC_KEY=${AUTH0_PUBLIC_KEY} \
 	JDBC_DATABASE_URL=${JDBC_DATABASE_URL} \
 	FRONTEND_URLS=${FRONTEND_URLS} \
 	PORT=${PORT} \
@@ -10,7 +12,7 @@ build-server:
 	lein uberjar
 
 dev-site:
-	AUTH0_CLIENT_SECRET=TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ \
+	AUTH0_CLIENT_ID=TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ \
 	API_URL=http://localhost:3001 \
 	lein figwheel
 

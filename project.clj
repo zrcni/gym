@@ -82,7 +82,7 @@
                                                toastr toastr
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")
-                                gym.config/auth0-client-secret ~(or (System/getenv "AUTH0_CLIENT_SECRET") "")}}}
+                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"
@@ -107,7 +107,7 @@
                                                toastr toastr
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "http://localhost:3001")
-                                gym.config/auth0-client-secret ~(or (System/getenv "AUTH0_CLIENT_SECRET") "")}}}}}
+                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")}}}}}
 
   :figwheel
   {:http-server-root "public"
@@ -154,7 +154,7 @@
                              :frontend-urls ~(System/getenv "FRONTEND_URLS")
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")
-                             :public-key ~(slurp "./certs/auth0-public-key.pem")}
+                             :public-key ~(or (System/getenv "AUTH0_PUBLIC_KEY"))}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database
