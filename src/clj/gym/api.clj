@@ -27,8 +27,7 @@
      :body workout}))
 
 (defn delete-workout-by-id-handler [request]
-  (let [workout-id (-> request :path-params :workout-id)
-        workout (workouts/get-by-id workout-id)]
-    (if (and workout (> (workouts/delete-by-id! workout-id) 0))
+  (let [workout-id (-> request :path-params :workout-id)]
+    (if (> (workouts/delete-by-id! workout-id) 0)
       {:status 204}
       {:status 404})))

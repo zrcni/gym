@@ -52,7 +52,7 @@
           (handler (assoc request :token-payload token-payload)))
         (unauthorized-response)))
     (catch Exception e
-      (println (str "handle-auth-header exception: " (.getMessage e)))
+      (println (str "handle-auth-header exception: " e))
       (unauthorized-response "Invalid token"))))
 
 (defn wrap-token [handler]
