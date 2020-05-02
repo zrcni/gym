@@ -8,11 +8,10 @@
    [goog.string.format]
    [day8.re-frame.http-fx]
    [toastr]
-   [firebase]
-   [gym.auth :refer [parse-firebase-user get-token firebase-logout]]
+   [gym.auth :refer [auth0->user]]
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
    [ajax.core :refer [text-request-format json-request-format json-response-format]]
-   [re-frame.core :refer [reg-event-db reg-event-fx reg-fx]]))
+   [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx dispatch]]))
 
 (reg-event-db :initialize-db
  (fn [_ _] default-db))
@@ -136,21 +135,28 @@
                         :on-success [:delete-workout-success workout-id]}]}))
 
 (reg-event-fx :verify-authentication
-  (fn [_ _]
-    (let [firebase-user (-> js/firebase .auth .-app .auth .-currentUser)]
-      (if firebase-user
-        (let [user (parse-firebase-user firebase-user)
-              token (get-token)]
-          (.then token (fn [token] {:dispatch [:verify-authentication-success user token]})))
-        {:dispatch [:verify-authentication-failure]}))))
+              (inject-cofx :auth0)
+              (fn [cofx _]
+                (-> (.getTokenSilently (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
+                    (.then #(dispatch [:verify-authentication-success]))
+                    (.catch #(if (= "login_required" (get (js->clj %) "error"))
+                               (dispatch [:verify-authentication-failure (js->clj %)])
+                               (dispatch [:verify-authentication-success]))))
+                {}))
 
 (reg-event-fx :verify-authentication-success
-  (fn [_ [_ user token]]
-    {:dispatch [:login-success user token]}))
+  (fn [_ [_ _]]
+    {:dispatch [:handle-login-success]}))
 
 (reg-event-fx :verify-authentication-failure
   (fn [_ [_ _error]]
-    {:navigate! [:login]}))
+    {:dispatch [:logout-success]}))
+
+(reg-event-fx :handle-first-load
+              (fn [{:keys [db]} [_ _]]
+                (if (re-matches #"^/auth0_callback" (-> js/window .-location .-pathname))
+                  {:db (assoc db :login-status "LOGIN_CALLBACK")}
+                  {:dispatch [:verify-authentication]})))
 
 (reg-event-fx :login-success
   (fn [{:keys [db]} [_ user token]]
@@ -158,17 +164,45 @@
                           (assoc :user user)
                           (assoc :token token)
                           (assoc :login-status "LOGGED_IN"))}]
-      (if (= (-> js/window .-location .-pathname) "/login")
+      (if (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
        (assoc events :navigate! [:home])
         events))))
 
 (reg-event-fx :login-failure
   (fn [_ [_ error]]
-    {:toast-error! error}))
+    {:toast-error! error
+     :navigate! [:login]}))
+
+(reg-event-fx :login
+              (inject-cofx :auth0)
+              (fn [cofx [_ _]]
+                (.loginWithRedirect (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
+                {}))
 
 (reg-event-fx :logout
-  (fn [_ [_ _]]
-    (firebase-logout)))
+              (inject-cofx :auth0)
+              (fn [cofx [_ _]]
+                (.logout (:auth0 cofx) (clj->js {:localOnly true}))
+                {:dispatch [:logout-success]}))
+
+(reg-event-fx :handle-login-success
+              (inject-cofx :auth0)
+              (fn [cofx [_ _]]
+                (-> (js/Promise.all
+                     [(.getTokenSilently (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
+                      (-> cofx :auth0 .getUser)])
+                    (.then (fn [[token user]]
+                             (dispatch [:login-success (auth0->user user) token])))
+                    (.catch (fn [error] (prn "error: " error))))
+                {}))
+
+(reg-event-fx :handle-login-callback
+              (inject-cofx :auth0)
+              (fn [cofx [_ _]]
+                (-> (-> cofx :auth0 .handleRedirectCallback)
+                  (.then #(dispatch [:handle-login-success]))
+                  (.catch #(dispatch [:login-failure %])))
+                {}))
 
 (reg-event-fx :logout-success
   (fn [{:keys [db]} [_ _]]

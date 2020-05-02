@@ -1,6 +1,6 @@
 (ns gym.core
   (:require
-   [gym.auth :refer [init-firebase-app start-firebase-auth-state-listener]]
+   [gym.auth :refer [create-auth0-client reg-auth0-cofx]]
    [reagent.core :as reagent]
    [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
    [gym.router :as router]))
@@ -9,9 +9,8 @@
   (reagent/render [router/root] (.getElementById js/document "app")))
 
 (defn init! []
+  (reg-auth0-cofx (create-auth0-client))
   (dispatch-sync [:initialize-db])
   (clear-subscription-cache!)
   (router/start!)
-  (init-firebase-app)
-  (mount-root)
-  (start-firebase-auth-state-listener))
+  (mount-root))

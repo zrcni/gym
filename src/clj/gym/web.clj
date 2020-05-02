@@ -17,8 +17,7 @@
    (include-css (if (env :dev) "/css/site.css" "/css/site.min.css"))
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css")
    (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
-   (include-css "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css")
-   (include-css "https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css")])
+   (include-css "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css")])
 
 (defn loading-page []
   (html5

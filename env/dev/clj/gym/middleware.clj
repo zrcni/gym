@@ -6,14 +6,13 @@
    [prone.middleware :refer [wrap-exceptions]]
    [clojure.string :as string]
    [buddy.sign.jwt :as jwt]
-   [buddy.core.keys :as keys]
-   [gym.jwt :refer [get-token]]
+   [gym.jwt :refer [get-public-key]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 
 (defn parse-token [token]
-  (jwt/unsign token (keys/str->public-key (get-token)) {:alg :rs256}))
+  (jwt/unsign token (get-public-key) {:alg :rs256}))
 
 (def web-middlewares
   [#(wrap-defaults % site-defaults)

@@ -1,6 +1,5 @@
 (ns gym.views
   (:require
-   [gym.auth :refer [init-firebase-auth]]
    [re-frame.core :refer [subscribe dispatch]]
    [reagent.core :as reagent]
    [clojure.string :refer [trim blank?]]
@@ -277,8 +276,11 @@
 (defn home-page []
   [calendar])
 
+;; TODO: style
 (defn login-page []
-  ;; wait just enough for the first render to go through first
-  (js/setTimeout init-firebase-auth 50)
   (fn []
-    [:div#auth-ui]))
+    [:button#login {:on-click #(dispatch [:login])} "Click to login"]))
+
+(defn login-callback-page []
+  (dispatch [:handle-login-callback])
+  (fn [] [:div.circle-loader]))

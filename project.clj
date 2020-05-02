@@ -77,13 +77,12 @@
               :foreign-libs [{:file "dist/bundle.js"
                               :provides ["react-modal"
                                          "toastr"
-                                         "firebase"
-                                         "firebaseui"]
+                                         "auth0spa"]
                               :global-exports {react-modal ReactModal
                                                toastr toastr
-                                               firebase firebase
-                                               firebaseui firebaseui}}]
-              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")}}}
+                                               auth0spa auth0spa}}]
+              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")
+                                gym.config/auth0-client-secret ~(or (System/getenv "AUTH0_CLIENT_SECRET") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"
@@ -103,13 +102,12 @@
               :foreign-libs [{:file "dist/bundle.js"
                               :provides ["react-modal"
                                          "toastr"
-                                         "firebase"
-                                         "firebaseui"]
+                                         "auth0spa"]
                               :global-exports {react-modal ReactModal
                                                toastr toastr
-                                               firebase firebase
-                                               firebaseui firebaseui}}]
-              :closure-defines {gym.config/api-url "http://localhost:3001"}}}}}
+                                               auth0spa auth0spa}}]
+              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "http://localhost:3001")
+                                gym.config/auth0-client-secret ~(or (System/getenv "AUTH0_CLIENT_SECRET") "")}}}}}
 
   :figwheel
   {:http-server-root "public"
@@ -129,7 +127,7 @@
                                   [prone "2019-07-08"]
                                   [figwheel-sidecar "0.5.19"]
                                   [nrepl "0.6.0"]
-                                  [re-frisk "0.5.3"]
+                                  [re-frisk "1.1.0"]
                                   [pjstadig/humane-test-output "0.10.0"]]
 
                    :source-paths ["env/dev/clj"]
@@ -144,7 +142,8 @@
                          :jdbc-database-url "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
                          :frontend-urls "http://localhost:3449"
                          :port "3001"
-                         :host-url "http://localhost:3001"}}
+                         :host-url "http://localhost:3001"
+                         :public-key ~(slurp "./certs/auth0-public-key.pem")}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
@@ -154,7 +153,8 @@
                              :jdbc-database-url ~(System/getenv "JDBC_DATABASE_URL")
                              :frontend-urls ~(System/getenv "FRONTEND_URLS")
                              :port ~(System/getenv "PORT")
-                             :host-url ~(System/getenv "HOST_URL")}
+                             :host-url ~(System/getenv "HOST_URL")
+                             :public-key ~(slurp "./certs/auth0-public-key.pem")}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database

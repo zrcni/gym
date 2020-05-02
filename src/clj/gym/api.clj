@@ -4,7 +4,7 @@
    [gym.workouts :as workouts]))
 
 (defn get-user-id [request]
-  (-> request :token-payload :user_id))
+  (-> request :token-payload :sub))
 
 (defn get-user-workouts-handler [request]
   {:status 200

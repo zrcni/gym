@@ -50,11 +50,16 @@
         :wrapper  private-route
         :title "Home"
         :controllers []}]
-    ["login" {:name :login
-          :view views/login-page
-          :wrapper  public-route
-          :title "Login"
-          :controllers []}]])
+   ["login" {:name :login
+             :view views/login-page
+             :wrapper  public-route
+             :title "Login"
+             :controllers []}]
+   ["auth0_callback" {:name :login-callback
+                      :view views/login-callback-page
+                      :wrapper public-route
+                      :title "Logging in..."
+                      :controllers []}]])
 
 (def router
   (rf/router
@@ -70,13 +75,15 @@
       ^{:key name} [view])))
 
 (defn root []
-  (let [login-status @(subscribe [:login-status])
-        current-route @(subscribe [:current-route])]
-    [views/layout {:disabled (when (= login-status "WAITING"))}
-     (if (= login-status "WAITING")
-       [:div.circle-loader]
-       (when current-route
-         ^{:key (:path current-route)} [current-page {:route current-route}]))]))
+  (dispatch [:handle-first-load])
+  (fn []
+    (let [login-status @(subscribe [:login-status])
+          current-route @(subscribe [:current-route])]
+      [views/layout {:disabled (when (= login-status "WAITING"))}
+       (if (= login-status "WAITING")
+         [:div.circle-loader]
+         (when current-route
+           ^{:key (:path current-route)} [current-page {:route current-route}]))])))
 
 (defn on-navigate [new-match]
   (let [old-match (subscribe [:current-route])]

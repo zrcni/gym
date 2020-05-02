@@ -1,9 +1,7 @@
 import ReactModal from 'react-modal'
 import toastr from 'toastr'
-import firebase from 'firebase'
-import * as firebaseui from 'firebaseui'
+import * as auth0spa from '@auth0/auth0-spa-js'
 
 window.ReactModal = ReactModal
 window.toastr = toastr
-window.firebase = firebase
-window.firebaseui = firebaseui
+window.auth0spa = auth0spa
