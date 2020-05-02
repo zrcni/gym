@@ -139,9 +139,7 @@
               (fn [cofx _]
                 (-> (.getTokenSilently (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
                     (.then #(dispatch [:verify-authentication-success]))
-                    (.catch #(if (= "login_required" (get (js->clj %) "error"))
-                               (dispatch [:verify-authentication-failure (js->clj %)])
-                               (dispatch [:verify-authentication-success]))))
+                    (.catch #(dispatch [:verify-authentication-failure (js->clj (get (js->clj %) "error"))])))
                 {}))
 
 (reg-event-fx :verify-authentication-success
@@ -171,7 +169,7 @@
 (reg-event-fx :login-failure
   (fn [_ [_ error]]
     {:toast-error! error
-     :navigate! [:login]}))
+     :dispatch [:logout]}))
 
 (reg-event-fx :login
               (inject-cofx :auth0)
@@ -193,7 +191,7 @@
                       (-> cofx :auth0 .getUser)])
                     (.then (fn [[token user]]
                              (dispatch [:login-success (auth0->user user) token])))
-                    (.catch #(dispatch [:login-failure %])))
+                    (.catch #(dispatch [:login-failure (get (js->clj %) "error")])))
                 {}))
 
 (reg-event-fx :handle-login-callback

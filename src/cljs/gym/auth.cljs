@@ -18,6 +18,7 @@
                                   :client_id cfg/auth0-client-secret
                                   :display "popup"
                                   :useRefreshTokens true
+                                  :cacheLocation "localstorage"
                                   :redirect_uri (str (-> js/window .-location .-origin) "/auth0_callback")})))
 
 (defn reg-auth0-cofx [client]
