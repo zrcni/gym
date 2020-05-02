@@ -143,7 +143,9 @@
                          :frontend-urls "http://localhost:3449"
                          :port "3001"
                          :host-url "http://localhost:3001"
-                         :public-key ~(or (System/getenv "AUTH0_PUBLIC_KEY") "")}}
+                         :public-key ~(try
+                                        (slurp "./certs/auth0-public-key.pem")
+                                        (catch Exception _ ""))}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
@@ -154,7 +156,7 @@
                              :frontend-urls ~(System/getenv "FRONTEND_URLS")
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")
-                             :public-key ~(or (System/getenv "AUTH0_PUBLIC_KEY") "")}
+                             :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database
