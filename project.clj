@@ -159,4 +159,4 @@
                        :omit-source true}}
     :migratus {:store :database
                :migration-dir "migrations"
-               :db ~(System/getenv "PG_URL")})
+               :db ~(or (System/getenv "PG_URL") "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres")})

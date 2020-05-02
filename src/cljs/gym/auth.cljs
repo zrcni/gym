@@ -21,11 +21,12 @@
    :expiration-time (.-expirationTime token-manager)})
 
 (def auth-config {:signInOptions [(-> js/firebase .-auth .-GoogleAuthProvider .-PROVIDER_ID)]
+                  :signInFlow "popup"
                   :callbacks {:signInSuccessWithAuthResult (fn [auth-result]
                                                              (let [firebase-user (.-user auth-result)
                                                                    user (parse-firebase-user firebase-user)
                                                                    token (get-token)]
-                                                              ;; I haven't yet figured out how to handle promises in an idiomatic way
+                                                               ;; I haven't yet figured out how to handle promises in an idiomatic way
                                                                (.then token (fn [token] (dispatch [:login-success user token])))))
                               :signInError (fn [error]
                                              (dispatch [:login-failure error]))}})
@@ -50,9 +51,10 @@
 (defn init-firebase-auth []
   (.start (get-firebase-auth-ui) "#auth-ui" (clj->js auth-config)))
 
+;; I haven't yet figured out how to handle promises in an idiomatic way
 (defn on-login [firebase-user]
   (let [user (parse-firebase-user firebase-user)
-        token (get-token)]                                 ;; I haven't yet figured out how to handle promises in an idiomatic way
+        token (get-token)]
     (.then token (fn [token] (dispatch [:login-success user token])))))
 
 (defn on-logout [] (dispatch [:logout-success]))

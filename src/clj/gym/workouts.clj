@@ -3,6 +3,7 @@
            java.util.UUID)
   (:require
    [gym.database :refer [get-db]]
+   [next.jdbc :as jdbc]
    [next.jdbc.result-set :as rs]
    [next.jdbc.sql :as sql]))
 
@@ -11,25 +12,32 @@
   [date]
   (.toString date))
 
-(defn from-db [workout]
-  (-> workout
+(defn workout-from-db [row]
+  (-> row
       (update :date local-date->string)))
 
+;; gets the tag string from the tag object/row
+(defn tag-from-db [row]
+  (:tag row))
+
+;; TODO: get tags
 (defn get-by-user-id [user-id]
   (let [workouts (sql/query (get-db)
                             ["SELECT * FROM workouts WHERE user_id = ?" user-id]
                             {:builder-fn rs/as-unqualified-maps})]
-    (map from-db workouts)))
+    (map workout-from-db workouts)))
 
+;; TODO: get tags
 (defn get-by-id [workout-id]
   (let [workout (sql/get-by-id (get-db)
                                "workouts"
                                (UUID/fromString workout-id)
                                "workout_id"
                                {:builder-fn rs/as-unqualified-maps})]
-    (when workout (from-db workout))))
+    (when workout (workout-from-db workout))))
 
-(defn create! [{:keys [description duration date user_id]}]
+;; TODO: use a transaction for inserting workouts & tags
+(defn create! [{:keys [description duration date tags user_id]}]
   (let [workout (sql/insert! (get-db)
                              "workouts"
                              {:description description
@@ -37,9 +45,20 @@
                               :date (LocalDate/parse date)
                               :user_id user_id}
                              {:return-keys true
-                              :builder-fn rs/as-unqualified-maps})]
-    (when workout (from-db workout))))
+                              :builder-fn rs/as-unqualified-maps})
+        asd (println "?????: " (map #([(:workout_id workout) %]) tags))
+        tags (sql/insert-multi! (get-db)
+                                "workouts"
+                                [:workout_id :tag]
+                                (map #([(:workout_id workout) %]) tags)
+                                {:return-keys true
+                                 :builder-fn rs/as-unqualified-maps})]
+    (prn "TAGS: " tags)
+    (when workout
+      (-> (workout-from-db workout)
+          (assoc :tags (map #(tag-from-db %) tags))))))
 
+;; TODO: remove tags
 (defn delete-by-id!
   "returns delete count"
   [workout-id]

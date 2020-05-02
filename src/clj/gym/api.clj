@@ -20,8 +20,8 @@
 
 (defn create-workout-handler [request]
   (let [body (keywordize-keys (:body request))
-        user (assoc body :user_id (get-user-id request))
-        workout (workouts/create! user)]
+        create-args (assoc body :user_id (get-user-id request))
+        workout (workouts/create! create-args)]
     {:status 201
      :headers {"Content-Type" "application/json"}
      :body workout}))
