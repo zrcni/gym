@@ -193,7 +193,7 @@
                       (-> cofx :auth0 .getUser)])
                     (.then (fn [[token user]]
                              (dispatch [:login-success (auth0->user user) token])))
-                    (.catch (fn [error] (prn "error: " error))))
+                    (.catch #(dispatch [:login-failure %])))
                 {}))
 
 (reg-event-fx :handle-login-callback
