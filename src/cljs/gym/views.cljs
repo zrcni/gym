@@ -2,7 +2,7 @@
   (:require
    [re-frame.core :refer [subscribe dispatch]]
    [reagent.core :as reagent]
-   [clojure.string :refer [trim blank?]]
+   [clojure.string :refer [trim blank? join]]
    [goog.string.format]
    [gym.events]
    [gym.subs]
@@ -191,14 +191,16 @@
        [:div.Posts_posts
         (map
          (fn [workout]
-           ^{:key (:workout_id workout)} [:div.Post
+           ^{:key (:workout_id workout)}
+           [:div.Post
             [:div.Post_title
              [:div.Post_minutes
               [:span (str (ms->m (:duration workout)) " minutes")]]
              [:button.Post_delete_button.icon_button {:on-click #(delete-workout (:workout_id workout))}
               [:i.fas.fa-trash-alt
                [:span " Delete"]]]]
-            [:div.Post_message (:description workout)]])
+            [:div.Post_message (:description workout)]
+            [:div.Post_tags (str "tags: " (join ", " (:tags workout)))]])
          workouts)]
        (if @adding
          [:div.Posts_adding
