@@ -1,4 +1,4 @@
-const auth0spa = function () {}
+var auth0spa = function () {}
 
 auth0spa.Auth0Client = function () {
   return {
