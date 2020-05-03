@@ -7,6 +7,15 @@
    [next.jdbc.result-set :as rs]
    [next.jdbc.sql :as sql]))
 
+(defn workouts-with-tags-query [& [where-clause]]
+  (let [where (if where-clause (str " WHERE " where-clause " ") "")]
+    (str "SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags"
+         " FROM workouts"
+         " INNER JOIN workout_tags"
+         " ON workouts.workout_id = workout_tags.workout_id"
+         where
+         " GROUP BY workouts.workout_id")))
+
 (defn local-date->string
   "Transforms LocalDate class into a string of YYYY-MM-DD"
   [date]
@@ -27,16 +36,13 @@
 
 (defn get-by-user-id [user-id]
   (let [workouts (sql/query (get-db)
-                            ["SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags FROM workouts INNER JOIN workout_tags ON workouts.workout_id = workout_tags.workout_id WHERE user_id = ? GROUP BY workouts.workout_id"
-                             user-id]
+                            [(workouts-with-tags-query "user_id = ?") user-id]
                             {:builder-fn rs/as-unqualified-maps})]
     (map workout-and-tags-from-row workouts)))
 
 (defn get-by-id [workout-id]
-  (let [w-id (UUID/fromString workout-id)
-        workout (sql/query (get-db)
-                           ["SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags FROM workouts INNER JOIN workout_tags ON workouts.workout_id = workout_tags.workout_id WHERE workout_id = ? GROUP BY workouts.workout_id"
-                            w-id]
+  (let [workout (sql/query (get-db)
+                           [(workouts-with-tags-query "workout_id = ?") (UUID/fromString workout-id)]
                            {:builder-fn rs/as-unqualified-maps})]
     (when workout
       (workout-and-tags-from-row workout))))
