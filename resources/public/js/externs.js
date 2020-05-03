@@ -11,6 +11,12 @@ auth0spa.Auth0Client = function () {
     },
     loginWithPopup: function () {
       return Promise.resolve()
+    },
+    handleRedirectCallback: function () {
+      return Promise.resolve()
+    },
+    getUser: function () {
+      return Promise.resolve()
     }
   }
 }
