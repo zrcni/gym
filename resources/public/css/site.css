@@ -48,6 +48,8 @@ body {
   background-color: var(--accent);
   border-color: #900c3f;
   color: #fff;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 :root {
@@ -1137,9 +1139,15 @@ h2 {
 
 .header-user-avatar {
   height: 24px;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
 .header-username {
   margin-left: 8px;
+  color: white;
+}
+
+.header-title {
   color: white;
 }
