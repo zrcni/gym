@@ -23,10 +23,11 @@ body {
 }
 
 #header {
+  display: flex;
   padding: 8px;
   height: 40px;
   background-color: var(--accent);
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 #content {
@@ -1122,4 +1123,23 @@ h2 {
   height: 27px;
   padding-left: 4px;
   padding-right: 4px;
+}
+
+.header-left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-user-avatar {
+  height: 24px;
+}
+
+.header-username {
+  margin-left: 8px;
+  color: white;
 }
