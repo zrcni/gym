@@ -12,7 +12,9 @@
         where-clause
         limit-clause)))
 
-(defn row->user [row] row)
+(defn row->user [row]
+  (-> row
+      (assoc :user_id (.toString (:user_id row)))))
 
 (defn create! [{:keys [token_user_id username avatar_url]}]
   (let [new-user (sql/insert! (get-db)
@@ -26,7 +28,8 @@
 
 (defn get-by-token-user-id [token_user_id]
   (let [users (sql/query (get-db)
-                        [(users-query "token_user_id = ?" 1) token_user_id])]
+                         [(users-query "token_user_id = ?" 1) token_user_id]
+                         {:builder-fn rs/as-unqualified-maps})]
     (if (> (count users) 0)
-      (row->user users)
+      (row->user (first users))
       nil)))

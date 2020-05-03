@@ -281,8 +281,8 @@
 ;; TODO: style
 (defn login-page []
   (fn []
-    [:button#login {:on-click #(dispatch [:login])} "Click to login"]))
+    [:button#login {:on-click #(dispatch [:login-auth0])} "Click to login"]))
 
 (defn login-callback-page []
-  (dispatch [:handle-login-callback])
+  (dispatch [:handle-login-auth0-callback])
   (fn [] [:div.circle-loader]))

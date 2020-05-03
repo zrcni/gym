@@ -9,7 +9,7 @@
 
 (defn workouts-with-tags-query [& [where limit]]
   (let [where-clause (if where (str " WHERE " where " ") "")
-        limit-clause (if limit (str " LIMIT ?" limit) "")]
+        limit-clause (if limit (str " LIMIT " limit) "")]
     (str "SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags"
          " FROM workouts"
          " INNER JOIN workout_tags"
@@ -38,14 +38,14 @@
 
 (defn get-by-user-id [user-id]
   (let [workouts (sql/query (get-db)
-                            [(workouts-with-tags-query "user_id = ?") user-id]
+                            [(workouts-with-tags-query "user_id = ?") (UUID/fromString user-id)]
                             {:builder-fn rs/as-unqualified-maps})]
     (map row->workout-and-tags workouts)))
 
 (defn get-by-id [workout-id]
   (let [workouts (sql/query (get-db)
-                           [(workouts-with-tags-query "workout_id = ?" 1) (UUID/fromString workout-id)]
-                           {:builder-fn rs/as-unqualified-maps})]
+                            [(workouts-with-tags-query "workout_id = ?" 1) (UUID/fromString workout-id)]
+                            {:builder-fn rs/as-unqualified-maps})]
     (if (> (count workouts) 0)
       (row->workout-and-tags (first workouts))
       nil)))
@@ -57,7 +57,7 @@
                                {:description description
                                 :duration duration
                                 :date (LocalDate/parse date)
-                                :user_id user_id}
+                                :user_id (UUID/fromString user_id)}
                                {:return-keys true
                                 :builder-fn rs/as-unqualified-maps})
           tags (sql/insert-multi! tx

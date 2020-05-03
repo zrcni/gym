@@ -144,11 +144,11 @@
 
 (reg-event-fx :verify-authentication-success
   (fn [_ [_ _]]
-    {:dispatch [:handle-login-success]}))
+    {:dispatch [:handle-login-auth0-success]}))
 
 (reg-event-fx :verify-authentication-failure
   (fn [_ [_ _error]]
-    {:dispatch [:logout-success]}))
+    {:dispatch [:logout-auth0-success]}))
 
 (reg-event-fx :handle-first-load
               (fn [{:keys [db]} [_ _]]
@@ -157,52 +157,70 @@
                   {:dispatch [:verify-authentication]})))
 
 (reg-event-fx :login-success
-  (fn [{:keys [db]} [_ user token]]
-    (let [events {:db (-> db
+  (fn [{:keys [db]} [_ body]]
+    (let [user (:user body)
+          events {:db (-> db 
                           (assoc :user user)
-                          (assoc :token token)
                           (assoc :login-status "LOGGED_IN"))}]
       (if (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
-       (assoc events :navigate! [:home])
+        (assoc events :navigate! [:home])
         events))))
 
 (reg-event-fx :login-failure
   (fn [_ [_ error]]
     {:toast-error! error
-     :dispatch [:logout]}))
+      :dispatch [:logout-auth0]}))
+
+(reg-event-fx :login-auth0-success
+  (fn [{:keys [db]} [_ token]]
+    {:db (assoc db :token token)
+     :dispatch [:login token]}))
+
+(reg-event-fx :login-auth0-failure
+  (fn [_ [_ error]]
+    {:toast-error! error
+      :dispatch [:logout-auth0]}))
 
 (reg-event-fx :login
+  (fn [_ _]
+    {:dispatch [:fetch {:method :post
+                        :uri (str cfg/api-url "/api/auth/login")
+                        :on-success [:login-success]
+                        :on-failure [:login-failure]}]}))
+
+(reg-event-fx :logout
+  (fn [_ _]
+    {:dispatch [:logout-auth0]}))
+
+(reg-event-fx :login-auth0
               (inject-cofx :auth0)
               (fn [cofx [_ _]]
                 (.loginWithRedirect (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
                 {}))
 
-(reg-event-fx :logout
+(reg-event-fx :logout-auth0
               (inject-cofx :auth0)
               (fn [cofx [_ _]]
                 (.logout (:auth0 cofx) (clj->js {:localOnly true}))
-                {:dispatch [:logout-success]}))
+                {:dispatch [:logout-auth0-success]}))
 
-(reg-event-fx :handle-login-success
+(reg-event-fx :handle-login-auth0-success
               (inject-cofx :auth0)
               (fn [cofx [_ _]]
-                (-> (js/Promise.all
-                     [(.getTokenSilently (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
-                      (.getUser (:auth0 cofx) {:audience "exercise-tracker-api"})])
-                    (.then (fn [[token user]]
-                             (dispatch [:login-success (auth0->user user) token])))
-                    (.catch #(dispatch [:login-failure (get (js->clj %) "error")])))
+                (-> (.getTokenSilently (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
+                    (.then #(dispatch [:login-auth0-success %]))
+                    (.catch #(dispatch [:login-auth0-failure (get (js->clj %) "error")])))
                 {}))
 
-(reg-event-fx :handle-login-callback
+(reg-event-fx :handle-login-auth0-callback
               (inject-cofx :auth0)
               (fn [cofx [_ _]]
                 (-> (-> cofx :auth0 .handleRedirectCallback)
-                  (.then #(dispatch [:handle-login-success]))
-                  (.catch #(dispatch [:login-failure %])))
+                  (.then #(dispatch [:handle-login-auth0-success]))
+                  (.catch #(dispatch [:login-auth0-failure %])))
                 {}))
 
-(reg-event-fx :logout-success
+(reg-event-fx :logout-auth0-success
   (fn [{:keys [db]} [_ _]]
     (let [events {:db (-> db
                           (assoc :user nil)

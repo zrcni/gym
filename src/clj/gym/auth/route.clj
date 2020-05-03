@@ -33,4 +33,4 @@
 
 (defn create-auth-route [path]
   [path
-   ["login" {:post {:handler login}}]])
+   ["/login" {:post {:handler login}}]])

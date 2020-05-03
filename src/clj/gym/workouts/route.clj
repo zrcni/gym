@@ -1,13 +1,13 @@
 (ns gym.workouts.route
   (:require
+   [gym.middleware :refer [wrap-user]]
    [gym.workouts.repository :refer [get-by-user-id get-by-id create! delete-by-id!]]
-   [clojure.walk :refer [keywordize-keys]]
-   [gym.auth :refer [get-token-user-id]]))
+   [clojure.walk :refer [keywordize-keys]]))
 
 (defn ^:private get-user-workouts-handler [request]
   {:status 200
    :headers {"Content-Type" "application/json"}
-   :body (get-by-user-id (get-token-user-id request))})
+   :body (get-by-user-id (-> request :context :user :user_id))})
 
 (defn ^:private get-workout-by-id-handler [request]
   (let [workout-id (get-in request [:path-params :workout-id])
@@ -18,7 +18,7 @@
 
 (defn ^:private create-workout-handler [request]
   (let [body (keywordize-keys (:body request))
-        create-args (assoc body :user_id (get-token-user-id request))
+        create-args (assoc body :user_id (-> request :context :user :user_id))
         workout (create! create-args)]
     {:status 201
      :headers {"Content-Type" "application/json"}
@@ -32,7 +32,10 @@
 
 (defn create-workouts-route [path]
   [path
-   ["" {:get {:handler get-user-workouts-handler}
-        :post {:handler create-workout-handler}}]
+   ["" {:get {:handler get-user-workouts-handler
+              :middleware [wrap-user]}
+        :post {:handler create-workout-handler
+               :middleware [wrap-user]}}]
    ["/:workout-id" {:get {:handler get-workout-by-id-handler}
-                    :delete {:handler delete-workout-by-id-handler}}]])
+                    :delete {:handler delete-workout-by-id-handler
+                             :middleware [wrap-user]}}]])
