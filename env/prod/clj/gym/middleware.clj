@@ -44,14 +44,20 @@
    :body {:error (or message "Unauthorized")}})
 
 (defn handle-token [handler request token]
-  (try
-    (if token
-      (let [token-payload (parse-token token)]
-        (handler (assoc request :token-payload token-payload)))
-      (unauthorized-response))
-    (catch Exception e
-      (println (str "handle-auth-header exception: " e))
-      (unauthorized-response "Invalid token"))))
+  (if token
+    (let [token-payload (parse-token token)]
+      (handler (assoc request :token-payload token-payload)))
+    (unauthorized-response)))
+
+;; (defn handle-token [handler request token]
+;;   (try
+;;     (if token
+;;       (let [token-payload (parse-token token)]
+;;         (handler (assoc request :token-payload token-payload)))
+;;       (unauthorized-response))
+;;     (catch Exception e
+;;       (println (str "handle-auth-header exception: " e))
+;;       (unauthorized-response "Invalid token"))))
 
 (defn wrap-token [handler]
   (fn [request]
