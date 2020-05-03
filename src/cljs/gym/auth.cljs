@@ -4,13 +4,6 @@
    [gym.config :as cfg]
    [re-frame.core :refer [reg-cofx]]))
 
-(defn auth0->user [js-user]
-  (let [user (js->clj js-user)]
-    {:user-id (get user "sub")
-     :username (get user "nickname")
-     :avatar (get user "picture")
-     :updated-at (get user "updated_at")}))
-
 ;; https://auth0.github.io/auth0-spa-js/interfaces/auth0clientoptions.html
 (defn create-auth0-client []
   (new js/auth0spa.Auth0Client (clj->js

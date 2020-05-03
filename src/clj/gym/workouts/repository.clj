@@ -36,15 +36,15 @@
 (defn row->tag [row]
  (:tag row))
 
-(defn get-by-user-id [user-id]
+(defn get-by-user-id [user_id]
   (let [workouts (sql/query (get-db)
-                            [(workouts-with-tags-query "user_id = ?") (UUID/fromString user-id)]
+                            [(workouts-with-tags-query "user_id = ?") (UUID/fromString user_id)]
                             {:builder-fn rs/as-unqualified-maps})]
     (map row->workout-and-tags workouts)))
 
-(defn get-by-id [workout-id]
+(defn get-by-id [workout_id]
   (let [workouts (sql/query (get-db)
-                            [(workouts-with-tags-query "workout_id = ?" 1) (UUID/fromString workout-id)]
+                            [(workouts-with-tags-query "workout_id = ?" 1) (UUID/fromString workout_id)]
                             {:builder-fn rs/as-unqualified-maps})]
     (if (> (count workouts) 0)
       (row->workout-and-tags (first workouts))

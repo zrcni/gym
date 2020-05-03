@@ -8,7 +8,6 @@
    [goog.string.format]
    [day8.re-frame.http-fx]
    [toastr]
-   [gym.auth :refer [auth0->user]]
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
    [ajax.core :refer [text-request-format json-request-format json-response-format]]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx inject-cofx dispatch]]))

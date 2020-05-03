@@ -6,8 +6,8 @@
 
 (defn parse-auth0-user-info [user-info]
   {:username (:nickname user-info)
-   :token_user_id (:sub user-info)
-   :avatar_url (:picture user-info)})
+   :token-user-id (:sub user-info)
+   :avatar-url (:picture user-info)})
 
 ;; TODO: handle non-200 response
 (defn get-auth0-user-info [{:keys [issuer token]}]

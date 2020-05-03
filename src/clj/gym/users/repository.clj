@@ -16,12 +16,12 @@
   (-> row
       (assoc :user_id (.toString (:user_id row)))))
 
-(defn create! [{:keys [token_user_id username avatar_url]}]
+(defn create! [{:keys [token-user-id username avatar-url]}]
   (let [new-user (sql/insert! (get-db)
                               "users"
-                              {:token_user_id token_user_id
+                              {:token_user_id token-user-id
                                :username username
-                               :avatar_url avatar_url}
+                               :avatar_url avatar-url}
                               {:return-keys true
                                :builder-fn rs/as-unqualified-maps})]
     (row->user new-user)))
