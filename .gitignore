@@ -23,3 +23,6 @@ dist
 site/css
 site/js
 !site/index.html
+!site/manifest.webmanifest
+!site/img
+!site/favicon.ico
