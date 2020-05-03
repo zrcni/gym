@@ -70,6 +70,7 @@
             ;;   :output-to        "target/cljsbuild/public/js/app.js"
             ;;   :output-dir       "target/cljsbuild/public/js"
             ;;   :source-map       "target/cljsbuild/public/js/app.js.map"
+              :externs ["resources/public/js/externs.js"]
               :optimizations :advanced
               :infer-externs true
               :pretty-print  false
