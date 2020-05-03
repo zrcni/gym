@@ -6,7 +6,7 @@
    [clojure.string :as string]
    [gym.config :as cfg]
    [buddy.sign.jwt :as jwt]
-   [gym.jwt :refer [get-public-key]]
+   [gym.auth :refer [get-public-key]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 (defn pretty-request [request]

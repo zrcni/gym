@@ -6,7 +6,7 @@
    [prone.middleware :refer [wrap-exceptions]]
    [clojure.string :as string]
    [buddy.sign.jwt :as jwt]
-   [gym.jwt :refer [get-public-key]]
+   [gym.auth :refer [get-public-key]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 

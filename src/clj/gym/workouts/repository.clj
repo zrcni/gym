@@ -1,4 +1,4 @@
-(ns gym.workouts
+(ns gym.workouts.repository
   (:import java.time.LocalDate
            java.util.UUID)
   (:require
