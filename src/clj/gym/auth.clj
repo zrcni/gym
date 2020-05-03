@@ -1,5 +1,6 @@
 (ns gym.auth
   (:require
+   [clojure.string :as string]
    [gym.config :as cfg]
    [buddy.core.keys :as keys]))
 
@@ -12,3 +13,7 @@
 
 (defn get-token-user-id [request]
   (:sub (get-token-payload request)))
+
+(defn headers->token [headers]
+  (let [[_prefix token] (string/split (get headers "authorization") #" ")]
+       token))

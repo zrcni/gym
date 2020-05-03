@@ -7,45 +7,48 @@
    [next.jdbc.result-set :as rs]
    [next.jdbc.sql :as sql]))
 
-(defn workouts-with-tags-query [& [where-clause]]
-  (let [where (if where-clause (str " WHERE " where-clause " ") "")]
+(defn workouts-with-tags-query [& [where limit]]
+  (let [where-clause (if where (str " WHERE " where " ") "")
+        limit-clause (if limit (str " LIMIT ?" limit) "")]
     (str "SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags"
          " FROM workouts"
          " INNER JOIN workout_tags"
          " ON workouts.workout_id = workout_tags.workout_id"
-         where
-         " GROUP BY workouts.workout_id")))
+         where-clause
+         " GROUP BY workouts.workout_id"
+         limit-clause)))
 
 (defn local-date->string
   "Transforms LocalDate class into a string of YYYY-MM-DD"
   [date]
   (.toString date))
 
-(defn workout-from-row [row]
-  (-> row
-      (update :date local-date->string)))
+(defn row->workout [row]
+ (-> row
+     (update :date local-date->string)))
 
-(defn workout-and-tags-from-row [row]
-  (as-> row r
-    (update r :date local-date->string)
-    (assoc r :tags (vec (.getArray (:tags r))))))
+(defn row->workout-and-tags [row]
+ (as-> row r
+   (update r :date local-date->string)
+   (assoc r :tags (vec (.getArray (:tags r))))))
 
 ;; gets the tag string from the tag object/row
-(defn tag-from-row [row]
-  (:tag row))
+(defn row->tag [row]
+ (:tag row))
 
 (defn get-by-user-id [user-id]
   (let [workouts (sql/query (get-db)
                             [(workouts-with-tags-query "user_id = ?") user-id]
                             {:builder-fn rs/as-unqualified-maps})]
-    (map workout-and-tags-from-row workouts)))
+    (map row->workout-and-tags workouts)))
 
 (defn get-by-id [workout-id]
-  (let [workout (sql/query (get-db)
-                           [(workouts-with-tags-query "workout_id = ?") (UUID/fromString workout-id)]
+  (let [workouts (sql/query (get-db)
+                           [(workouts-with-tags-query "workout_id = ?" 1) (UUID/fromString workout-id)]
                            {:builder-fn rs/as-unqualified-maps})]
-    (when workout
-      (workout-and-tags-from-row workout))))
+    (if (> (count workouts) 0)
+      (row->workout-and-tags (first workouts))
+      nil)))
 
 (defn create! [{:keys [description duration date tags user_id]}]
   (jdbc/with-transaction [tx (get-db)]
@@ -63,8 +66,8 @@
                                   (vec (map #(vector (:workout_id workout) %) tags))
                                   {:return-keys true
                                    :builder-fn rs/as-unqualified-maps})]
-      (-> (workout-from-row workout)
-          (assoc :tags (map #(tag-from-row %) tags))))))
+      (-> (row->workout workout)
+          (assoc :tags (map #(row->tag %) tags))))))
 
 (defn delete-by-id!
   "returns delete count"

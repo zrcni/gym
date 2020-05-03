@@ -188,7 +188,7 @@
               (fn [cofx [_ _]]
                 (-> (js/Promise.all
                      [(.getTokenSilently (:auth0 cofx) (clj->js {:audience "exercise-tracker-api"}))
-                      (-> cofx :auth0 .getUser)])
+                      (.getUser (:auth0 cofx) {:audience "exercise-tracker-api"})])
                     (.then (fn [[token user]]
                              (dispatch [:login-success (auth0->user user) token])))
                     (.catch #(dispatch [:login-failure (get (js->clj %) "error")])))

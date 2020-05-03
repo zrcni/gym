@@ -3,6 +3,7 @@
    [reitit.ring :as reitit-ring]
    [gym.middleware :refer [web-middlewares api-middlewares wrap-token]]
    [gym.workouts.route :refer [create-workouts-route]]
+   [gym.users.route :refer [create-users-route]]
    [gym.web :refer [index-handler]]))
 
 (def web-handler
@@ -18,7 +19,8 @@
   (reitit-ring/ring-handler
    (reitit-ring/router
     ["/api"
-     (create-workouts-route "/workouts")])
+     (create-workouts-route "/workouts")
+     (create-users-route "/users")])
    (reitit-ring/routes
     (reitit-ring/create-default-handler))
    {:middleware (concat api-middlewares [wrap-token])}))
