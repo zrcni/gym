@@ -76,10 +76,14 @@
               :pretty-print  false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["react-modal"
+                              :provides ["emoji-toolkit"
+                                         "react-contenteditable"
+                                         "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {react-modal ReactModal
+                              :global-exports {emoji-toolkit emojiToolkit
+                                               react-contenteditable ReactContenteditable
+                                               react-modal ReactModal
                                                toastr toastr
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")
@@ -101,10 +105,14 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["react-modal"
+                              :provides ["emoji-toolkit"
+                                         "react-contenteditable"
+                                         "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {react-modal ReactModal
+                              :global-exports {emoji-toolkit emojiToolkit
+                                               react-contenteditable ReactContenteditable
+                                               react-modal ReactModal
                                                toastr toastr
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "http://localhost:3001")

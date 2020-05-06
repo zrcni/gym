@@ -8,6 +8,8 @@
    [gym.subs]
    [gym.util :refer [includes?]]
    [react-modal]
+   [react-contenteditable]
+   [emoji-toolkit]
    [cljs-time.core :as t]
    [gym.calendar-utils :refer [ms->m
                                m->ms
@@ -163,9 +165,10 @@
                                                              :tags (:tags @state)}])]
     (fn []
       [:div.NewPost_form
-       [:textarea.NewPost_input {:placeholder "How did you exercise?"
-                                 :value (:description @state)
-                                 :on-change handle-description-change}]
+       [:> react-contenteditable {:className "NewPost_input"
+                                  :placeholder "How did you exercise?"
+                                  :html (.shortnameToImage emoji-toolkit (:description @state))
+                                  :on-change handle-description-change}]
        [exercise-tags {:tags (:tags @state)
                        :on-add add-tag
                        :on-delete delete-tag}]
@@ -204,8 +207,9 @@
              [:button.Post_delete_button.icon_button {:on-click #(delete-workout (:workout_id workout))}
               [:i.fas.fa-trash-alt
                [:span " Delete"]]]]
-            [:div.Post_message (:description workout)]
-            [:div.Post_tags (str "tags: " (join ", " (:tags workout)))]])
+            [:div.Post_message {:dangerouslySetInnerHTML {:__html (.shortnameToImage emoji-toolkit (:description workout))}}]
+            (when (> (count (:tags workout)) 0)
+              [:div.Post_tags (str "tags: " (join ", " (:tags workout)))])])
          workouts)]
        (if @adding
          [:div.Posts_adding
