@@ -27,3 +27,12 @@ smileParser.smileParse = function () {}
 var emojiMart = function () {}
 emojiMart.Emoji = function() {}
 emojiMart.Picker = function() {}
+
+var Emoji = {
+  id: '',
+  colons: '',
+  text: '',
+  emoticons: [''],
+  skin: 0,
+  native: ''
+}

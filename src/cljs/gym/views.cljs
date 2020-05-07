@@ -220,7 +220,7 @@
                                                                            (m->ms))
                                                              :tags (:tags @state)}])
         on-pick-emoji (fn [emoji]
-                        (update-description (+ (:description @state) (.-colons emoji))))]
+                        (update-description (+ (:description @state) (.-colons ^js/Emoji emoji))))]
     (fn []
       [:div.NewPost_form
        [:> react-contenteditable {:className "NewPost_input"
