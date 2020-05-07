@@ -76,12 +76,14 @@
               :pretty-print  false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["emoji-toolkit"
+                              :provides ["smile-parser"
+                                         "emoji-mart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {emoji-toolkit emojiToolkit
+                              :global-exports {smile-parser smileParser
+                                               emoji-mart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
                                                toastr toastr
@@ -105,12 +107,14 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["emoji-toolkit"
+                              :provides ["smile-parser"
+                                         "emoji-mart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {emoji-toolkit emojiToolkit
+                              :global-exports {smile-parser smileParser
+                                               emoji-mart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
                                                toastr toastr

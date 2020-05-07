@@ -9,7 +9,8 @@
    [gym.util :refer [includes?]]
    [react-modal]
    [react-contenteditable]
-   [emoji-toolkit]
+   [emoji-mart]
+   [smile-parser]
    [cljs-time.core :as t]
    [gym.calendar-utils :refer [ms->m
                                m->ms
@@ -22,6 +23,61 @@
                                is-same-day?
                                is-first-day-of-month
                                human-month-short]]))
+
+(defn parse-emojis [str]
+  (.smileParse smile-parser str (clj->js {:url "/img/emojis/"
+                                          :styles "height: 1.2em;"})))
+
+(defn parent-of? [el parent]
+  (if-not (.-parentNode el)
+    false
+    (if (= (.-parentNode el) parent)
+      true
+      (parent-of? (.-parentNode el) parent))))
+
+(defn emoji-picker []
+  (let [!prev-el (atom nil)
+        !el (atom nil)
+        state (reagent/atom {:open false
+                             :pos {:right 0 :top 0}})
+        open-picker (fn [e]
+                      (let [body-rect (.getBoundingClientRect js/document.body)
+                            btn-rect (.getBoundingClientRect (.-target e))
+                            right (- (.-right btn-rect) (.-right body-rect))
+                            top (- (.-top btn-rect) (.-top body-rect))]
+                        (swap! state assoc :pos [right top])
+                        (swap! state assoc :open true)))
+        close-picker #(swap! state assoc :open false)
+        on-key-down #(when (and (:open state) (= 27 (.-keyCode %))) (close-picker))]
+
+    (reagent/create-class
+     {:component-did-mount
+      (fn []
+        (.addEventListener js/window "keydown" on-key-down))
+
+      :component-will-unmount
+      (fn []
+        (.removeEventListener js/window "keydown" on-key-down))
+
+      :component-did-update
+      (fn []
+        ;; Add clickaway listener whenever the picker is rendered for the first time
+        ;; AFAIK no need to remove it because the element is removed
+        (when (and @!el (nil? @!prev-el))
+          (.addEventListener js/document "mousedown"
+                             #(when-not (parent-of? (.-target %) @!el) (close-picker))))
+        (reset! !prev-el @!el))
+
+      :reagent-render
+      (fn [{:keys [on-select]}]
+        (if (:open @state)
+          [:div.emoji-picker.wrapper {:ref #(reset! !el %)
+                                      :style {:position "fixed"
+                                              :right (str (+ (-> @state :pos :right) 100) "px")
+                                              :top (str (+ (-> @state :pos :top) 0) "px")}}
+           [:> (.-Picker emoji-mart) {:on-select on-select}]]
+          [:button.emoji-picker-button {:on-click open-picker}
+           [:> (.-Emoji emoji-mart) {:emoji "smile" :size 24}]]))})))
 
 (.setAppElement js/ReactModal "#app")
 
@@ -49,7 +105,7 @@
   (fn [_ & children]
     (let [user @(subscribe [:user])]
       [:<>
-       [:header {:id "header" :class "navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar"}
+       [:header {:id "header" :class "navbar navbar-expand navbar-dark flex-md-row bd-navbar"}
         [:div.header-left
          [:a.header-title {:href "/"} "Exercise tracker"]]
         [:div.header-right
@@ -67,13 +123,13 @@
 
 (defn weekdays []
   [:div.Weekdays
-   [:div "Monday"]
-   [:div "Tuesday"]
-   [:div "Wednesday"]
-   [:div "Thursday"]
-   [:div "Friday"]
-   [:div "Saturday"]
-   [:div "Sunday"]])
+   [:div "Mon"]
+   [:div "Tue"]
+   [:div "Wed"]
+   [:div "Thu"]
+   [:div "Fri"]
+   [:div "Sat"]
+   [:div "Sun"]])
 
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
   [:div.Calendar_nav
@@ -156,22 +212,27 @@
                          (update-minutes (dec n))))
         add-tag #(when-not (or (includes? (:tags @state) %) (blank? %))
                    (swap! state assoc :tags (conj (:tags @state) %)))
-                 delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
+        delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
         create-exercise #(dispatch [:create-workout-request {:date local-date
                                                              :description (:description @state)
                                                              :duration (-> (:minutes @state)
                                                                            (to-number)
                                                                            (m->ms))
-                                                             :tags (:tags @state)}])]
+                                                             :tags (:tags @state)}])
+        on-pick-emoji (fn [emoji]
+                        (update-description (+ (:description @state) (.-colons emoji))))]
     (fn []
       [:div.NewPost_form
        [:> react-contenteditable {:className "NewPost_input"
                                   :placeholder "How did you exercise?"
-                                  :html (.shortnameToImage emoji-toolkit (:description @state))
+                                  :html (parse-emojis (:description @state))
                                   :on-change handle-description-change}]
-       [exercise-tags {:tags (:tags @state)
-                       :on-add add-tag
-                       :on-delete delete-tag}]
+       [:div.NewPost_tags_and_emoji
+        [exercise-tags {:tags (:tags @state)
+                             :on-add add-tag
+                             :on-delete delete-tag}]
+        [:div.NewPost_emoji_picker_wrapper
+         [emoji-picker {:on-select on-pick-emoji}]]]
        [:div.NewPost_buttons
         [:div.Minutes
          [:div
@@ -207,7 +268,7 @@
              [:button.Post_delete_button.icon_button {:on-click #(delete-workout (:workout_id workout))}
               [:i.fas.fa-trash-alt
                [:span " Delete"]]]]
-            [:div.Post_message {:dangerouslySetInnerHTML {:__html (.shortnameToImage emoji-toolkit (:description workout))}}]
+            [:div.Post_message {:dangerouslySetInnerHTML {:__html (parse-emojis (:description workout))}}]
             (when (> (count (:tags workout)) 0)
               [:div.Post_tags (str "tags: " (join ", " (:tags workout)))])])
          workouts)]

@@ -607,6 +607,14 @@ button {
   margin: 2px;
 }
 
+
+@media only screen and (max-width: 800px) {
+  .Day {
+    height: 4rem;
+  }
+}
+
+
 .Day_no_minutes {
   background: rgb(231, 238, 241);
 }
@@ -946,6 +954,12 @@ h2 {
   height: calc(25rem + 12px);
 }
 
+@media only screen and (max-width: 800px) {
+  .Calendar_animation_overflow {
+    height: calc(20rem + 12px);
+  }
+}
+
 .Calendar_animation_wrapper {
   width: 100%;
   height: 100%;
@@ -1006,6 +1020,18 @@ h2 {
   overflow: auto;
   border-radius: 4px;
   outline: none;
+}
+
+@media only screen and (max-width: 800px) {
+  .modal-content-custom {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-height: 400px) {
+  .modal-content-custom {
+    margin: 0;
+  }
 }
 
 .modal-title {
@@ -1150,4 +1176,15 @@ h2 {
 
 .header-title {
   color: white;
+}
+
+.emoji-picker-button {
+  margin: 4px;
+  padding: 4px;
+  padding-bottom: 0px;
+}
+
+.NewPost_tags_and_emoji {
+  display: flex;
+  justify-content: space-between;
 }

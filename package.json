@@ -13,7 +13,9 @@
   "dependencies": {
     "@auth0/auth0-spa-js": "1.8.0",
     "@cljs-oss/module-deps": "1.1.1",
+    "emoji-mart": "3.0.0",
     "emoji-toolkit": "5.5.0",
+    "smile-parser": "0.2.1",
     "react": "16.13.0",
     "react-contenteditable": "3.3.4",
     "react-dom": "16.13.0",
