@@ -76,14 +76,14 @@
               :pretty-print  false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["smile-parser"
-                                         "emoji-mart"
+                              :provides ["smileParser"
+                                         "emojiMart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {smile-parser smileParser
-                                               emoji-mart emojiMart
+                              :global-exports {smileParser smileParser
+                                               emojiMart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
                                                toastr toastr
@@ -107,14 +107,14 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["smile-parser"
-                                         "emoji-mart"
+                              :provides ["smileParser"
+                                         "emojiMart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {smile-parser smileParser
-                                               emoji-mart emojiMart
+                              :global-exports {smileParser smileParser
+                                               emojiMart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
                                                toastr toastr

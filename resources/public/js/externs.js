@@ -20,3 +20,10 @@ auth0spa.Auth0Client = function () {
     }
   }
 }
+
+var smileParser = function () {}
+smileParser.smileParse = function () {} 
+
+var emojiMart = function () {}
+emojiMart.Emoji = function() {}
+emojiMart.Picker = function() {}

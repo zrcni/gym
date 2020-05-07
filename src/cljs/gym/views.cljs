@@ -9,8 +9,8 @@
    [gym.util :refer [includes?]]
    [react-modal]
    [react-contenteditable]
-   [emoji-mart]
-   [smile-parser]
+   [emojiMart]
+   [smileParser]
    [cljs-time.core :as t]
    [gym.calendar-utils :refer [ms->m
                                m->ms
@@ -25,7 +25,7 @@
                                human-month-short]]))
 
 (defn parse-emojis [str]
-  (.smileParse smile-parser str (clj->js {:url "/img/emojis/"
+  (.smileParse smileParser str (clj->js {:url "/img/emojis/"
                                           :styles "height: 1.2em;"})))
 
 (defn parent-of? [el parent]
@@ -75,9 +75,9 @@
                                       :style {:position "fixed"
                                               :right (str (+ (-> @state :pos :right) 100) "px")
                                               :top (str (+ (-> @state :pos :top) 0) "px")}}
-           [:> (.-Picker emoji-mart) {:on-select on-select}]]
+           [:> (.-Picker emojiMart) {:on-select on-select}]]
           [:button.emoji-picker-button {:on-click open-picker}
-           [:> (.-Emoji emoji-mart) {:emoji "smile" :size 24}]]))})))
+           [:> (.-Emoji emojiMart) {:emoji "smile" :size 24}]]))})))
 
 (.setAppElement js/ReactModal "#app")
 
