@@ -367,9 +367,9 @@
             month-duration @(subscribe [:current-month-exercise-duration])]
         [:div.duration-cards
          [duration-card {:duration week-duration
-                         :title "Past week"}]
+                         :title "This week"}]
          [duration-card {:duration month-duration
-                         :title "Past month"}]])))
+                         :title "This month"}]])))
 
 (defn home-page []
   [:div
