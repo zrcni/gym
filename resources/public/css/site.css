@@ -1236,4 +1236,5 @@ h2 {
 
 .Calendar_day_duration {
   font-weight: 700;
+  color: var(--accent);
 }
