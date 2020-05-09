@@ -1,9 +1,6 @@
 (ns gym.components.emoji-picker
   [:require
    [reagent.core :as reagent]
-   [goog.string.format]
-   [gym.events]
-   [gym.subs]
    [emojiMart]
    [smileParser]])
 

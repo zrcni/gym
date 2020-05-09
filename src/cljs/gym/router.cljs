@@ -3,66 +3,30 @@
    [reagent.core :as reagent]
    [clerk.core :as clerk]
    [gym.views :refer [layout]]
-   [gym.views.home :refer [home-view]]
-   [gym.views.login :refer [login-view]]
-   [gym.views.login-callback :refer [login-callback-view]]
+   [gym.home.routes :as home]
+   [gym.login.routes :as login]
+   [gym.login.subs]
+   [gym.login-callback.routes :as login-callback]
    [reitit.frontend.easy :as rfe]
    [reitit.frontend :as rf]
    [reitit.frontend.controllers :as rfc]
    [reitit.coercion.spec :as rss]
-   [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch subscribe]]))
+   [re-frame.core :refer [reg-event-db reg-event-fx dispatch subscribe]]))
 
 ;; register re-frame effects etc.
 (reg-event-fx :navigate
               (fn [_ [_ & route]]
                 {:navigate! route}))
 
-(reg-fx :navigate!
-        (fn [route]
-          (apply rfe/push-state route)))
-
 (reg-event-db :navigated
               (fn [db [_ new-match]]
                 (assoc db :current-route new-match)))
 
-"Navigate on render"
-(defn navigate [{:keys [to]}]
-  (dispatch [:navigate to])
-  (fn [] nil))
-
-"Navigate to /login if logged out"
-(defn private-route []
-  (let [user @(subscribe [:user])]
-    (fn [& children]
-      (if-not user
-        [navigate {:to :login}]
-        [:<> children]))))
-
-"Navigate to / if logged in"
-(defn public-route []
-  (let [user @(subscribe [:user])]
-    (fn [& children]
-      (if user
-       [navigate {:to :home}]
-        [:<> children]))))
-
 (defonce routes
   ["/"
-   ["" {:name :home
-        :view home-view
-        :wrapper  private-route
-        :title "Home"
-        :controllers []}]
-   ["login" {:name :login
-             :view login-view
-             :wrapper  public-route
-             :title "Login"
-             :controllers []}]
-   ["auth0_callback" {:name :login-callback
-                      :view login-callback-view
-                      :wrapper public-route
-                      :title "Logging in..."
-                      :controllers []}]])
+   home/routes
+   login/routes
+   login-callback/routes])
 
 (def router
   (rf/router
@@ -73,17 +37,17 @@
   (let [view (-> route :data :view)
         name (-> route :data :name)
         wrapper (-> route :data :wrapper)]
-    (if (not (nil? wrapper))
+    (if-not (nil? wrapper)
       ^{:key name} [wrapper [view]]
       ^{:key name} [view])))
 
 (defn root []
   (dispatch [:handle-first-load])
   (fn []
-    (let [login-status @(subscribe [:login-status])
+    (let [auth-status @(subscribe [:gym.login.subs/auth-status])
           current-route @(subscribe [:current-route])]
-      [layout {:disabled (= login-status "WAITING")}
-       (if (= login-status "WAITING")
+      [layout {:disabled (= auth-status :waiting)}
+       (if (= auth-status :waiting)
          [:div.circle-loader]
          (when current-route
            ^{:key (:path current-route)} [current-page {:route current-route}]))])))
