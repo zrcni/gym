@@ -607,13 +607,15 @@ button {
   margin: 2px;
 }
 
-
 @media only screen and (max-width: 800px) {
   .Day {
     height: 4rem;
   }
 }
 
+.Day_is_today {
+  border: 1px solid var(--accent);
+}
 
 .Day_no_minutes {
   background: rgb(231, 238, 241);

@@ -96,8 +96,9 @@
   [:div.NewPost_tags
    [add-tag {:on-add on-add}]
    [:div.tags
-    (map (fn [tag] ^{:key tag} [tag-chip {:value tag
-                                          :on-delete on-delete}]) tags)]])
+    (map (fn [tag] ^{:key tag}
+           [tag-chip {:value tag
+                      :on-delete on-delete}]) tags)]])
 
 (defn new-workout [{:keys [local-date]}]
   ;; TODO: persist state, so closing the modal doesn't wipe the data
@@ -220,33 +221,35 @@
         [:div.Calendar_animation_overflow
          (map-indexed
           (fn [week-index week]
-            ^{:key week-index} [:div.Calendar_week
-                                (map-indexed
-                                 (fn [day-index day]
-                                   (let [parsed-date (local-date->date-time (:local-date day))]
-                                     ^{:key (:local-date day)} [:div.Day.Day_is_future.Day_no_minutes
-                                                                [:div.Day_date
-                                                                 (when (should-show-month? day-index week-index (:local-date day))
-                                                                   [:div.Day_month (human-month-short parsed-date)])
-                                                                 [:div.Day_number (t/day parsed-date)]]
-                                                          ; TODO: display data about the date's activities
-                                                                [:div.Day_minutes
-                                                                 [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
-                                                                  (if (:workouts day)
-                                                                    (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
-                                                                      [:div.Calendar_day_duration total-minutes])
-                                                                    [:i.fas.fa-plus.purple-icon])]]
+            ^{:key week-index}
+            [:div.Calendar_week
+             (map-indexed
+              (fn [day-index day]
+                (let [parsed-date (local-date->date-time (:local-date day))
+                      is-today? (is-same-day? parsed-date (t/now))]
+                  ^{:key (:local-date day)}
+                  [:div.Day.Day_is_future.Day_no_minutes {:class (when is-today? "Day_is_today")}
+                   [:div.Day_date
+                    (when (should-show-month? day-index week-index (:local-date day))
+                      [:div.Day_month (human-month-short parsed-date)])
+                    [:div.Day_number (t/day parsed-date)]]
+                                                                ; TODO: display data about the date's activities
+                   [:div.Day_minutes
+                    [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
+                     (if (:workouts day)
+                       (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
+                         [:div.Calendar_day_duration total-minutes])
+                       [:i.fas.fa-plus.purple-icon])]]
 
-                                                                (when (is-same-day? parsed-date (t/now))
-                                                                  [:div.Day_today "Now"])
-
-                                                                (when (= editing-index (+ (* week-index days-in-week) day-index))
-                                                                  [modal {:title (day-title (:local-date day)) :on-close stop-editing}
-                                                                   (if (:workouts day)
-                                                                     ^{:key "created-workouts"} [created-workouts {:local-date (:local-date day)
-                                                                                                                   :workouts (:workouts day)}]
-                                                                     ^{:key "new-workout"} [new-workout {:local-date (:local-date day)}])])]))
-                                 week)])
+                   (when (= editing-index (+ (* week-index days-in-week) day-index))
+                     [modal {:title (day-title (:local-date day)) :on-close stop-editing}
+                      (if (:workouts day)
+                        ^{:key "created-workouts"}
+                        [created-workouts {:local-date (:local-date day)
+                                           :workouts (:workouts day)}]
+                        ^{:key "new-workout"}
+                        [new-workout {:local-date (:local-date day)}])])]))
+              week)])
           weeks)]]
        [calendar-nav {:show-later (not (is-same-day? start-date (start-of-week (t/now))))
                       :on-earlier-click show-earlier
