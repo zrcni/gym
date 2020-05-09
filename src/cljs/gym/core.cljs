@@ -1,5 +1,7 @@
 (ns gym.core
   (:require
+   [gym.events]
+   [gym.subs]
    [gym.auth :refer [create-auth0-client reg-auth0-cofx]]
    [reagent.core :as reagent]
    [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]

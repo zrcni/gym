@@ -2,7 +2,10 @@
   (:require
    [reagent.core :as reagent]
    [clerk.core :as clerk]
-   [gym.views :as views]
+   [gym.views :refer [layout]]
+   [gym.views.home :refer [home-view]]
+   [gym.views.login :refer [login-view]]
+   [gym.views.login-callback :refer [login-callback-view]]
    [reitit.frontend.easy :as rfe]
    [reitit.frontend :as rf]
    [reitit.frontend.controllers :as rfc]
@@ -46,17 +49,17 @@
 (defonce routes
   ["/"
    ["" {:name :home
-        :view views/home-page
+        :view home-view
         :wrapper  private-route
         :title "Home"
         :controllers []}]
    ["login" {:name :login
-             :view views/login-page
+             :view login-view
              :wrapper  public-route
              :title "Login"
              :controllers []}]
    ["auth0_callback" {:name :login-callback
-                      :view views/login-callback-page
+                      :view login-callback-view
                       :wrapper public-route
                       :title "Logging in..."
                       :controllers []}]])
@@ -79,7 +82,7 @@
   (fn []
     (let [login-status @(subscribe [:login-status])
           current-route @(subscribe [:current-route])]
-      [views/layout {:disabled (when (= login-status "WAITING"))}
+      [layout {:disabled (= login-status "WAITING")}
        (if (= login-status "WAITING")
          [:div.circle-loader]
          (when current-route
