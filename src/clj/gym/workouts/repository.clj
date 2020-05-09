@@ -1,18 +1,36 @@
 (ns gym.workouts.repository
   (:import java.time.LocalDate
+           java.time.temporal.TemporalAdjusters
+           java.time.DayOfWeek
            java.util.UUID)
   (:require
+   [gym.stats.counter :refer [current-week-exercise-durations
+                              current-month-exercise-durations]]
    [gym.database :refer [get-db]]
    [next.jdbc :as jdbc]
    [next.jdbc.result-set :as rs]
    [next.jdbc.sql :as sql]))
 
+(defn current-week? [local-date]
+  (let [today (LocalDate/now)
+        start-of-week (.with today DayOfWeek/MONDAY)
+        end-of-week (.with today DayOfWeek/SUNDAY)]
+    (and (.isAfter local-date start-of-week)
+         (.isBefore local-date end-of-week))))
+
+(defn current-month? [local-date]
+  (let [today (LocalDate/now)
+        start-of-month (.with today (TemporalAdjusters/firstDayOfMonth))
+        end-of-month (.with today (TemporalAdjusters/lastDayOfMonth))]
+    (and (.isAfter local-date start-of-month)
+         (.isBefore local-date end-of-month))))
+
 (defn workouts-with-tags-query [& [where limit]]
-  (let [where-clause (if where (str " WHERE " where " ") "")
+  (let [where-clause (if where (str " WHERE " where) "")
         limit-clause (if limit (str " LIMIT " limit) "")]
     (str "SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags"
          " FROM workouts"
-         " INNER JOIN workout_tags"
+         " LEFT JOIN workout_tags"
          " ON workouts.workout_id = workout_tags.workout_id"
          where-clause
          " GROUP BY workouts.workout_id"
@@ -38,13 +56,13 @@
 
 (defn get-by-user-id [user_id]
   (let [workouts (sql/query (get-db)
-                            [(workouts-with-tags-query "user_id = ?") (UUID/fromString user_id)]
+                            [(workouts-with-tags-query "workouts.user_id = ?") (UUID/fromString user_id)]
                             {:builder-fn rs/as-unqualified-maps})]
     (map row->workout-and-tags workouts)))
 
 (defn get-by-id [workout_id]
   (let [workouts (sql/query (get-db)
-                            [(workouts-with-tags-query "workout_id = ?" 1) (UUID/fromString workout_id)]
+                            [(workouts-with-tags-query "workouts.workout_id = ?" 1) (UUID/fromString workout_id)]
                             {:builder-fn rs/as-unqualified-maps})]
     (if (> (count workouts) 0)
       (row->workout-and-tags (first workouts))
@@ -65,7 +83,13 @@
                                   [:workout_id :tag]
                                   (vec (map #(vector (:workout_id workout) %) tags))
                                   {:return-keys true
-                                   :builder-fn rs/as-unqualified-maps})]
+                                   :builder-fn rs/as-unqualified-maps})
+          duration-sec (/ duration 1000)]
+      (when (current-week? (LocalDate/parse date))
+        ((-> current-week-exercise-durations :inc) user_id duration-sec))
+      (when (current-month? (LocalDate/parse date))
+        ((-> current-month-exercise-durations :inc) user_id duration-sec))
+
       (-> (row->workout workout)
           (assoc :tags (map #(row->tag %) tags))))))
 
@@ -77,10 +101,19 @@
           _ (sql/delete! tx
                          "workout_tags"
                          ["workout_id = ?" w-id])
-          result (sql/delete! tx
-                              "workouts"
-                              ["workout_id = ?" w-id])]
-      (:next.jdbc/update-count result))))
+          workout (jdbc/execute-one! tx
+                                     ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
+                                     {:builder-fn rs/as-unqualified-maps})
+          duration-sec (/ (:duration workout) 1000)
+          local-date (.toLocalDate (:date workout))]
+      (if workout
+        (do
+          (when (current-week? local-date)
+            ((-> current-week-exercise-durations :dec) (-> workout :user_id .toString) duration-sec))
+          (when (current-month? local-date)
+            ((-> current-month-exercise-durations :dec) (-> workout :user_id .toString) duration-sec))
+          1)
+        0))))
 
 ;; (create! {:description "SADSASD" :duration (* 120 1000) :date "2020-03-21"})
 

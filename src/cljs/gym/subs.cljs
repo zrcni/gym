@@ -39,3 +39,11 @@
 (reg-sub
  :login-status
  (fn [db _] (:login-status db)))
+
+(reg-sub
+ :current-week-exercise-duration
+ (fn [db _] (-> db :stats :current-week-exercise-duration)))
+
+(reg-sub
+ :current-month-exercise-duration
+ (fn [db _] (-> db :stats :current-month-exercise-duration)))

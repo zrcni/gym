@@ -29,6 +29,7 @@
                  [clj-http "3.10.0"]
                  [cljs-http "0.1.46"]
                  [cljs-ajax "0.7.3"]
+                 [clojure-humanize "0.2.2"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [day8.re-frame/http-fx "v0.2.0"]
                  [venantius/accountant "0.2.5"

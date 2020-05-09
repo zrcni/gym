@@ -9,6 +9,7 @@
      :user nil
      :token nil
      :login-status "WAITING"
+     :stats nil
      :calendar {:start-date start-date
                 :editing-index nil
                 :weeks (calculate-weeks start-date)

@@ -32,13 +32,6 @@
 (def allowed-origins ((comp vec flatten vector)
                            [(map #(re-pattern %) cfg/frontend-urls) (re-pattern cfg/host-url)]))
 
-(def api-middlewares
-  [wrap-log
-   #(wrap-cors % :access-control-allow-origin allowed-origins
-               :access-control-allow-methods [:get :post :put :delete :options])
-   wrap-json-response
-   wrap-json-body])
-
 (defn unauthorized-response [& [message]]
   {:status 401
    :body {:error (or message "Unauthorized")}})
@@ -71,3 +64,11 @@
     (let [token-user-id (get-token-user-id request)
           user (get-by-token-user-id token-user-id)]
       (handler (assoc-in request [:context :user] user)))))
+
+(def api-middlewares
+  [wrap-log
+   #(wrap-cors % :access-control-allow-origin allowed-origins
+               :access-control-allow-methods [:get :post :put :delete :options])
+   wrap-json-response
+   wrap-json-body
+   wrap-token])

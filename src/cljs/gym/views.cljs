@@ -2,7 +2,7 @@
   (:require
    [re-frame.core :refer [subscribe dispatch]]
    [reagent.core :as reagent]
-   [clojure.string :refer [trim blank? join]]
+   [clojure.string :refer [capitalize trim blank? join]]
    [goog.string.format]
    [gym.events]
    [gym.subs]
@@ -11,6 +11,7 @@
    [react-contenteditable]
    [emojiMart]
    [smileParser]
+   [clojure.contrib.humanize :as humanize]
    [cljs-time.core :as t]
    [gym.calendar-utils :refer [ms->m
                                m->ms
@@ -298,6 +299,7 @@
 
 (defn calendar []
   (dispatch [:fetch-all-workouts])
+
   (fn []
     (let [start-date @(subscribe [:calendar-start-date])
           editing-index @(subscribe [:calendar-editing-index])
@@ -327,7 +329,7 @@
                                               [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
                                                (if (:workouts day)
                                                  (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
-                                                   [:div total-minutes])
+                                                   [:div.Calendar_day_duration total-minutes])
                                                  [:i.fas.fa-plus.purple-icon])]]
 
                                              (when (is-same-day? parsed-date (t/now))
@@ -345,8 +347,34 @@
                       :on-earlier-click show-earlier
                       :on-later-click show-later}]])))
 
+(defn duration-card [{:keys [title duration]}]
+  [:div.duration-card
+   [:span.duration-card-title (str title " ")]
+   [:span.duration-card-duration
+    (if (nil? duration)
+      ;; TODO: small loading indicator
+      "..."
+      (as-> (* duration 1000) d
+        (humanize/duration d {:number-format str})
+        (capitalize d)))]])
+
+(defn exercise-stats []
+  (dispatch [:fetch-current-week-exercise-duration])
+  (dispatch [:fetch-current-month-exercise-duration])
+
+    (fn []
+      (let [week-duration @(subscribe [:current-week-exercise-duration])
+            month-duration @(subscribe [:current-month-exercise-duration])]
+        [:div.duration-cards
+         [duration-card {:duration week-duration
+                         :title "Past week"}]
+         [duration-card {:duration month-duration
+                         :title "Past month"}]])))
+
 (defn home-page []
-  [calendar])
+  [:div
+   [exercise-stats]
+   [calendar]])
 
 ;; TODO: style
 (defn login-page []

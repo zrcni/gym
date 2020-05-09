@@ -25,13 +25,17 @@ body {
 #header {
   display: flex;
   padding: 8px;
-  height: 40px;
+  height: 3em;
   background-color: var(--accent);
   justify-content: space-between;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  font-weight: 500;
 }
 
 #content {
-  padding: 16px;
+  padding: 12px;
 }
 
 .purple-icon {
@@ -71,10 +75,6 @@ body {
 
 body {
   color: var(--gray);
-}
-
-#content {
-  margin: 8px;
 }
 
 [data-reach-dialog-overlay] {
@@ -1187,4 +1187,53 @@ h2 {
 .NewPost_tags_and_emoji {
   display: flex;
   justify-content: space-between;
+}
+
+.duration-cards {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+@media only screen and (max-width: 500px) {
+  .duration-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.duration-card {
+  padding: 0.5em;
+  color: whitesmoke;
+  background-color: var(--accent);
+  width: 17em;
+  height: 3.5em;
+  line-height: 2.5em;
+  text-align: center;
+  vertical-align: middle;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  margin-right: 0.5em;
+}
+
+@media only screen and (max-width: 500px) {
+  .duration-card {
+    margin: 0;
+    margin-top: 0.5em;
+  }
+}
+
+.duration-card-title {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 500;
+}
+
+.duration-card-duration {
+  margin: 0;
+}
+
+.Calendar_day_duration {
+  font-weight: 700;
 }

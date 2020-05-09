@@ -31,13 +31,6 @@
     (println (pretty-request request))
     (handler request)))
 
-(def api-middlewares
-  [wrap-log
-   #(wrap-cors % :access-control-allow-origin #"http://localhost:3449"
-               :access-control-allow-methods [:get :put :post :delete :options])
-   wrap-json-response
-   wrap-json-body])
-
 (defn unauthorized-response [& [message]]
   {:status 401
    :body {:error (or message "Unauthorized")}})
@@ -47,16 +40,6 @@
     (let [token-payload (parse-token token)]
       (handler (assoc request :token-payload token-payload)))
     (unauthorized-response)))
-
-;; (defn handle-token [handler request token]
-;;   (try
-;;     (if token
-;;       (let [token-payload (parse-token token)]
-;;         (handler (assoc request :token-payload token-payload)))
-;;       (unauthorized-response))
-;;     (catch Exception e
-;;       (println (str "handle-auth-header exception: " e))
-;;       (unauthorized-response "Invalid token"))))
 
 (defn wrap-token [handler]
   (fn [request]
@@ -70,3 +53,21 @@
     (let [token-user-id (get-token-user-id request)
           user (get-by-token-user-id token-user-id)]
       (handler (assoc-in request [:context :user] user)))))
+
+(def api-middlewares
+  [wrap-log
+   #(wrap-cors % :access-control-allow-origin #"http://localhost:3449"
+               :access-control-allow-methods [:get :put :post :delete :options])
+   wrap-json-response
+   wrap-json-body
+   wrap-token])
+
+;; (defn handle-token [handler request token]
+;;   (try
+;;     (if token
+;;       (let [token-payload (parse-token token)]
+;;         (handler (assoc request :token-payload token-payload)))
+;;       (unauthorized-response))
+;;     (catch Exception e
+;;       (println (str "handle-auth-header exception: " e))
+;;       (unauthorized-response "Invalid token"))))
