@@ -458,6 +458,7 @@ button {
   border-radius: 0.25rem;
   border-bottom: solid 2px transparent;
   border-top: solid 2px transparent;
+  overflow-y: auto;
 }
 
 .NewPost_input:focus {
