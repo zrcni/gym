@@ -75,6 +75,7 @@ body {
 
 body {
   color: var(--gray);
+  overflow-x: hidden;
 }
 
 [data-reach-dialog-overlay] {
