@@ -1,8 +1,8 @@
 (ns gym.auth.route
-  [:require
-   [clj-http.client :as http]
-   [gym.auth :refer [get-token-user-id get-token-payload headers->token]]
-   [gym.users.repository :refer [get-by-token-user-id create!]]])
+ (:require
+  [clj-http.client :as http]
+  [gym.auth :refer [get-token-user-id get-token-payload headers->token]]
+  [gym.users.repository :refer [get-by-token-user-id create!]]))
 
 (defn parse-auth0-user-info [user-info]
   {:username (:nickname user-info)

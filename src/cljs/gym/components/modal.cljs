@@ -1,5 +1,5 @@
 (ns gym.components.modal
-  [:require [react-modal]])
+  (:require [react-modal]))
 
 (.setAppElement js/ReactModal "#app")
 

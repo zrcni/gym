@@ -1,8 +1,10 @@
 (ns gym.components.emoji-picker
-  [:require
+  (:require
+   [gym.metrics :as metrics]
    [reagent.core :as reagent]
    [emojiMart]
-   [smileParser]])
+   [smileParser]
+   [re-frame.core :refer [dispatch]]))
 
 (defn parse-emojis [str]
   (.smileParse smileParser str (clj->js {:url "/img/emojis/"
@@ -21,6 +23,7 @@
         state (reagent/atom {:open false
                              :pos {:right 0 :top 0}})
         open-picker (fn [e]
+                      (dispatch [::metrics/user-event "emoji-picker:click"])
                       (let [body-rect (.getBoundingClientRect js/document.body)
                             btn-rect (.getBoundingClientRect (.-target e))
                             right (- (.-right btn-rect) (.-right body-rect))
@@ -51,7 +54,7 @@
       :reagent-render
       (fn [{:keys [on-select]}]
         (if (:open @state)
-          [:div.emoji-picker.wrapper {:ref #(reset! !el %)
+          [:div.emoji-picker-wrapper {:ref #(reset! !el %)
                                       :style {:position "fixed"
                                               :right (str (+ (-> @state :pos :right) 100) "px")
                                               :top (str (+ (-> @state :pos :top) 0) "px")}}

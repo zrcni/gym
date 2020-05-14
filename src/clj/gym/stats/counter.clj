@@ -2,10 +2,10 @@
   (:import java.time.LocalDate
            java.time.temporal.TemporalAdjusters
            java.time.DayOfWeek)
-  [:require
+  (:require
    [gym.database :refer [get-db]]
    [next.jdbc.result-set :as rs]
-   [next.jdbc.sql :as sql]])
+   [next.jdbc.sql :as sql]))
 
 (defn inc-by [n]
   (fn [m]

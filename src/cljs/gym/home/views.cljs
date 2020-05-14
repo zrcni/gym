@@ -1,29 +1,29 @@
 (ns gym.home.views
-  [:require
-   [re-frame.core :refer [subscribe dispatch]]
-   [reagent.core :as reagent]
-   [clojure.string :refer [capitalize trim blank? join]]
-   [goog.string.format]
-   [gym.util :refer [includes?]]
-   [react-modal]
-   [react-contenteditable]
-   [emojiMart]
-   [smileParser]
-   [clojure.contrib.humanize :as humanize]
-   [cljs-time.core :as t]
-   [gym.components.emoji-picker :refer [emoji-picker parse-emojis modal]]
-   [gym.components.modal :refer [modal]]
-   [gym.calendar-utils :refer [ms->m
-                               m->ms
-                               num-weeks
-                               days-in-week
-                               local-date->date-time
-                               date-time->dd-mm-yyyy
-                               human-weekday-short
-                               start-of-week
-                               is-same-day?
-                               is-first-day-of-month
-                               human-month-short]]])
+ (:require
+  [re-frame.core :refer [subscribe dispatch]]
+  [reagent.core :as reagent]
+  [clojure.string :refer [capitalize trim blank? join]]
+  [goog.string.format]
+  [gym.util :refer [includes?]]
+  [react-modal]
+  [react-contenteditable]
+  [emojiMart]
+  [smileParser]
+  [clojure.contrib.humanize :as humanize]
+  [cljs-time.core :as t]
+  [gym.components.emoji-picker :refer [emoji-picker parse-emojis modal]]
+  [gym.components.modal :refer [modal]]
+  [gym.calendar-utils :refer [ms->m
+                              m->ms
+                              num-weeks
+                              days-in-week
+                              local-date->date-time
+                              date-time->dd-mm-yyyy
+                              human-weekday-short
+                              start-of-week
+                              is-same-day?
+                              is-first-day-of-month
+                              human-month-short]]))
 
 (defn weekdays []
   [:div.Weekdays
@@ -210,7 +210,7 @@
     (let [start-date @(subscribe [:calendar-start-date])
           editing-index @(subscribe [:calendar-editing-index])
           weeks @(subscribe [:calendar-weeks])
-          edit-day #(dispatch [:calendar-edit-day %])
+          edit-day (fn [index local-date] (dispatch [:calendar-edit-day index local-date]))
           stop-editing #(dispatch [:calendar-stop-editing])
           show-earlier #(dispatch [:calendar-show-earlier (t/days (* num-weeks days-in-week))])
           show-later #(dispatch [:calendar-show-later (t/days (* num-weeks days-in-week))])]
@@ -235,7 +235,7 @@
                     [:div.Day_number (t/day parsed-date)]]
                                                                 ; TODO: display data about the date's activities
                    [:div.Day_minutes
-                    [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index))}
+                    [:button.Calendar_add_post_button {:on-click #(edit-day (+ (* week-index days-in-week) day-index) (:local-date day))}
                      (if (:workouts day)
                        (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
                          [:div.Calendar_day_duration total-minutes])

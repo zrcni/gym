@@ -3,6 +3,7 @@
    [reagent.core :as reagent]
    [clerk.core :as clerk]
    [gym.views :refer [layout]]
+   [gym.metrics :as metrics]
    [gym.home.routes :as home]
    [gym.login.routes :as login]
    [gym.login.subs]
@@ -11,16 +12,17 @@
    [reitit.frontend :as rf]
    [reitit.frontend.controllers :as rfc]
    [reitit.coercion.spec :as rss]
-   [re-frame.core :refer [reg-event-db reg-event-fx dispatch subscribe]]))
+   [re-frame.core :refer [reg-event-fx dispatch subscribe]]))
 
 ;; register re-frame effects etc.
 (reg-event-fx :navigate
               (fn [_ [_ & route]]
                 {:navigate! route}))
 
-(reg-event-db :navigated
-              (fn [db [_ new-match]]
-                (assoc db :current-route new-match)))
+(reg-event-fx :navigated
+              (fn [{:keys [db]} [_ new-match]]
+                {:db (assoc db :current-route new-match)
+                 :dispatch [::metrics/app-event "page-view"]}))
 
 (defonce routes
   ["/"

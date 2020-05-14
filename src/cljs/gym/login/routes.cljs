@@ -1,7 +1,7 @@
 (ns gym.login.routes
-  [:require
+  (:require
    [gym.login.views :as views]
-   [gym.router-utils :refer [public-route]]])
+   [gym.router-utils :refer [public-route]]))
 
 (def routes
   ["login" {:name :login

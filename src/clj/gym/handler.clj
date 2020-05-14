@@ -6,6 +6,7 @@
    [gym.users.route :refer [create-users-route]]
    [gym.auth.route :refer [create-auth-route]]
    [gym.stats.route :refer [create-stats-route]]
+   [gym.metrics.route :refer [create-metrics-route]]
    [gym.web :refer [index-handler]]))
 
 (def web-handler
@@ -24,7 +25,8 @@
      (create-workouts-route "/workouts")
      (create-users-route "/users")
      (create-auth-route "/auth")
-     (create-stats-route "/stats")])
+     (create-stats-route "/stats")
+     (create-metrics-route "/metrics")])
    (reitit-ring/routes
     (reitit-ring/create-default-handler))
    {:middleware api-middlewares}))

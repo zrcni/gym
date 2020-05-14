@@ -36,3 +36,16 @@ var Emoji = {
   skin: 0,
   native: ''
 }
+
+var fingerprintjs2 = {
+  get: function() {
+    return {}
+  }
+}
+
+var FingerPrintComponent = {
+  key: '',
+  value: ''
+}
+
+var FingerPrintComponents = [FingerPrintComponent]

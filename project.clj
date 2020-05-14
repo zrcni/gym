@@ -78,13 +78,15 @@
               :pretty-print  false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["smileParser"
+                              :provides ["fingerprintjs2"
+                                         "smileParser"
                                          "emojiMart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {smileParser smileParser
+                              :global-exports {fingerprintjs2 fingerprintjs2
+                                               smileParser smileParser
                                                emojiMart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
@@ -109,13 +111,15 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["smileParser"
+                              :provides ["fingerprintjs2"
+                                         "smileParser"
                                          "emojiMart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {smileParser smileParser
+                              :global-exports {fingerprintjs2 fingerprintjs2
+                                               smileParser smileParser
                                                emojiMart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal

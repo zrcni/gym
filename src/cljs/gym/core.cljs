@@ -1,5 +1,6 @@
 (ns gym.core
   (:require
+   [gym.metrics]
    [gym.effects]
    [gym.events]
    [gym.subs]

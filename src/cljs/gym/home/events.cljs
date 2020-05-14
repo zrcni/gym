@@ -2,6 +2,7 @@
   (:require
    [clojure.spec.alpha :as spec]
    [gym.specs]
+   [gym.metrics :as metrics]
    [gym.config :as cfg]
    [goog.string :as gstring]
    [goog.string.format]
@@ -36,9 +37,10 @@
                       weeks (calculate-weeks start-date workouts)]
                   (assoc-in db [:home :calendar :weeks] weeks))))
 
-(reg-event-db :calendar-edit-day
-              (fn [db [_ day-index]]
-                (assoc-in db [:home :calendar :editing-index] day-index)))
+(reg-event-fx :calendar-edit-day
+              (fn [{:keys [db]} [_ index local-date]]
+                {:db (assoc-in db [:home :calendar :editing-index] index)
+                 :dispatch [::metrics/user-event "calendar-edit-day" {:date local-date}]}))
 
 (reg-event-db :calendar-stop-editing
               (fn [db]
