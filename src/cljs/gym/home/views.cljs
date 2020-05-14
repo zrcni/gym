@@ -255,6 +255,13 @@
                       :on-earlier-click show-earlier
                       :on-later-click show-later}]])))
 
+(defn displayable-duration [duration]
+  (if (= 0 duration)
+    "None"
+    (as-> (* duration 1000) d
+      (humanize/duration d {:number-format str})
+      (capitalize d))))
+
 (defn duration-card [{:keys [title duration]}]
   [:div.duration-card
    [:span.duration-card-title (str title " ")]
@@ -262,9 +269,7 @@
     (if (nil? duration)
       ;; TODO: small loading indicator
       "..."
-      (as-> (* duration 1000) d
-        (humanize/duration d {:number-format str})
-        (capitalize d)))]])
+      (displayable-duration duration))]])
 
 (defn exercise-stats []
   (dispatch [:fetch-current-week-exercise-duration])
