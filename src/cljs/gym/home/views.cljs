@@ -88,6 +88,7 @@
       [:div
        [:input.tag-add-input {:type "text"
                               :value @tag
+                              :placeholder "tags"
                               :on-change #(reset! tag (-> % .-target .-value))
                               :on-key-down on-key-down}]
        [:button.tag-add-button {:type "button" :on-click add} "Add"]])))
