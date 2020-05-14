@@ -28,7 +28,10 @@
 (defn workouts-with-tags-query [& [where limit]]
   (let [where-clause (if where (str " WHERE " where) "")
         limit-clause (if limit (str " LIMIT " limit) "")]
-    (str "SELECT workouts.workout_id, workouts.user_id, workouts.description, workouts.duration, workouts.date, workouts.created_at, workouts.modified_at, ARRAY_AGG (workout_tags.tag) tags"
+    (str "SELECT"
+         " workouts.workout_id, workouts.user_id, workouts.description,"
+         " workouts.duration, workouts.date, workouts.created_at, workouts.modified_at,"
+         " coalesce(array_agg(workout_tags.tag) filter (where workout_tags.tag is not null), '{}') AS tags"
          " FROM workouts"
          " LEFT JOIN workout_tags"
          " ON workouts.workout_id = workout_tags.workout_id"
@@ -46,9 +49,9 @@
      (update :date local-date->string)))
 
 (defn row->workout-and-tags [row]
- (as-> row r
-   (update r :date local-date->string)
-   (assoc r :tags (vec (.getArray (:tags r))))))
+  (as-> row r
+    (update r :date local-date->string)
+    (assoc r :tags (vec (.getArray (:tags r))))))
 
 ;; gets the tag string from the tag object/row
 (defn row->tag [row]
