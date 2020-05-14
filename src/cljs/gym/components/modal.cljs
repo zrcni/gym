@@ -18,5 +18,5 @@
          (when-not disable-auto-close
            [:button.modal-close-button {:on-click #(when-not (nil? on-close) (on-close))}
             [:i.fas.fa-times]])])
-      [:div {:style {:margin 8}}
+      [:div.modal-container
        children]]]))
