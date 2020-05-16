@@ -19,12 +19,6 @@
    :justify-content "flex-end"
    :align-items "center"})
 
-(defstyles header-user-avatar-style []
-  {:height "24px"
-   :margin-left "4px"
-   :margin-right "4px"
-   :align-self "center"})
-
 (defstyles logout-button-style []
   {:background-color styles/main-color
    :border-color "#900c3f"
@@ -55,10 +49,6 @@
          [:a {:class (header-title-style)
               :href "/"} "Exercise tracker"]]
         [:div {:class (header-right-style)}
-         (when (:avatar_url user)
-           [:img {:class (header-user-avatar-style)
-                  :src (:avatar_url user)
-                  :alt "user-logo"}])
          (when user
            [:button {:class (logout-button-style)
                      :on-click #(dispatch [::gym.login.events/logout])}
