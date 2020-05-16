@@ -1,9 +1,9 @@
 (ns gym.components.emoji-picker
-  [:require
-   [reagent.core :as reagent]
-   [cljss.core :refer-macros [defstyles]]
-   [emojiMart]
-   [smileParser]])
+ (:require
+  [reagent.core :as reagent]
+  [cljss.core :refer-macros [defstyles]]
+  [emojiMart]
+  [smileParser]))
 
 (defn parse-emojis [str]
   (.smileParse smileParser str (clj->js {:url "/img/emojis/"

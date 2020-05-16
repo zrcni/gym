@@ -1,9 +1,9 @@
 (ns gym.components.modal
-  [:require
+  (:require
    [cljss.core :refer-macros [defstyles]]
    [gym.styles :as styles]
    [gym.components.icons :as icons]
-   [react-modal]])
+   [react-modal]))
 
 (.setAppElement js/ReactModal "#app")
 

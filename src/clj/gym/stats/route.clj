@@ -1,8 +1,8 @@
 (ns gym.stats.route
-  [:require
+  (:require
    [gym.middleware :refer [wrap-user]]
    [gym.stats.counter :refer [current-week-exercise-durations
-                              current-month-exercise-durations]]])
+                              current-month-exercise-durations]]))
 
 (defn get-current-week-exercise-durations [request]
   (let [user-id (-> request :context :user :user_id)]

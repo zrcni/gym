@@ -1,7 +1,7 @@
 (ns gym.users.route
-  [:require
+  (:require
    [gym.users.repository :refer [get-by-token-user-id]]
-   [gym.auth :refer [get-token-user-id]]])
+   [gym.auth :refer [get-token-user-id]]))
 
 (defn get-user-via-token [request]
   (let [user (get-by-token-user-id (get-token-user-id request))]
