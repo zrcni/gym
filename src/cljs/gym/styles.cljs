@@ -61,7 +61,7 @@
    :display "flex"
    :align-items "center"
    :color gray
-   :border-radius "99999px"
+   :border-radius "6px"
    :border "solid 1px transparent"
    :padding "0.5rem"
    :&:hover {:background light-gray}
@@ -80,7 +80,7 @@
    :font-size "125%"
    :display "flex"
    :align-items "center"
-   :border-radius "99999px"
+   :border-radius "6px"
    :border "solid 1px transparent"
    :background-color main-color
    :color "white"

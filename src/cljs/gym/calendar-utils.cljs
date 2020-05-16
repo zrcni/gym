@@ -58,7 +58,7 @@
         year (t/year date)]
     (apply str [day sep month sep year])))
 
-(defn is-first-day-of-month [date]
+(defn first-day-of-month? [date]
   (= 1 (t/day date)))
 
 (defn days-in-month [m y]
@@ -95,10 +95,11 @@
     11 "Nov"
     12 "Dec"))
 
-(defn is-same-day? [a b]
-  (= (date-time->local-date a) (date-time->local-date b)))
+(defn same-day? [a b]
+  (= (date-time->local-date a)
+     (date-time->local-date b)))
 
-(defn is-future? [a b]
+(defn future? [a b]
   (t/after? a b))
 
 (defn map-workouts-by-day [workouts]
@@ -133,3 +134,9 @@
              (conj weeks [day-data])))))
      []
      (vec (replicate (* num-weeks days-in-week) nil)))))
+
+(defn calculate-start-date [date num-weeks]
+  ;; Subtract (num-weeks - 1) days from start-date,
+  ;; so the last displayed date in the calendar is the current week.
+  (start-of-week (t/minus date
+                          (t/days (* (- num-weeks 1) days-in-week)))))

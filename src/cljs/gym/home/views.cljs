@@ -24,11 +24,11 @@
                                local-date->date-time
                                date-time->dd-mm-yyyy
                                human-weekday-short
-                               start-of-week
-                               is-same-day?
-                               is-first-day-of-month
+                               calculate-start-date
+                               same-day?
+                               first-day-of-month?
                                human-month-short
-                               is-future?]]))
+                               future?]]))
 
 (defstyles weekdays-style []
   {:display "flex"
@@ -66,23 +66,23 @@
     [:span "Earlier"]]
    (when show-later
      [:button {:on-click on-later-click :class (classes (calendar-earlier-later) (styles/icon-button))}
-      [icons/chevron-down {:class (styles/icon-button)}]
+      [icons/chevron-down {:class (styles/base-icon)}]
       [:span "Later"]])])
 
-(defn is-first-displayed-day [day-index week-index]
+(defn first-displayed-day? [day-index week-index]
   (= 0 (+ day-index week-index)))
 
 (defn should-show-month? [day-index week-index local-date]
   (if (or
-       (is-first-displayed-day day-index week-index)
-       (is-first-day-of-month (local-date->date-time local-date)))
+       (first-displayed-day? day-index week-index)
+       (first-day-of-month? (local-date->date-time local-date)))
     true
     false))
 
 (defn day-title [local-date]
   (let [date (local-date->date-time local-date)]
     (as-> (str (human-weekday-short date) " " (date-time->dd-mm-yyyy date)) title
-      (if (is-same-day? date (t/now))
+      (if (same-day? date (t/now))
         (str title " - today")
         title))))
 
@@ -422,8 +422,8 @@
    :background "rgba(231, 238, 241)"
    :margin "2px"
    "@media only screen and (max-width: 800px)" {:height "4rem"}
-   :is-today? {:border (str "1px solid " styles/main-color)}
-   :is-future? {:opacity "0.33"}})
+   :today? {:border (str "1px solid " styles/main-color)}
+   :future? {:opacity "0.33"}})
 
 (defstyles day-date-style []
   {:position "absolute"
@@ -462,7 +462,11 @@
    :&:focus {:outline "none"
              :border styles/focus-border
              :box-shadow styles/focus-shadow}
-   :&:active {:color styles/main-color}})
+   :&:active {:color styles/main-color}
+   :&:disabled {:cursor "not-allowed"
+                :border "none"
+                :box-shadow "none"
+                :background "inherit"}})
 
 (defstyles calendar-day-duration-style []
   {:font-weight 700
@@ -480,7 +484,6 @@
 ;; - - - - - - -
 (defn calendar []
   (dispatch [:fetch-all-workouts])
-
   (fn []
     (let [start-date @(subscribe [:calendar-start-date])
           editing-index @(subscribe [:calendar-editing-index])
@@ -503,38 +506,46 @@
               (fn [day-index day]
                 (let [parsed-date (local-date->date-time (:local-date day))
                       now (t/now)
-                      is-today? (is-same-day? parsed-date now)
-                      is-future? (is-future? parsed-date now)]
-                  ^{:key (:local-date day)}
-                  [day-div {:is-today? is-today?
-                            :is-future? is-future?}
-                   [:div {:class (day-date-style)}
-                    (when (should-show-month? day-index week-index (:local-date day))
-                      [:div {:class (day-month-style)}
-                       (human-month-short parsed-date)])
-                    [:div {:class (day-number-style)}
-                     (t/day parsed-date)]]
-                                                                ; TODO: display data about the date's activities
-                   [:div {:class (day-minutes-style)}
-                    [:button {:class (calendar-add-exercise-button-style)
-                              :on-click #(edit-day (+ (* week-index days-in-week) day-index))}
-                     (if (:workouts day)
-                       (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
-                         [:div {:class (calendar-day-duration-style)}
-                          total-minutes])
-                       [icons/plus])]]
+                      is-today (same-day? parsed-date now)
+                      is-future (future? parsed-date now)]
 
-                   (when (= editing-index (+ (* week-index days-in-week) day-index))
-                     [modal {:title (day-title (:local-date day)) :on-close stop-editing}
-                      (if (:workouts day)
-                        ^{:key "created-workouts"}
-                        [created-workouts {:local-date (:local-date day)
-                                           :workouts (:workouts day)}]
-                        ^{:key "new-workout"}
-                        [new-workout {:local-date (:local-date day)}])])]))
+                  ^{:key (:local-date day)}
+                  (if is-future
+                    [day-div {:today? is-today
+                              :future? is-future}
+                     [:button {:class (calendar-add-exercise-button-style)
+                               :disabled true}
+                      [icons/plus]]]
+
+                    [day-div {:today? is-today
+                              :future? is-future}
+                     [:div {:class (day-date-style)}
+                      (when (should-show-month? day-index week-index (:local-date day))
+                        [:div {:class (day-month-style)}
+                         (human-month-short parsed-date)])
+                      [:div {:class (day-number-style)}
+                       (t/day parsed-date)]]
+                                                                ; TODO: display data about the date's activities
+                     [:div {:class (day-minutes-style)}
+                      [:button {:class (calendar-add-exercise-button-style)
+                                :on-click #(edit-day (+ (* week-index days-in-week) day-index))}
+                       (if (:workouts day)
+                         (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
+                           [:div {:class (calendar-day-duration-style)}
+                            total-minutes])
+                         [icons/plus])]]
+
+                     (when (= editing-index (+ (* week-index days-in-week) day-index))
+                       [modal {:title (day-title (:local-date day)) :on-close stop-editing}
+                        (if (:workouts day)
+                          ^{:key "created-workouts"}
+                          [created-workouts {:local-date (:local-date day)
+                                             :workouts (:workouts day)}]
+                          ^{:key "new-workout"}
+                          [new-workout {:local-date (:local-date day)}])])])))
               week)])
           weeks)]]
-       [calendar-nav {:show-later (not (is-same-day? start-date (start-of-week (t/now))))
+       [calendar-nav {:show-later (not (same-day? start-date (calculate-start-date (t/now) num-weeks)))
                       :on-earlier-click show-earlier
                       :on-later-click show-later}]])))
 
@@ -556,6 +567,7 @@
    :vertical-align "middle"
    :font-family styles/font-family
    :margin-right "0.5em"
+   :border-radius "6px"
    "@media only screen and (max-width: 500px)" {:margin 0
                                                 :margin-top "0.5em"}})
 
