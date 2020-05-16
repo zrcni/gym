@@ -95,64 +95,71 @@
       (if (= n js/NaN) 0 n))))
 
 (defstyles tag-delete-style []
-  {:display "inline-block"
-   :font-size "10px"
-   :margin-left "3px"
+  {:display "flex"
+   :justify-content "center"
+   :align-items "center"
+   :font-size "20px"
    :color "rgba(0, 0, 0, 0.45)"
-   :font-weight 700
    :cursor "pointer"
-   :transition "all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86)"})
+   :width "35px"
+   :height "35px"
+   :border-left (str "1px solid " styles/middle-gray)
+   :&:hover {:color "#000000"}})
+
+(defstyles tag-chip-content-style []
+  {:color styles/dark-gray
+   :padding "0 8px 0 8px"})
 
 (defstyles tag-style []
   {:box-sizing "border-box"
-   :margin 0
-  ;;  :padding 0
-   :color "rgba(0, 0, 0, 0.65)"
-  ;;  :font-size 14
-  ;;  :line-height 1.5715
-   :list-style "none"
-   :font-feature-settings "tabular-nums"
-   :display "inline-block"
-   :height "auto"
-   :padding "0px 7px"
-   :font-size "12px"
+   :color styles/gray
+   :display "flex"
+   :align-items "center"
+   :height "35px"
    :line-height "20px"
    :white-space "nowrap"
-   :background "#fafafa"
-   :border "1px solid #d9d9d9"
-   :border-radius "2px"
+   :background styles/light-gray
+   :border (str "1px solid " styles/middle-gray)
+   :border-radius "6px"
    :cursor "default"
    :opacity 1
    :transition "all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86)"
-   :margin-left "4px"
-   :vertical-align "middle"})
+   :margin "0 4px 0 4px"})
 
 (defn tag-chip [{:keys [value on-delete]}]
-  [:span {:class (tag-style)}
-   value
+  [:div {:class (tag-style)}
+   [:div {:class (tag-chip-content-style)}
+    value]
    (when on-delete
-     [:span {:role "img"
-             :aria-label "delete"
-             :class (tag-delete-style)
-             :on-click #(on-delete value)} "X"])])
+     [:button {:class (classes (tag-delete-style) "tag-chip-delete")
+               :role "button"
+               :aria-label "delete"
+               :on-click #(on-delete value)}
+      [icons/times]])])
 
 (defstyles tag-add-input-style []
-  {:border "1px solid #ebebeb"
-   :margin-top "6px"
-   :margin-bottom "6px"
+  {:border "none"
    :width "100px"
-   :height "27px"
-   :padding "4px"})
+   :height "35px"
+   :padding "0 8px 0 8px"
+   :color styles/dark-gray
+   :background-color styles/light-gray
+   :border-top-left-radius "6px"
+   :border-bottom-left-radius "6px"
+   :&:focus {:outline "none"
+             :box-shadow (str "inset 0px 0px 0.15rem " styles/main-color)}})
 
 (defstyles tag-add-button-style []
-  {:border "1px solid #ebebeb"
+  {:border "none"
    :font-size "85%"
-   :margin-bottom "6px"
-   :margin-top "6px"
-   :padding-top "1px"
-   :height "27px"
-   :padding-left "4px"
-   :padding-right "4px"})
+   :height "35px"
+   :width "35px"
+   :padding "3px 8px 0 8px"
+   :background-color styles/main-color
+   :color "white"
+   :border-top-right-radius "6px"
+   :border-bottom-right-radius "6px"
+   :&:hover {:background-color styles/main-color-hover}})
 
 (defn add-tag [{:keys [on-add]}]
   (let [tag (reagent/atom "")
@@ -170,14 +177,16 @@
                 :on-key-down on-key-down}]
        [:button {:class (tag-add-button-style)
                  :type "button"
-                 :on-click add} "Add"]])))
+                 :on-click add}
+        [icons/plus]]])))
 
 (defstyles new-exercise-tags-style []
-  {:display "inline-block"})
+  {:display "flex"})
 
 (defstyles new-exercise-tags-wrapper-style []
-  {:display "inline-block"
-   :vertical-align "middle"})
+  {:display "flex"
+   :align-items "center"
+   :margin-left "4px"})
 
 (defn exercise-tags [{:keys [tags on-add on-delete]}]
   [:div {:class (new-exercise-tags-style)}
@@ -191,11 +200,12 @@
   {:position "relative"
    :margin "0px"
    :flex 1
-   "> *:first-child" {:margin-top "1.25rem"}})
+   "> *:first-child" {:margin-top "1rem"}})
 
 (defstyles new-exercise-input-style []
   {:display "block"
    :width "100%"
+   :color styles/dark-gray
    :background styles/light-gray
    :border "none"
    :resize "none"
@@ -210,14 +220,9 @@
    :&:focus {:outline "none"
              :border-bottom-color styles/main-color}})
 
-(defstyles new-exercise-tag-emoji []
+(defstyles new-exercise-form-row []
   {:display "flex"
-   :justify-content "space-between"})
-
-(defstyles new-exercise-buttons-style []
-  {:display "flex"
-   :align-items "center"
-   :padding "0.5rem"})
+   :margin "16px 0 16px 0"})
 
 (defstyles new-exercise-minutes-label-style []
   {:font-size "150%"
@@ -231,11 +236,12 @@
    :color styles/gray
    :font-size "200%"
    :text-align "center"
-   :width "6rem"
+   :width "5.5rem"
+   :height "3rem"
    :padding "0.5rem"
    :border-bottom "solid 2px transparent"
    :border-top "solid 2px transparent"
-   :border-radius "0.25rem"
+   :border-radius "6px"
    :font-weight "bold"
    :font-variant-numeric "tabular-nums"
    :&:focus {:border-bottom-color styles/main-color}})
@@ -249,6 +255,10 @@
    "&:focus-within .minutes-label" {:color styles/main-color}
    "&:focus-within .minutes-button" {:color styles/main-color}
    "&:focus-within .minutes-input" {:color styles/main-color}})
+
+(defstyles new-exercise-button-style []
+  {:border-radius "12px"
+   :height "3rem"})
 
 (defn new-workout [{:keys [local-date]}]
   ;; TODO: persist state, so closing the modal doesn't wipe the data
@@ -278,25 +288,25 @@
                         (update-description (+ (:description @state) (.-colons ^js/Emoji emoji))))]
     (fn []
       [:div {:class (new-exercise-form-style)}
-       [:> react-contenteditable {:class (new-exercise-input-style)
-                                  :placeholder "How did you exercise?"
-                                  :html (parse-emojis (:description @state))
-                                  :on-change handle-description-change}]
-       [:div {:class (new-exercise-tag-emoji)}
+       [:div {:class (new-exercise-form-row)}
+        [:> react-contenteditable {:class (new-exercise-input-style)
+                                   :placeholder "How did you exercise?"
+                                   :html (parse-emojis (:description @state))
+                                   :on-change handle-description-change}]]
+       [:div {:class (new-exercise-form-row)}
         [exercise-tags {:tags (:tags @state)
                         :on-add add-tag
                         :on-delete delete-tag}]
-        [:div
-         [emoji-picker {:on-select on-pick-emoji}]]]
-       [:div {:class (new-exercise-buttons-style)}
+        ;; [:div
+        ;;  [emoji-picker {:on-select on-pick-emoji}]]
+        ]
+       [:div {:class (new-exercise-form-row)}
         [:div {:class (new-exercise-minutes-style)}
          [:button {:class (classes (styles/icon-button) "minutes-button")
-                                  :type "button"
-                                  :on-click #(dec-minutes)}
+                   :type "button"
+                   :on-click #(dec-minutes)}
           [icons/minus]]
          [:input {:class (classes (new-exercise-minutes-input-style) "minutes-input")
-                  ;; Even though this input controls a number I don't want to use a number input type,
-                  ;; because that would add the DOM's own increment and decrement buttons which I don't want.
                   :type "text"
                   :value (:minutes @state)
                   :on-change handle-minutes-change}]
@@ -307,13 +317,14 @@
          [:label {:class (classes (new-exercise-minutes-label-style) "minutes-label")
                   :for "minutes"}
           "minutes"]]
-        [:button {:class (styles/icon-button-cta)
+        [:button {:class (classes (styles/icon-button-cta) (new-exercise-button-style))
                   :type "button"
                   :on-click create-exercise}
-         "Submit"]]])))
+         "Create"]]])))
 
 (defstyles exercises-content-style []
-  {:flex 1})
+  {:flex 1
+   :margin-bottom "16px"})
 
 (defstyles exercises-exercises-style []
   {:margin "2rem 0 0.25rem 0"})
@@ -333,7 +344,8 @@
    :color styles/main-color-active})
 
 (defstyles exercise-description-style []
-  {:font-size "150%"})
+  {:font-size "150%"
+   :color styles/dark-gray})
 
 (defstyles exercise-adding-style []
   {:border-top (str "solid 1px " styles/middle-gray)

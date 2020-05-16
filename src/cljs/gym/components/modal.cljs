@@ -23,7 +23,7 @@
    :position "initial"
    :background "white"
    :overflow "auto"
-   :border-radius "4px"
+   :border-radius "6px"
    :outline "none"
    "@media only screen and (max-width: 800px)" {:width "100%"}
    "@media only screen and (max-height: 400px)" {:margin 0}})
@@ -31,7 +31,9 @@
 (defstyles modal-close-button-style []
   {:background "none"
    :border "none"
-   :color "white"})
+   :color "white"
+   :padding "0 6px"
+   :&:hover {:color styles/middle-gray}})
 
 (defstyles modal-title-style []
   {:padding "12px"
@@ -40,10 +42,16 @@
    :display "flex"
    :justify-content "space-between"})
 
-(defstyles modal-container-style []
-  {:padding "0 16px 16px 16px"
-   :overflow-y "auto"
+(defstyles modal-content-container-style []
+  {:overflow-y "auto"
    :max-height "600px"})
+
+(defstyles modal-container-style []
+  {:width "100%"
+   :padding-right "16px"
+   :padding-left "16px"
+   :margin-right "auto"
+   :margin-left "auto"})
 
 (defn modal []
   (fn [{:keys [disable-auto-close is-open on-close title]} & children]
@@ -53,7 +61,7 @@
                        :should-close-on-overlay-click (not disable-auto-close)
                        :overlay-class-name (modal-overlay-style)
                        :class (modal-content-style)}
-     [:div.container-fluid
+     [:div {:class (modal-container-style)}
       (when title
         [:div.row {:class (modal-title-style)}
          [:span title]
@@ -61,5 +69,5 @@
            [:button {:class (modal-close-button-style)
                      :on-click #(when-not (nil? on-close) (on-close))}
             [icons/times]])])
-      [:div {:class (modal-container-style)}
+      [:div {:class (modal-content-container-style)}
        children]]]))

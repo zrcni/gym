@@ -32,7 +32,7 @@
    :margin-left "4px"
    :margin-right "4px"
    :padding "4px"
-   :&:hover {:color styles/red}})
+   :&:hover {:color styles/middle-gray}})
 
 (defstyles header-style []
   {:display "flex"

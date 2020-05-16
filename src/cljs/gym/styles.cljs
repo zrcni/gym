@@ -7,6 +7,7 @@
 (def main-color-hover "hsl(318, 58%, 30%)")
 (def main-color-active "hsl(318, 58%, 46%)")
 
+(def dark-gray "#333333")
 (def gray "hsl(197, 10%, 45%)")
 (def middle-gray "hsl(240, 6%, 92%)")
 (def light-gray "hsl(240, 6%, 97%)")
