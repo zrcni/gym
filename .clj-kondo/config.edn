@@ -1,0 +1,3 @@
+{:lint-as {cljss.core/defstyles clojure.core/defn
+           cljss.reagent/defstyled clj-kondo.lint-as/def-catch-all
+           cljss.core/defkeyframes clojure.core/defn}}

@@ -98,6 +98,9 @@
 (defn is-same-day? [a b]
   (= (date-time->local-date a) (date-time->local-date b)))
 
+(defn is-future? [a b]
+  (t/after? a b))
+
 (defn map-workouts-by-day [workouts]
   (reduce
    (fn [by-day workout]

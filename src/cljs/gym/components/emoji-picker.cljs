@@ -1,6 +1,7 @@
 (ns gym.components.emoji-picker
   [:require
    [reagent.core :as reagent]
+   [cljss.core :refer-macros [defstyles]]
    [emojiMart]
    [smileParser]])
 
@@ -14,6 +15,11 @@
     (if (= (.-parentNode el) parent)
       true
       (parent-of? (.-parentNode el) parent))))
+
+(defstyles emoji-picker-button-style []
+  {:margin "4px"
+   :padding "4px"
+   :padding-bottom "0px"})
 
 (defn emoji-picker []
   (let [!prev-el (atom nil)
@@ -51,10 +57,11 @@
       :reagent-render
       (fn [{:keys [on-select]}]
         (if (:open @state)
-          [:div.emoji-picker.wrapper {:ref #(reset! !el %)
+          [:div#emoji-picker {:ref #(reset! !el %)
                                       :style {:position "fixed"
                                               :right (str (+ (-> @state :pos :right) 100) "px")
                                               :top (str (+ (-> @state :pos :top) 0) "px")}}
            [:> (.-Picker emojiMart) {:on-select on-select}]]
-          [:button.emoji-picker-button {:on-click open-picker}
+          [:button {:class (emoji-picker-button-style)
+                    :on-click open-picker}
            [:> (.-Emoji emojiMart) {:emoji "smile" :size 24}]]))})))

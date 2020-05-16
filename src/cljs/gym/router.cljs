@@ -2,6 +2,7 @@
   (:require
    [reagent.core :as reagent]
    [clerk.core :as clerk]
+   [gym.components.loaders :as loaders]
    [gym.views :refer [layout]]
    [gym.home.routes :as home]
    [gym.login.routes :as login]
@@ -48,7 +49,7 @@
           current-route @(subscribe [:current-route])]
       [layout {:disabled (= auth-status :waiting)}
        (if (= auth-status :waiting)
-         [:div.circle-loader]
+         [loaders/circle]
          (when current-route
            ^{:key (:path current-route)} [current-page {:route current-route}]))])))
 

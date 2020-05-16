@@ -1,18 +1,61 @@
 (ns gym.views
   (:require
+   [gym.login.events]
+   [gym.styles :as styles :refer [classes]]
+   [cljss.core :refer-macros [defstyles]]
    [re-frame.core :refer [subscribe dispatch]]))
+
+(defstyles header-title-style []
+  {:color "white"})
+
+(defstyles header-left-style []
+  {:display "flex"
+   :justify-content "flex-start"})
+
+(defstyles header-right-style []
+  {:display "flex"
+   :justify-content "flex-end"})
+
+(defstyles header-user-avatar-style []
+  {:height "24px"
+   :margin-left "4px"
+   :margin-right "4px"})
+
+(defstyles logout-button-style []
+  {:background-color styles/main-color
+   :border-color "#900c3f"
+   :color "#fff"
+   :margin-left "4px"
+   :margin-right "4px"})
+
+(defstyles header-style []
+  {:display "flex"
+   :padding "8px"
+   :height "3em"
+   :background-color styles/main-color
+   :justify-content "space-between"
+   :font-family styles/font-family
+   :font-weight 500})
+
+(defstyles content-style []
+  {:padding "12px"})
 
 (defn layout []
   (fn [_ & children]
     (let [user @(subscribe [:user])]
       [:<>
-       [:header {:id "header" :class "navbar navbar-expand navbar-dark flex-md-row bd-navbar"}
-        [:div.header-left
-         [:a.header-title {:href "/"} "Exercise tracker"]]
-        [:div.header-right
+       [:header#header {:class (classes (header-style) "navbar navbar-expand navbar-dark flex-md-row bd-navbar")}
+        [:div {:class (header-left-style)}
+         [:a {:class (header-title-style)
+              :href "/"} "Exercise tracker"]]
+        [:div {:class (header-right-style)}
          (when (:avatar_url user)
-           [:img.header-user-avatar {:src (:avatar_url user) :alt "user-logo"}])
+           [:img {:class (header-user-avatar-style)
+                  :src (:avatar_url user)
+                  :alt "user-logo"}])
          (when user
-           [:button.logout-button {:on-click #(dispatch [:logout])} "Logout"])]]
-       [:main {:id "content"}
+           [:button {:class (logout-button-style)
+                     :on-click #(dispatch [::gym.login.events/logout])}
+            "Logout"])]]
+       [:main#content {:class (content-style)}
         children]])))
