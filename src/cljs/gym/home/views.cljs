@@ -411,7 +411,7 @@
    :margin "2px"
    "@media only screen and (max-width: 800px)" {:height "4rem"}
    :is-today? {:border (str "1px solid " styles/main-color)}
-   :is-future? {:opacity 0.33}
+   :is-future? {:opacity "0.33"}
    :no-minutes? {:background "rgba(231, 238, 241)"}})
 
 (defstyles day-date-style []
