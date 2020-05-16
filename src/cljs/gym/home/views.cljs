@@ -407,12 +407,11 @@
    :display "flex"
    :flex-direction "column"
    :height "5rem"
-   :background "rgba(231, 238, 241, 0.4)"
+   :background "rgba(231, 238, 241)"
    :margin "2px"
    "@media only screen and (max-width: 800px)" {:height "4rem"}
    :is-today? {:border (str "1px solid " styles/main-color)}
-   :is-future? {:opacity "0.33"}
-   :no-minutes? {:background "rgba(231, 238, 241)"}})
+   :is-future? {:opacity "0.33"}})
 
 (defstyles day-date-style []
   {:position "absolute"
@@ -496,8 +495,7 @@
                       is-future? (is-future? parsed-date now)]
                   ^{:key (:local-date day)}
                   [day-div {:is-today? is-today?
-                            :is-future? is-future?
-                            :no-minutes? (not (:workouts day))}
+                            :is-future? is-future?}
                    [:div {:class (day-date-style)}
                     (when (should-show-month? day-index week-index (:local-date day))
                       [:div {:class (day-month-style)}
