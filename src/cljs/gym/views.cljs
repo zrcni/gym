@@ -1,6 +1,7 @@
 (ns gym.views
   (:require
    [gym.login.events]
+   [gym.components.icons :as icons]
    [gym.styles :as styles :refer [classes]]
    [cljss.core :refer-macros [defstyles]]
    [re-frame.core :refer [subscribe dispatch]]))
@@ -10,23 +11,28 @@
 
 (defstyles header-left-style []
   {:display "flex"
-   :justify-content "flex-start"})
+   :justify-content "flex-start"
+   :align-items "center"})
 
 (defstyles header-right-style []
   {:display "flex"
-   :justify-content "flex-end"})
+   :justify-content "flex-end"
+   :align-items "center"})
 
 (defstyles header-user-avatar-style []
   {:height "24px"
    :margin-left "4px"
-   :margin-right "4px"})
+   :margin-right "4px"
+   :align-self "center"})
 
 (defstyles logout-button-style []
   {:background-color styles/main-color
    :border-color "#900c3f"
    :color "#fff"
    :margin-left "4px"
-   :margin-right "4px"})
+   :margin-right "4px"
+   :padding "4px"
+   :&:hover {:color styles/red}})
 
 (defstyles header-style []
   {:display "flex"
@@ -56,6 +62,6 @@
          (when user
            [:button {:class (logout-button-style)
                      :on-click #(dispatch [::gym.login.events/logout])}
-            "Logout"])]]
+            [icons/power-off]])]]
        [:main#content {:class (content-style)}
         children]])))

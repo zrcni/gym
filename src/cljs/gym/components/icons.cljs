@@ -20,3 +20,6 @@
 
 (defn times [props]
   [:i.fas.fa-times props])
+
+(defn power-off [props]
+ [:i.fas.fa-power-off props])
