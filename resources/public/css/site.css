@@ -1,0 +1,7 @@
+
+/* this not defined with cljss, because I don't know how to implement it with it  */
+[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  display: block;
+  color: #aaa;
+}

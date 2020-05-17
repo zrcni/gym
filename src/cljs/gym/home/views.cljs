@@ -364,7 +364,7 @@
       [:div {:class (new-exercise-form-style)}
        [:div {:class (new-exercise-form-row)}
         [:> react-contenteditable {:class (new-exercise-description-input-style)
-                                   :placeholder "How did you exercise?"
+                                   :placeholder "How was the exercise?"
                                    :html (parse-emojis (:description @state))
                                    :on-change handle-description-change}]]
        [:div {:class (new-exercise-form-row)}
