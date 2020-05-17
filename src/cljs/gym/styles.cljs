@@ -9,8 +9,6 @@
 
 (def main-color "#1d1d1d")
 (def main-color-secondary "#2d2d2d")
-(def main-color-hover "hsl(318, 58%, 30%)")
-(def main-color-active "hsl(318, 58%, 46%)")
 
 (def bg-color "#161616")
 (def bg-color-secondary "#2d2d2d")
@@ -23,8 +21,8 @@
 (def middle-gray "hsl(240, 6%, 92%)")
 (def light-gray "hsl(240, 6%, 97%)")
 
-(def focus-shadow (str "0px 0px 2px " main-color-active))
-(def focus-border (str "solid 1px " main-color-active))
+(def focus-shadow (str "0px 0px 2px " accent-color-active))
+(def focus-border (str "solid 1px " accent-color-active))
 (def focus-border-inactive "solid 1px transparent")
 
 (def transparent-white "hsla(0, 100%, 100%, 1)")
