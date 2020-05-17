@@ -177,23 +177,22 @@
    :cursor "pointer"
    :width "35px"
    :height "35px"
-   :border-left (str "1px solid " styles/middle-gray)
-   :&:hover {:color styles/main-color}})
+   :&:hover {:background-color styles/accent-color-hover
+             :border-top-right-radius "6px"
+             :border-bottom-right-radius "6px"}})
 
 (defstyles tag-chip-content-style []
-  {:color styles/dark-gray
-   :padding "0 8px 0 8px"})
+  {:padding "0 8px 0 8px"})
 
 (defstyles tag-style []
   {:box-sizing "border-box"
-   :color styles/gray
+   :color styles/text-color
    :display "flex"
    :align-items "center"
    :height "35px"
    :line-height "20px"
    :white-space "nowrap"
-   :background styles/light-gray
-   :border (str "1px solid " styles/middle-gray)
+   :background styles/accent-color
    :border-radius "6px"
    :cursor "default"
    :opacity 1
@@ -437,6 +436,10 @@
 (defstyles exercise-add-button-text-style []
   {:margin-left "0.5rem"})
 
+(defstyles exercise-tags-wrapper-style []
+  {:display "flex"
+   :margin-top "0.5rem"})
+
 (defn created-workouts []
   (let [adding (reagent/atom false)
         delete-workout #(dispatch [:delete-workout %])]
@@ -457,7 +460,11 @@
             [:div {:class (exercise-description-style)
                    :dangerouslySetInnerHTML {:__html (parse-emojis (:description workout))}}]
             (when (> (count (:tags workout)) 0)
-              [:div (str "tags: " (join ", " (:tags workout)))])])
+              [:div {:class (exercise-tags-wrapper-style)}
+               (map
+                (fn [tag] [tag-chip {:value tag}])
+                (:tags workout))]
+              )])
          workouts)]
        (if @adding
          [:div {:class (exercise-adding-style)}
