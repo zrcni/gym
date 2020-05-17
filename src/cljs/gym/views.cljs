@@ -8,7 +8,7 @@
 
 (defstyles header-title-style []
   {:color styles/text-color
-   :&:hover {:color styles/main-color-active}})
+   :&:hover {:color styles/accent-color-active}})
 
 (defstyles header-left-style []
   {:display "flex"
@@ -27,7 +27,7 @@
    :margin-left "4px"
    :margin-right "4px"
    :padding "4px"
-   :&:hover {:background-color styles/main-color-active}})
+   :&:hover {:background-color styles/accent-color-active}})
 
 (defstyles header-style []
   {:display "flex"

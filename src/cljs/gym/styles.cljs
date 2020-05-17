@@ -3,12 +3,17 @@
    [clojure.string :refer [join]]
    [cljss.core :refer [inject-global remove-styles!] :refer-macros [defstyles defkeyframes]]))
 
-(def main-color "hsl(318, 58%, 24%)")
+(def accent-color "hsl(318, 58%, 24%)")
+(def accent-color-hover "hsl(318, 58%, 30%)")
+(def accent-color-active "hsl(318, 58%, 46%)")
+
+(def main-color "#1d1d1d")
+(def main-color-secondary "#2d2d2d")
 (def main-color-hover "hsl(318, 58%, 30%)")
 (def main-color-active "hsl(318, 58%, 46%)")
 
-(def bg-color "hsl(318, 43%, 16%)")
-(def bg-color-secondary "hsl(318, 43%, 20%)")
+(def bg-color "#161616")
+(def bg-color-secondary "#2d2d2d")
 
 (def text-color "whitesmoke")
 (def text-color-secondary "hsl(197, 10%, 45%)")
@@ -71,7 +76,7 @@
    :border-radius "6px"
    :border "solid 1px transparent"
    :padding "0.5rem"
-   :&:hover {:background main-color-hover
+   :&:hover {:background accent-color
              :color text-color}
    :&:focus {:outline "none"
              :border focus-border
@@ -90,11 +95,11 @@
    :align-items "center"
    :border-radius "6px"
    :border "solid 1px transparent"
-   :background-color main-color
+   :background-color accent-color
    :color text-color
    :padding "0.5rem 1rem"
-   :&:hover {:background-color main-color-hover}
-   :&:active {:background-color main-color-active}
+   :&:hover {:background-color accent-color-hover}
+   :&:active {:background-color accent-color-active}
    :&:focus {:border-color text-color
              :box-shadow (str "0px 0px 4px 1px " main-color)}})
 

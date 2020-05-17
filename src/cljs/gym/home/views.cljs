@@ -58,7 +58,7 @@
    :font-size "85%"})
 
 (defstyles calendar-earlier-later-style []
-  {:&:hover {:background-color styles/bg-color-secondary}})
+  {:&:hover {:background-color styles/accent-color}})
 
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
   [:div {:class (calendar-nav-style)}
@@ -155,11 +155,11 @@
    :height "35px"
    :width "35px"
    :padding "3px 8px 0 8px"
-   :background-color styles/main-color
+   :background-color styles/accent-color
    :color styles/text-color
    :border-top-right-radius "6px"
    :border-bottom-right-radius "6px"
-   :&:hover {:background-color styles/main-color-hover}})
+   :&:hover {:background-color styles/accent-color-hover}})
 
 (defn add-tag [{:keys [on-add]}]
   (let [tag (reagent/atom "")
@@ -218,7 +218,7 @@
    :border-top "solid 2px transparent"
    :overflow-y "auto"
    :&:focus {:outline "none"
-             :border-bottom-color styles/main-color}})
+             :border-bottom-color styles/accent-color-active}})
 
 (defstyles new-exercise-form-row []
   {:display "flex"
@@ -244,7 +244,7 @@
    :border-radius "6px"
    :font-weight "bold"
    :font-variant-numeric "tabular-nums"
-   :&:focus {:border-bottom-color styles/main-color}})
+   :&:focus {:border-bottom-color styles/accent-color-active}})
 
 (defstyles new-exercise-minutes-style []
   {:display "flex"
@@ -329,11 +329,10 @@
    :margin-bottom "16px"})
 
 (defstyles exercises-exercises-style []
-  {:margin "2rem 0 0.25rem 0"})
+  {:margin "0 0 0.25rem 0"})
 
 (defstyles exercise-style []
-  {:padding "1rem 0"
-   :border-top (str "solid 1px " styles/middle-gray)})
+  {:padding "1rem 0"})
 
 (defstyles exercise-title-style []
   {:color styles/text-color
@@ -344,7 +343,7 @@
 (defstyles exercise-minutes-style []
   {:font-size "300%"
    :font-weight "bold"
-   :color styles/text-color})
+   :color styles/accent-color-active})
 
 (defstyles exercise-description-style []
   {:color styles/text-color
@@ -423,11 +422,11 @@
    :display "flex"
    :flex-direction "column"
    :height "5rem"
-   :background styles/main-color-hover
+   :background styles/main-color-secondary
    :margin "2px"
    ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:height "4rem"}}
-   :today? {:border (str "1px solid " styles/main-color-active)}
+   :today? {:border (str "1px solid " styles/accent-color-active)}
    :future? {:opacity "0.33"}})
 
 (defstyles day-date-style []
@@ -462,12 +461,12 @@
   {:color styles/text-color
    :flex 1
    :height "100%"
-   :&:hover {:background styles/main-color-active
+   :&:hover {:background styles/accent-color
              :cursor "pointer"}
    :&:focus {:outline "none"
              :border styles/focus-border
              :box-shadow styles/focus-shadow}
-   :&:active {:color styles/main-color-active}
+   :&:active {:color styles/accent-color-active}
    :&:disabled {:cursor "not-allowed"
                 :border "none"
                 :box-shadow "none"
@@ -594,7 +593,7 @@
   {:margin 0
    :font-size "1em"
    :font-weight 500
-   :background-color styles/main-color-hover
+   :background-color styles/accent-color
    :border-top-left-radius "6px"
    :border-bottom-left-radius "6px"})
 
