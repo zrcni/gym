@@ -438,7 +438,8 @@
 
 (defstyles exercise-tags-wrapper-style []
   {:display "flex"
-   :margin-top "0.5rem"})
+   :margin-top "0.5rem"
+   "> *:first-child" {:margin-left "0px"}})
 
 (defn created-workouts []
   (let [adding (reagent/atom false)
@@ -553,8 +554,7 @@
                 :background "inherit"}})
 
 (defstyles calendar-day-duration-style []
-  {:font-weight 700
-   :color styles/text-color})
+  {:font-weight 700})
 
 (defstyles calendar-top-style []
   {:display "grid"
