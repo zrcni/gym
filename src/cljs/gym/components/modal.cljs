@@ -1,6 +1,6 @@
 (ns gym.components.modal
   (:require
-   [cljss.core :refer-macros [defstyles]]
+   [cljss.core :as css :refer-macros [defstyles]]
    [gym.styles :as styles]
    [gym.components.icons :as icons]
    [react-modal]))
@@ -25,8 +25,10 @@
    :overflow "auto"
    :border-radius "6px"
    :outline "none"
-   "@media only screen and (max-width: 800px)" {:width "100%"}
-   "@media only screen and (max-height: 400px)" {:margin 0}})
+   ::css/media {[:only :screen :and [:max-width "800px"]]
+                {:width "100%"}
+                [:only :screen :and [:max-height "400px"]]
+                {:margin 0}}})
 
 (defstyles modal-close-button-style []
   {:background "none"

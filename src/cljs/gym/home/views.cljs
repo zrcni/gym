@@ -11,7 +11,7 @@
    [smileParser]
    [clojure.contrib.humanize :as humanize]
    [cljs-time.core :as t]
-   [cljss.core :refer-macros [defstyles]]
+   [cljss.core :as css :refer-macros [defstyles]]
    [cljss.reagent :refer-macros [defstyled]]
    [gym.components.icons :as icons]
    [gym.styles :as styles :refer [classes]]
@@ -411,7 +411,8 @@
   {:overflow "hidden"
    :position "relative"
    :height "calc(25rem + 12px)"
-   "@media only screen and (max-width: 800px)" {:height "calc(20rem + 12px)"}})
+   ::css/media {[:only :screen :and [:max-width "800px"]]
+                {:height "calc(20rem + 12px)"}}})
 
 (defstyles calendar-week-style []
   {:display "flex"})
@@ -424,7 +425,8 @@
    :height "5rem"
    :background "rgba(231, 238, 241)"
    :margin "2px"
-   "@media only screen and (max-width: 800px)" {:height "4rem"}
+   ::css/media {[:only :screen :and [:max-width "800px"]]
+                {:height "4rem"}}
    :today? {:border (str "1px solid " styles/main-color)}
    :future? {:opacity "0.33"}})
 
@@ -560,45 +562,59 @@
       (humanize/duration d {:number-format str})
       (capitalize d))))
 
+(defstyles duration-cards-style []
+  {:display "flex"
+   :justify-content "center"
+   :flex-direction "row"
+   ::css/media {[:only :screen :and [:max-width "500px"]]
+               {:flex-direction "column"
+                :align-items "center"}}})
+
 (defstyles duration-card-style []
-  {:padding "0.5em"
+  {:display "grid"
+   :grid-template-columns "7rem 11rem"
+   :grid-template-rows "3rem"
    :color "whitesmoke"
    :background-color styles/main-color
-   :width "17em"
-   :height "3.5em"
-   :line-height "2.5em"
+   :height "3rem"
+   :line-height "3rem"
    :text-align "center"
    :vertical-align "middle"
    :font-family styles/font-family
    :margin-right "0.5em"
    :border-radius "6px"
-   "@media only screen and (max-width: 500px)" {:margin 0
-                                                :margin-top "0.5em"}})
+   :white-space "nowrap"
+   :text-overflow "ellipsis"
+   :overflow "hidden"
+   ::css/media {[:only :screen :and [:max-width "500px"]]
+                {:margin 0
+                 :margin-top "0.5em"}}})
 
 (defstyles duration-card-title-style []
   {:margin 0
    :font-size "1em"
-   :font-weight 500})
+   :font-weight 500
+   :background-color styles/main-color-hover
+   :border-top-left-radius "6px"
+   :border-bottom-left-radius "6px"})
 
 (defstyles duration-card-duration-style []
-  {:margin 0})
-
-(defstyles duration-cards-style []
-  {:display "flex"
-   :justify-content "center"
-   :flex-direction "row"
-   "@media only screen and (max-width: 500px)" {:flex-direction "column"
-                                                :align-items "center"}})
+  {:margin 0
+   :font-weight 500
+   :border-top-right-radius "6px"
+   :border-bottom-right-radius "6px"})
 
 (defn duration-card [{:keys [title duration]}]
   [:div {:class (duration-card-style)}
-   [:span {:class (duration-card-title-style)}
-    (str title " ")]
-   [:span {:class (duration-card-duration-style)}
-    (if (nil? duration)
-      ;; TODO: small loading indicator
-      "..."
-      (displayable-duration duration))]])
+   [:div {:class (duration-card-title-style)}
+    [:span 
+     (str title " ")]]
+   [:div {:class (duration-card-duration-style)}
+    [:span
+     (if (nil? duration)
+       ;; TODO: small loading indicator
+       "..."
+       (displayable-duration duration))]]])
 
 (defn exercise-stats []
   (dispatch [:fetch-current-week-exercise-duration])
