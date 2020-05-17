@@ -491,7 +491,7 @@
 (defstyles calendar-animation-overflow-style []
   {:overflow "hidden"
    :position "relative"
-   :height "calc(25rem + 16px)"
+   :height "calc(25rem + 18px)"
    ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:height "calc(20rem + 18px)"}}})
 
