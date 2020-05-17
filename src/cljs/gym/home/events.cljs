@@ -88,7 +88,7 @@
 
 (reg-event-fx :create-workout-request
               (fn [_ [_ workout]]
-                (let [result (spec/explain-data :gym.specs/workout-new workout)]
+                (let [result (spec/explain-data ::gym.specs/workout-new workout)]
                   (if result
                     (let [problems (:cljs.spec.alpha/problems result)
                           keys (mapcat #(as-> % v (:in v) (map name v)) problems)]

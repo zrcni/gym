@@ -15,6 +15,7 @@
    [cljss.reagent :refer-macros [defstyled]]
    [gym.components.icons :as icons]
    [gym.styles :as styles :refer [classes]]
+   [gym.js-interop :refer [get-value]]
    [gym.components.emoji-picker :refer [emoji-picker parse-emojis modal]]
    [gym.components.modal :refer [modal]]
    [gym.calendar-utils :refer [ms->m
@@ -173,7 +174,7 @@
                 :type "text"
                 :value @tag
                 :placeholder "tags"
-                :on-change #(reset! tag (-> % .-target .-value))
+                :on-change #(reset! tag (get-value %))
                 :on-key-down on-key-down}]
        [:button {:class (tag-add-button-style)
                  :type "button"
@@ -202,7 +203,7 @@
    :flex 1
    "> *:first-child" {:margin-top "1rem"}})
 
-(defstyles new-exercise-input-style []
+(defstyles new-exercise-description-input-style []
   {:display "block"
    :width "100%"
    :color styles/dark-gray
@@ -268,8 +269,8 @@
         min-minutes 0
         update-minutes #(swap! state assoc :minutes %)
         update-description #(swap! state assoc :description %)
-        handle-description-change #(update-description (-> % .-target .-value))
-        handle-minutes-change #(update-minutes (-> % .-target .-value))
+        handle-description-change #(update-description (get-value %))
+        handle-minutes-change #(update-minutes (get-value %))
         inc-minutes #(let [n (to-number (:minutes @state))]
                        (update-minutes (inc n)))
         dec-minutes #(let [n (to-number (:minutes @state))]
@@ -284,12 +285,13 @@
                                                                            (to-number)
                                                                            (m->ms))
                                                              :tags (:tags @state)}])
-        on-pick-emoji (fn [emoji]
-                        (update-description (+ (:description @state) (.-colons ^js/Emoji emoji))))]
+        ;; on-pick-emoji (fn [emoji]
+        ;;                 (update-description (+ (:description @state) (.-colons ^js/Emoji emoji))))
+        ]
     (fn []
       [:div {:class (new-exercise-form-style)}
        [:div {:class (new-exercise-form-row)}
-        [:> react-contenteditable {:class (new-exercise-input-style)
+        [:> react-contenteditable {:class (new-exercise-description-input-style)
                                    :placeholder "How did you exercise?"
                                    :html (parse-emojis (:description @state))
                                    :on-change handle-description-change}]]
@@ -317,6 +319,7 @@
          [:label {:class (classes (new-exercise-minutes-label-style) "minutes-label")
                   :for "minutes"}
           "minutes"]]
+
         [:button {:class (classes (styles/icon-button-cta) (new-exercise-button-style))
                   :type "button"
                   :on-click create-exercise}
@@ -509,14 +512,15 @@
                       is-today (same-day? parsed-date now)
                       is-future (future? parsed-date now)]
 
-                  ^{:key (:local-date day)}
                   (if is-future
+                    ^{:key (:local-date day)}
                     [day-div {:today? is-today
                               :future? is-future}
                      [:button {:class (calendar-add-exercise-button-style)
                                :disabled true}
                       [icons/plus]]]
 
+                    ^{:key (:local-date day)}
                     [day-div {:today? is-today
                               :future? is-future}
                      [:div {:class (day-date-style)}
