@@ -34,16 +34,21 @@
   {:background "none"
    :border "none"
    :color styles/text-color
-   :padding "0 6px"
    :&:hover {:color styles/middle-gray}})
 
-(defstyles modal-title-style []
-  {:padding "12px"
+(defstyles modal-header-style []
+  {:padding "8px"
+   :height "3rem"
    :font-weight 500
    :background-color styles/main-color
    :color styles/text-color
    :display "flex"
-   :justify-content "space-between"})
+   :justify-content "space-between"
+   :align-content "center"
+   :align-items "center"})
+
+(defstyles modal-title-style []
+  {:padding-left "0.5rem"})
 
 (defstyles modal-content-container-style []
   {:overflow-y "auto"
@@ -67,10 +72,11 @@
                        :class (modal-content-style)}
      [:div {:class (modal-container-style)}
       (when title
-        [:div.row {:class (modal-title-style)}
-         [:span title]
+        [:div.row {:class (modal-header-style)}
+         [:div {:Class (modal-title-style)}
+          [:span title]]
          (when-not disable-auto-close
-           [:button {:class (modal-close-button-style)
+           [:button {:class (styles/icon-button)
                      :on-click #(when-not (nil? on-close) (on-close))}
             [icons/times]])])
       [:div {:class (modal-content-container-style)}
