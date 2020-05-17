@@ -1,5 +1,7 @@
 (ns gym.core
   (:require
+   [gym.config :as cfg]
+   [gym.error-reporting]
    [gym.effects]
    [gym.events]
    [gym.subs]
@@ -14,6 +16,7 @@
   (reagent/render [router/root] (.getElementById js/document "app")))
 
 (defn init! []
+  (when cfg/sentry-dsn (dispatch-sync [:init-error-reporting!]))
   (reg-auth0-cofx (create-auth0-client))
   (dispatch-sync [:initialize-db])
   (clear-subscription-cache!)

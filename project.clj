@@ -92,12 +92,15 @@
                                                toastr toastr
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")
-                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")}}}
+                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
+                                gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
+                                ;; this comes from netlify in prod
+                                gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.core/mount-root"
                         ;; I turned this on, because of reagent deprecation warnings
-                        ;; which don't affect anything right now. TODO: update reagent
+                        ;; which don't affect anything right now. TODO: update reagent?
                         :load-warninged-code true}
              :compiler
              {:main "gym.dev"
@@ -123,7 +126,9 @@
                                                toastr toastr
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "http://localhost:3001")
-                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")}}}}}
+                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
+                                gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
+                                gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}}}
 
   :figwheel
   {:http-server-root "public"
@@ -161,7 +166,8 @@
                          :host-url "http://localhost:3001"
                          :public-key ~(try
                                         (slurp "./certs/auth0-public-key.pem")
-                                        (catch Exception _ ""))}}
+                                        (catch Exception _ ""))
+                         :commit-sha ~(System/getenv "COMMIT_REF")}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
@@ -172,7 +178,8 @@
                              :frontend-urls ~(System/getenv "FRONTEND_URLS")
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")
-                             :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")}
+                             :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")
+                             :commit-sha ~(System/getenv "COMMIT_REF")}
                        :aot :all
                        :omit-source true}}
     :migratus {:store :database

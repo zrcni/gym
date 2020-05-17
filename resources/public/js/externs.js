@@ -36,3 +36,14 @@ var Emoji = {
   skin: 0,
   native: ''
 }
+
+var Sentry = {
+  init: function() {},
+  configureScope: function() {}
+}
+
+var SentryScope = {
+  setUser: function() {},
+  setTag: function() {},
+  setLevel: function() {}
+}

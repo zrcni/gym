@@ -7,3 +7,4 @@
 (def port (:port env))
 (def host-url (:host-url env))
 (def public-key (:public-key env))
+(def commit-sha (:commit-sha env))

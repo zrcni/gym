@@ -21,13 +21,13 @@
 
 (reg-event-fx ::login-success
               (fn [{:keys [db]} [_ body]]
-                (let [user (:user body)
-                      events {:db (-> db
-                                      (assoc :user user)
+                (let [events {:db (-> db
+                                      (assoc :user (:user body))
                                       (assoc :auth-status :logged-in))}]
-                  (if (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
-                    (assoc events :navigate! [:home])
-                    events))))
+                  (when (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
+                    (assoc events :navigate! [:home]))
+                  (when cfg/sentry-dsn (assoc events :set-sentry-user-info! {:id (:user_id (:user body))}))
+                  events)))
 
 (reg-event-fx ::login-failure
               (fn [_ [_ error]]
@@ -89,6 +89,7 @@
                                       (assoc :user nil)
                                       (assoc :token nil)
                                       (assoc :auth-status :logged-out))}]
-                  (if-not (= (-> js/window .-location .-pathname) "/login")
-                    (assoc events :navigate! [:login])
-                    events))))
+                  (when-not (= (-> js/window .-location .-pathname) "/login")
+                    (assoc events :navigate! [:login]))
+                  (when cfg/sentry-dsn (assoc events :set-sentry-user-info! nil))
+                  events)))
