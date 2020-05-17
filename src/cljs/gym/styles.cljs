@@ -3,9 +3,9 @@
    [clojure.string :refer [join]]
    [cljss.core :refer [inject-global remove-styles!] :refer-macros [defstyles defkeyframes]]))
 
-(def accent-color "hsl(318, 58%, 24%)")
-(def accent-color-hover "hsl(318, 58%, 30%)")
-(def accent-color-active "hsl(318, 58%, 46%)")
+(def accent-color "hsl(200, 70%, 16%)")
+(def accent-color-hover "hsl(200, 70%, 22%)")
+(def accent-color-active "hsl(200, 70%, 38%)")
 
 (def main-color "#1d1d1d")
 (def main-color-secondary "#2d2d2d")

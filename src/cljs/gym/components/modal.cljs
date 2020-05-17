@@ -51,7 +51,7 @@
 
 (defstyles modal-container-style []
   {:width "100%"
-   :background-color styles/main-bg-color
+   :background-color styles/bg-color
    :padding-right "16px"
    :padding-left "16px"
    :margin-right "auto"
