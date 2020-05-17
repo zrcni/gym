@@ -21,7 +21,7 @@
    :width "800px"
    :padding "0px"
    :position "initial"
-   :background "white"
+   :background styles/bg-color
    :overflow "auto"
    :border-radius "6px"
    :outline "none"
@@ -33,14 +33,15 @@
 (defstyles modal-close-button-style []
   {:background "none"
    :border "none"
-   :color "white"
+   :color styles/text-color
    :padding "0 6px"
    :&:hover {:color styles/middle-gray}})
 
 (defstyles modal-title-style []
   {:padding "12px"
+   :font-weight 500
    :background-color styles/main-color
-   :color "white"
+   :color styles/text-color
    :display "flex"
    :justify-content "space-between"})
 
@@ -50,6 +51,7 @@
 
 (defstyles modal-container-style []
   {:width "100%"
+   :background-color styles/main-bg-color
    :padding-right "16px"
    :padding-left "16px"
    :margin-right "auto"

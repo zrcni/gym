@@ -39,7 +39,7 @@
           :flex 1
           :text-align "center"
           :font-weight "bold"
-          :color styles/gray
+          :color styles/text-color-secondary
           :font-size "85%"}})
 
 (defn weekdays []
@@ -57,16 +57,16 @@
    :margin "0.5rem"
    :font-size "85%"})
 
-(defstyles calendar-earlier-later []
-  {:&:hover {:background-color "white"}})
+(defstyles calendar-earlier-later-style []
+  {:&:hover {:background-color styles/bg-color-secondary}})
 
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
   [:div {:class (calendar-nav-style)}
-   [:button {:on-click on-earlier-click :class (classes (calendar-earlier-later) (styles/icon-button))}
+   [:button {:on-click on-earlier-click :class (classes (calendar-earlier-later-style) (styles/icon-button))}
     [icons/chevron-up {:class (styles/base-icon)}]
     [:span "Earlier"]]
    (when show-later
-     [:button {:on-click on-later-click :class (classes (calendar-earlier-later) (styles/icon-button))}
+     [:button {:on-click on-later-click :class (classes (calendar-earlier-later-style) (styles/icon-button))}
       [icons/chevron-down {:class (styles/base-icon)}]
       [:span "Later"]])])
 
@@ -100,12 +100,11 @@
    :justify-content "center"
    :align-items "center"
    :font-size "20px"
-   :color "rgba(0, 0, 0, 0.45)"
    :cursor "pointer"
    :width "35px"
    :height "35px"
    :border-left (str "1px solid " styles/middle-gray)
-   :&:hover {:color "#000000"}})
+   :&:hover {:color styles/main-color}})
 
 (defstyles tag-chip-content-style []
   {:color styles/dark-gray
@@ -157,7 +156,7 @@
    :width "35px"
    :padding "3px 8px 0 8px"
    :background-color styles/main-color
-   :color "white"
+   :color styles/text-color
    :border-top-right-radius "6px"
    :border-bottom-right-radius "6px"
    :&:hover {:background-color styles/main-color-hover}})
@@ -206,8 +205,8 @@
 (defstyles new-exercise-description-input-style []
   {:display "block"
    :width "100%"
-   :color styles/dark-gray
-   :background styles/light-gray
+   :color styles/text-color
+   :background styles/bg-color-secondary
    :border "none"
    :resize "none"
    :font "inherit"
@@ -233,8 +232,8 @@
 (defstyles new-exercise-minutes-input-style []
   {:border "none"
    :outline "none"
-   :background styles/light-gray
-   :color styles/gray
+   :background styles/bg-color-secondary
+   :color styles/text-color
    :font-size "200%"
    :text-align "center"
    :width "5.5rem"
@@ -253,9 +252,9 @@
    :flex 1
    "> *" {:margin "0 0.25rem"}
    "> *:first-child" {:margin-left "0px"}
-   "&:focus-within .minutes-label" {:color styles/main-color}
-   "&:focus-within .minutes-button" {:color styles/main-color}
-   "&:focus-within .minutes-input" {:color styles/main-color}})
+   "&:focus-within .minutes-label" {:color styles/text-color}
+   "&:focus-within .minutes-button" {:color styles/text-color}
+   "&:focus-within .minutes-input" {:color styles/text-color}})
 
 (defstyles new-exercise-button-style []
   {:border-radius "12px"
@@ -337,18 +336,19 @@
    :border-top (str "solid 1px " styles/middle-gray)})
 
 (defstyles exercise-title-style []
-  {:display "flex"
+  {:color styles/text-color
+   :display "flex"
    :align-items "center"
    :justify-content "space-between"})
 
 (defstyles exercise-minutes-style []
   {:font-size "300%"
    :font-weight "bold"
-   :color styles/main-color-active})
+   :color styles/text-color})
 
 (defstyles exercise-description-style []
-  {:font-size "150%"
-   :color styles/dark-gray})
+  {:color styles/text-color
+   :font-size "150%"})
 
 (defstyles exercise-adding-style []
   {:border-top (str "solid 1px " styles/middle-gray)
@@ -359,9 +359,10 @@
 
 (defstyles exercise-add-button-style []
   {:margin-top "0.5rem"
-   :margin-left "-0.5rem"
    "&:focus:not(:focus-visible)" {:box-shadow "none !important"
                                   :border (str styles/focus-border-inactive " !important")}})
+(defstyles exercise-add-button-text-style []
+  {:margin-left "0.5rem"})
 
 (defn created-workouts []
   (let [adding (reagent/atom false)
@@ -379,8 +380,7 @@
               [:span (str (ms->m (:duration workout)) " minutes")]]
              [:button {:class (styles/icon-button)
                        :on-click #(delete-workout (:workout_id workout))}
-              [icons/trash
-               [:span " Delete"]]]]
+              [icons/trash {:class (styles/base-icon)}]]]
             [:div {:class (exercise-description-style)
                    :dangerouslySetInnerHTML {:__html (parse-emojis (:description workout))}}]
             (when (> (count (:tags workout)) 0)
@@ -391,10 +391,10 @@
           [new-workout {:local-date local-date}]]
 
          [:div {:class (exercise-add-style)}
-          [:button {:class (classes (exercise-add-button-style) (styles/icon-button))
+          [:button {:class (classes (styles/icon-button) (exercise-add-button-style))
                     :on-click #(reset! adding true)}
-           [icons/plus-circle
-            [:span " Add another"]]]])])))
+           [icons/plus-circle {:class (styles/base-icon)}]
+           [:span {:class (exercise-add-button-text-style)} "Add another"]]])])))
 
 (defn calculate-total-workout-minutes [workouts]
   (reduce
@@ -423,11 +423,11 @@
    :display "flex"
    :flex-direction "column"
    :height "5rem"
-   :background "rgba(231, 238, 241)"
+   :background styles/main-color-hover
    :margin "2px"
    ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:height "4rem"}}
-   :today? {:border (str "1px solid " styles/main-color)}
+   :today? {:border (str "1px solid " styles/main-color-active)}
    :future? {:opacity "0.33"}})
 
 (defstyles day-date-style []
@@ -459,15 +459,15 @@
    :justify-content "center"})
 
 (defstyles calendar-add-exercise-button-style []
-  {:color styles/gray
+  {:color styles/text-color
    :flex 1
    :height "100%"
-   :&:hover {:background "white"
+   :&:hover {:background styles/main-color-active
              :cursor "pointer"}
    :&:focus {:outline "none"
              :border styles/focus-border
              :box-shadow styles/focus-shadow}
-   :&:active {:color styles/main-color}
+   :&:active {:color styles/main-color-active}
    :&:disabled {:cursor "not-allowed"
                 :border "none"
                 :box-shadow "none"
@@ -475,7 +475,7 @@
 
 (defstyles calendar-day-duration-style []
   {:font-weight 700
-   :color styles/main-color})
+   :color styles/text-color})
 
 ; Basically copy-pasted the calendar functionality (and look) from this repo:
 ; https://github.com/ReactTraining/hooks-workshop
@@ -567,14 +567,14 @@
    :justify-content "center"
    :flex-direction "row"
    ::css/media {[:only :screen :and [:max-width "500px"]]
-               {:flex-direction "column"
-                :align-items "center"}}})
+                {:flex-direction "column"
+                 :align-items "center"}}})
 
 (defstyles duration-card-style []
   {:display "grid"
    :grid-template-columns "7rem 11rem"
    :grid-template-rows "3rem"
-   :color "whitesmoke"
+   :color styles/text-color
    :background-color styles/main-color
    :height "3rem"
    :line-height "3rem"
@@ -607,7 +607,7 @@
 (defn duration-card [{:keys [title duration]}]
   [:div {:class (duration-card-style)}
    [:div {:class (duration-card-title-style)}
-    [:span 
+    [:span
      (str title " ")]]
    [:div {:class (duration-card-duration-style)}
     [:span
@@ -624,10 +624,10 @@
     (let [week-duration @(subscribe [:current-week-exercise-duration])
           month-duration @(subscribe [:current-month-exercise-duration])]
       [:div {:class (duration-cards-style)}
-       [duration-card {:duration week-duration
-                       :title "This week"}]
        [duration-card {:duration month-duration
-                       :title "This month"}]])))
+                       :title "This month"}]
+       [duration-card {:duration week-duration
+                       :title "This week"}]])))
 
 (defn main []
   [:div

@@ -7,13 +7,19 @@
 (def main-color-hover "hsl(318, 58%, 30%)")
 (def main-color-active "hsl(318, 58%, 46%)")
 
+(def bg-color "hsl(318, 43%, 16%)")
+(def bg-color-secondary "hsl(318, 43%, 20%)")
+
+(def text-color "whitesmoke")
+(def text-color-secondary "hsl(197, 10%, 45%)")
+
 (def dark-gray "#333333")
 (def gray "hsl(197, 10%, 45%)")
 (def middle-gray "hsl(240, 6%, 92%)")
 (def light-gray "hsl(240, 6%, 97%)")
 
-(def focus-shadow (str "0px 0px 2px " main-color))
-(def focus-border (str "solid 1px " main-color))
+(def focus-shadow (str "0px 0px 2px " main-color-active))
+(def focus-border (str "solid 1px " main-color-active))
 (def focus-border-inactive "solid 1px transparent")
 
 (def transparent-white "hsla(0, 100%, 100%, 1)")
@@ -33,6 +39,7 @@
                                 :padding 0
                                 :height "100%"
                                 :width "100%"
+                                :background-color bg-color
                                 :font-family font-family
                                 :-webkit-font-smoothing "antialiased"
                                 :-moz-osx-font-smoothing "grayscale"}
@@ -64,7 +71,8 @@
    :border-radius "6px"
    :border "solid 1px transparent"
    :padding "0.5rem"
-   :&:hover {:background light-gray}
+   :&:hover {:background main-color-hover
+             :color text-color}
    :&:focus {:outline "none"
              :border focus-border
              :box-shadow focus-shadow}
@@ -83,12 +91,12 @@
    :border-radius "6px"
    :border "solid 1px transparent"
    :background-color main-color
-   :color "white"
+   :color text-color
    :padding "0.5rem 1rem"
    :&:hover {:background-color main-color-hover}
    :&:active {:background-color main-color-active}
-   :&:focus {:border-color "white"
+   :&:focus {:border-color text-color
              :box-shadow (str "0px 0px 4px 1px " main-color)}})
 
 (defstyles base-icon []
-  {:color main-color})
+  {:color text-color})

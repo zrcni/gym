@@ -7,7 +7,8 @@
    [re-frame.core :refer [subscribe dispatch]]))
 
 (defstyles header-title-style []
-  {:color "white"})
+  {:color styles/text-color
+   :&:hover {:color styles/main-color-active}})
 
 (defstyles header-left-style []
   {:display "flex"
@@ -22,11 +23,11 @@
 (defstyles logout-button-style []
   {:background-color styles/main-color
    :border-color "#900c3f"
-   :color "#fff"
+   :color styles/text-color
    :margin-left "4px"
    :margin-right "4px"
    :padding "4px"
-   :&:hover {:color styles/middle-gray}})
+   :&:hover {:background-color styles/main-color-active}})
 
 (defstyles header-style []
   {:display "flex"
@@ -50,8 +51,8 @@
               :href "/"} "Exercise tracker"]]
         [:div {:class (header-right-style)}
          (when user
-           [:button {:class (logout-button-style)
+           [:button {:class (classes (logout-button-style) (styles/icon-button))
                      :on-click #(dispatch [::gym.login.events/logout])}
-            [icons/power-off]])]]
+            [icons/power-off {:class (styles/base-icon)}]])]]
        [:main#content {:class (content-style)}
         children]])))
