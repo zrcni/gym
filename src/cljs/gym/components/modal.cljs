@@ -30,12 +30,6 @@
                 [:only :screen :and [:max-height "400px"]]
                 {:margin 0}}})
 
-(defstyles modal-close-button-style []
-  {:background "none"
-   :border "none"
-   :color styles/text-color
-   :&:hover {:color styles/middle-gray}})
-
 (defstyles modal-header-style []
   {:padding "8px"
    :height "3rem"
@@ -73,11 +67,11 @@
      [:div {:class (modal-container-style)}
       (when title
         [:div.row {:class (modal-header-style)}
-         [:div {:Class (modal-title-style)}
+         [:div {:class (modal-title-style)}
           [:span title]]
          (when-not disable-auto-close
            [:button {:class (styles/icon-button)
                      :on-click #(when-not (nil? on-close) (on-close))}
-            [icons/times]])])
+            [icons/times {:class (styles/base-icon)}]])])
       [:div {:class (modal-content-container-style)}
        children]]]))
