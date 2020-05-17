@@ -11,6 +11,7 @@
 
 (defn head []
   [:head
+   [:title "Exercise tracker"]
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
