@@ -42,7 +42,7 @@
   {:display "flex"
    :justify-content "center"
    :flex-direction "row"
-   ::css/media {[:only :screen :and [:max-width "500px"]]
+   ::css/media {[:only :screen :and [:max-width "700px"]]
                 {:flex-direction "column"
                  :align-items "center"}}})
 
@@ -62,7 +62,7 @@
    :white-space "nowrap"
    :text-overflow "ellipsis"
    :overflow "hidden"
-   ::css/media {[:only :screen :and [:max-width "500px"]]
+   ::css/media {[:only :screen :and [:max-width "700px"]]
                 {:margin 0
                  :margin-top "0.5em"}}})
 
@@ -485,7 +485,8 @@
    workouts))
 
 (defstyles calendar-year-style []
-  {:margin "1rem"})
+  {:margin "1rem"
+   :align-self "flex-end"})
 
 (defstyles calendar-animation-overflow-style []
   {:overflow "hidden"
@@ -558,6 +559,7 @@
 
 (defstyles calendar-top-style []
   {:display "grid"
+   :margin-bottom "0.5rem"
    :grid-template-columns "5rem auto 5rem"})
 
 ; Basically copy-pasted the calendar functionality (and look) from this repo:

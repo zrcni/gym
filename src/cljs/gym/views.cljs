@@ -39,7 +39,9 @@
    :font-weight 500})
 
 (defstyles content-style []
-  {:padding "12px"})
+  {:padding "12px"
+   :max-width "60rem"
+   :margin "0 auto"})
 
 (defn layout []
   (fn [_ & children]
