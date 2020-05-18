@@ -9,6 +9,7 @@
    [gym.login.events]
    [gym.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
    [ajax.core :refer [json-request-format]]
+   [gym.home.duration-cards.events :as duration-cards-events]
    [re-frame.core :refer [reg-event-db reg-event-fx]]))
 
 (reg-event-db :calendar-update-start-date
@@ -48,26 +49,6 @@
               (fn [db [_ workouts]]
                 (assoc-in db [:home :calendar :workouts] workouts)))
 
-(reg-event-fx :fetch-current-week-exercise-duration
-              (fn [_ _]
-                {:dispatch [:fetch {:method :get
-                                    :uri (str cfg/api-url "/api/stats/exercises/week")
-                                    :on-success [:fetch-current-week-exercise-duration-success]}]}))
-
-(reg-event-fx :fetch-current-week-exercise-duration-success
-              (fn [{:keys [db]} [_ result]]
-                {:db (assoc-in db [:home :stats :current-week-exercise-duration] (:duration result))}))
-
-(reg-event-fx :fetch-current-month-exercise-duration
-              (fn [_ _]
-                {:dispatch [:fetch {:method :get
-                                    :uri (str cfg/api-url "/api/stats/exercises/month")
-                                    :on-success [:fetch-current-month-exercise-duration-success]}]}))
-
-(reg-event-fx :fetch-current-month-exercise-duration-success
-              (fn [{:keys [db]} [_ result]]
-                {:db (assoc-in db [:home :stats :current-month-exercise-duration] (:duration result))}))
-
 (reg-event-fx :fetch-all-workouts-success
               (fn [_ [_ workouts]]
                 {:dispatch-n [[:calendar-update-workouts workouts]
@@ -83,8 +64,8 @@
               (fn [{:keys [db]} [_ workout]]
                 {:db (update-in db [:home :calendar :workouts] conj workout)
                  :dispatch-n [[:calendar-update-weeks]
-                              [:fetch-current-week-exercise-duration]
-                              [:fetch-current-month-exercise-duration]]}))
+                              [::duration-cards-events/fetch-current-week-exercise-duration]
+                              [::duration-cards-events/fetch-current-month-exercise-duration]]}))
 
 (reg-event-fx :create-workout-request
               (fn [_ [_ workout]]
@@ -108,8 +89,8 @@
                       (->> (-> db :home :calendar :workouts)
                            (filter #(not= workout-id (:workout_id %)))))
                  :dispatch-n [[:calendar-update-weeks]
-                              [:fetch-current-week-exercise-duration]
-                              [:fetch-current-month-exercise-duration]]}))
+                              [::duration-cards-events/fetch-current-week-exercise-duration]
+                              [::duration-cards-events/fetch-current-month-exercise-duration]]}))
 
 (reg-event-fx :delete-workout
               (fn [_ [_ workout-id]]

@@ -2,14 +2,13 @@
   (:require
    [re-frame.core :refer [subscribe dispatch]]
    [reagent.core :as reagent]
-   [clojure.string :refer [capitalize trim blank? join]]
+   [clojure.string :refer [trim blank?]]
    [goog.string.format]
    [gym.util :refer [includes?]]
    [react-modal]
    [react-contenteditable]
    [emojiMart]
    [smileParser]
-   [clojure.contrib.humanize :as humanize]
    [cljs-time.core :as t]
    [cljss.core :as css :refer-macros [defstyles]]
    [cljss.reagent :refer-macros [defstyled]]
@@ -29,81 +28,8 @@
                                same-day?
                                first-day-of-month?
                                human-month-short
-                               future?]]))
-
-(defn displayable-duration [duration]
-  (if (= 0 duration)
-    "None"
-    (as-> (* duration 1000) d
-      (humanize/duration d {:number-format str})
-      (capitalize d))))
-
-(defstyles duration-cards-style []
-  {:display "flex"
-   :justify-content "center"
-   :flex-direction "row"
-   ::css/media {[:only :screen :and [:max-width "700px"]]
-                {:flex-direction "column"
-                 :align-items "center"}}})
-
-(defstyles duration-card-style []
-  {:display "grid"
-   :grid-template-columns "7rem 11rem"
-   :grid-template-rows "3rem"
-   :color styles/text-color
-   :background-color styles/main-color
-   :height "3rem"
-   :line-height "3rem"
-   :text-align "center"
-   :vertical-align "middle"
-   :font-family styles/font-family
-   :margin-right "0.5em"
-   :border-radius "6px"
-   :white-space "nowrap"
-   :text-overflow "ellipsis"
-   :overflow "hidden"
-   ::css/media {[:only :screen :and [:max-width "700px"]]
-                {:margin 0
-                 :margin-top "0.5em"}}})
-
-(defstyles duration-card-title-style []
-  {:margin 0
-   :font-size "1em"
-   :font-weight 500
-   :background-color styles/accent-color
-   :border-top-left-radius "6px"
-   :border-bottom-left-radius "6px"})
-
-(defstyles duration-card-duration-style []
-  {:margin 0
-   :font-weight 500
-   :border-top-right-radius "6px"
-   :border-bottom-right-radius "6px"})
-
-(defn duration-card [{:keys [title duration]}]
-  [:div {:class (duration-card-style)}
-   [:div {:class (duration-card-title-style)}
-    [:span
-     (str title " ")]]
-   [:div {:class (duration-card-duration-style)}
-    [:span
-     (if (nil? duration)
-       ;; TODO: small loading indicator
-       "..."
-       (displayable-duration duration))]]])
-
-(defn exercise-stats []
-  (dispatch [:fetch-current-week-exercise-duration])
-  (dispatch [:fetch-current-month-exercise-duration])
-
-  (fn []
-    (let [week-duration @(subscribe [:current-week-exercise-duration])
-          month-duration @(subscribe [:current-month-exercise-duration])]
-      [:div {:class (duration-cards-style)}
-       [duration-card {:duration month-duration
-                       :title "This month"}]
-       [duration-card {:duration week-duration
-                       :title "This week"}]])))
+                               future?]]
+   [gym.home.duration-cards.views :refer [duration-cards]]))
 
 (defstyles weekdays-style []
   {:display "flex"
@@ -587,7 +513,7 @@
        [:div {:class (calendar-top-style)}
         [:div {:class (calendar-year-style)}
          (t/year start-date)]
-        [exercise-stats]]
+        [duration-cards]]
        [:div#calendar
         [weekdays]
         [:div {:class (calendar-animation-overflow-style)}
