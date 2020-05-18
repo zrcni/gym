@@ -8,6 +8,7 @@
    [gym.login.routes :as login]
    [gym.login.subs]
    [gym.login-callback.routes :as login-callback]
+   [cljss.core :refer-macros [defstyles]]
    [reitit.frontend.easy :as rfe]
    [reitit.frontend :as rf]
    [reitit.frontend.controllers :as rfc]
@@ -42,6 +43,17 @@
       ^{:key name} [wrapper [view]]
       ^{:key name} [view])))
 
+(defstyles loader-wrapper-style []
+  {:margin-top "1rem"
+   :justify-content "center"
+   :display "flex"
+   :flex-direction "column"
+   :align-items "center"})
+
+(defstyles loader-description-style []
+  {:margin-top "1rem"
+   :text-align "center"})
+
 (defn root []
   (dispatch [:handle-first-load])
   (fn []
@@ -49,7 +61,10 @@
           current-route @(subscribe [:current-route])]
       [layout {:disabled (= auth-status :waiting)}
        (if (= auth-status :waiting)
-         [loaders/circle]
+         [:div {:class (loader-wrapper-style)}
+          [loaders/circle {:size 80}]
+          [:p {:class (loader-description-style)}
+           "The server might be starting right now, if you're the first user in a while..."]]
          (when current-route
            ^{:key (:path current-route)} [current-page {:route current-route}]))])))
 
