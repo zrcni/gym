@@ -21,12 +21,17 @@
 
 (reg-event-fx ::login-success
               (fn [{:keys [db]} [_ body]]
-                (let [events {:db (-> db
-                                      (assoc :user (:user body))
-                                      (assoc :auth-status :logged-in))}]
-                  (when (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
-                    (assoc events :navigate! [:home]))
-                  (when cfg/sentry-dsn (assoc events :set-sentry-user-info! {:id (:user_id (:user body))}))
+                (as-> {} events
+                  ;; NOTE: there's probably a better way to conditionally assoc to map and re-bind to a symbol
+                  (assoc events :db (-> db
+                                        (assoc :user (:user body))
+                                        (assoc :auth-status :logged-in)))
+                  (if (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
+                    (assoc events :navigate! [:home])
+                    events)
+                  (if cfg/sentry-dsn
+                    (assoc events :set-sentry-user-info! {:id (:user_id (:user body))})
+                    events)
                   events)))
 
 (reg-event-fx ::login-failure
@@ -85,11 +90,15 @@
 
 (reg-event-fx ::logout-auth0-success
               (fn [{:keys [db]} [_ _]]
-                (let [events {:db (-> db
-                                      (assoc :user nil)
-                                      (assoc :token nil)
-                                      (assoc :auth-status :logged-out))}]
-                  (when-not (= (-> js/window .-location .-pathname) "/login")
-                    (assoc events :navigate! [:login]))
-                  (when cfg/sentry-dsn (assoc events :set-sentry-user-info! nil))
-                  events)))
+                ;; NOTE: there's probably a better way to conditionally assoc to map and re-bind to a symbol
+                (as-> {} events
+                  (assoc events :db (-> db
+                                        (assoc :user nil)
+                                        (assoc :token nil)
+                                        (assoc :auth-status :logged-out)))
+                  (if-not (= (-> js/window .-location .-pathname) "/login")
+                    (assoc events :navigate! [:login])
+                    events)
+                  (if cfg/sentry-dsn
+                    (assoc events :set-sentry-user-info! nil)
+                    events))))

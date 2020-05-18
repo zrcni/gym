@@ -540,7 +540,7 @@
    :justify-content "center"})
 
 (defstyles calendar-add-exercise-button-style []
-  {:color styles/text-color
+  {:color styles/middle-gray
    :flex 1
    :height "100%"
    :&:hover {:background styles/accent-color
@@ -555,7 +555,8 @@
                 :background "inherit"}})
 
 (defstyles calendar-day-duration-style []
-  {:font-weight 700})
+  {:font-weight 700
+   :color styles/text-color})
 
 (defstyles calendar-top-style []
   {:display "grid"

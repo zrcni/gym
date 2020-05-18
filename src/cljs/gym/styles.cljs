@@ -18,7 +18,7 @@
 
 (def dark-gray "#333333")
 (def gray "hsl(197, 10%, 45%)")
-(def middle-gray "hsl(240, 6%, 92%)")
+(def middle-gray "hsl(210, 6%, 50%)")
 (def light-gray "hsl(240, 6%, 97%)")
 
 (def focus-shadow (str "0px 0px 2px " accent-color-active))
