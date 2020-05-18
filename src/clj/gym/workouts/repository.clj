@@ -15,15 +15,15 @@
   (let [today (LocalDate/now)
         start-of-week (.with today DayOfWeek/MONDAY)
         end-of-week (.with today DayOfWeek/SUNDAY)]
-    (and (.isAfter local-date start-of-week)
-         (.isBefore local-date end-of-week))))
+    (and (>= (.compareTo local-date start-of-week) 0)
+         (<= (.compareTo local-date end-of-week) 0))))
 
 (defn current-month? [local-date]
   (let [today (LocalDate/now)
         start-of-month (.with today (TemporalAdjusters/firstDayOfMonth))
         end-of-month (.with today (TemporalAdjusters/lastDayOfMonth))]
-    (and (.isAfter local-date start-of-month)
-         (.isBefore local-date end-of-month))))
+    (and (>= (.compareTo local-date start-of-month) 0)
+         (<= (.compareTo local-date end-of-month) 0))))
 
 (defn workouts-with-tags-query [& [where limit]]
   (let [where-clause (if where (str " WHERE " where) "")
@@ -45,8 +45,8 @@
   (.toString date))
 
 (defn row->workout [row]
- (-> row
-     (update :date local-date->string)))
+  (-> row
+      (update :date local-date->string)))
 
 (defn row->workout-and-tags [row]
   (as-> row r
@@ -55,7 +55,7 @@
 
 ;; gets the tag string from the tag object/row
 (defn row->tag [row]
- (:tag row))
+  (:tag row))
 
 (defn get-by-user-id [user_id]
   (let [workouts (sql/query (get-db)

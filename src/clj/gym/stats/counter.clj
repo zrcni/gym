@@ -15,14 +15,17 @@
   (fn [m]
     (if (nil? m) 0 (- m n))))
 
-;; TODO #1: initialize counter state from DB (fetch all workout durations from the current day)
 ;; TODO: figure out how to create an object/class or whatever,
 ;; because I know this isn't how it should be done because you
 ;; have to call these methods like this: ((-> counter :inc) "key" 1)
 (defn ^:private make-counter [& [data]]
   (let [data (atom (or data {}))]
     {:inc (fn [key & [n]]
-            (swap! data update key (inc-by (or n 1))))
+            (prn "key:" key)
+            (swap! data update key (inc-by (or n 1)))
+            (prn "---")
+            (prn data)
+            (prn "---"))
      :dec (fn [key & [n]]
             (swap! data update key (dec-by (or n 1))))
      :get (fn [key]
@@ -65,5 +68,9 @@
 ;; which shuts down the server when there's no activity.
 ;; When the server is longer running there should be a job that reinitializes the counters once a day or so.
 ;; Durations are stored as seconds as opposed to milliseconds like how they're stored in DB
-(def current-week-exercise-durations (make-counter (exercise-durations->counter-data (get-current-week-durations))))
-(def current-month-exercise-durations (make-counter (exercise-durations->counter-data (get-current-month-durations))))
+(def current-week-exercise-durations (-> (get-current-week-durations)
+                                         exercise-durations->counter-data
+                                         make-counter))
+(def current-month-exercise-durations (-> (get-current-month-durations)
+                                          exercise-durations->counter-data
+                                          make-counter))
