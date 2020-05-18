@@ -18,7 +18,6 @@
 (defn init! []
   (dispatch-sync [:initialize-db])
   (reg-auth0-cofx (create-auth0-client))
-  (prn "sentry: " cfg/sentry-dsn)
   (when cfg/sentry-dsn (dispatch [:init-error-reporting!]))
   (clear-subscription-cache!)
   (router/start!)

@@ -1,6 +1,4 @@
 build-site:
-	AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID} \
-	API_URL=${API_URL} \
 	npm run build && lein minify-assets && lein cljsbuild once min
 
 build-server:
