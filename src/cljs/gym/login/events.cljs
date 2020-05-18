@@ -27,6 +27,7 @@
                   (when (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
                     (assoc events :navigate! [:home]))
                   (when cfg/sentry-dsn (assoc events :set-sentry-user-info! {:id (:user_id (:user body))}))
+                  (prn "events: " events)
                   events)))
 
 (reg-event-fx ::login-failure

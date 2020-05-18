@@ -8,7 +8,7 @@
    [gym.styles :refer [inject-global-styles]]
    [gym.auth :refer [create-auth0-client reg-auth0-cofx]]
    [reagent.core :as reagent]
-   [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
+   [re-frame.core :refer [dispatch dispatch-sync clear-subscription-cache!]]
    [gym.router :as router]))
 
 (defn mount-root []
@@ -16,9 +16,10 @@
   (reagent/render [router/root] (.getElementById js/document "app")))
 
 (defn init! []
-  (when cfg/sentry-dsn (dispatch-sync [:init-error-reporting!]))
-  (reg-auth0-cofx (create-auth0-client))
   (dispatch-sync [:initialize-db])
+  (reg-auth0-cofx (create-auth0-client))
+  (prn "sentry: " cfg/sentry-dsn)
+  (when cfg/sentry-dsn (dispatch [:init-error-reporting!]))
   (clear-subscription-cache!)
   (router/start!)
   (mount-root))
