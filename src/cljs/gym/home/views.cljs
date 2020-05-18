@@ -473,7 +473,8 @@
              :cursor "pointer"}
    :&:focus {:outline "none"
              :border styles/focus-border
-             :box-shadow styles/focus-shadow}
+             :box-shadow styles/focus-shadow
+             :color styles/text-color}
    :&:active {:color styles/accent-color-active}
    :&:disabled {:cursor "not-allowed"
                 :border "none"
