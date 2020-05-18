@@ -7,7 +7,8 @@
 (def default-db
     (let [start-date (calculate-start-date (t/now) num-weeks)]
       {:duration-cards duration-cards-db/default-db
-       :calendar {:start-date start-date
+       :calendar {:loading true
+                  :start-date start-date
                   :editing-index nil
                   :weeks (calculate-weeks start-date)
                   :workouts nil}}))
