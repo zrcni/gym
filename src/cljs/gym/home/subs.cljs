@@ -16,3 +16,8 @@
  :calendar-weeks
  (fn [db _]
    (-> db :home :calendar :weeks)))
+
+(reg-sub
+ :calendar-loading
+ (fn [db _]
+   (-> db :home :calendar :loading)))

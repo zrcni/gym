@@ -50,15 +50,22 @@
                 (assoc-in db [:home :calendar :workouts] workouts)))
 
 (reg-event-fx :fetch-all-workouts-success
-              (fn [_ [_ workouts]]
-                {:dispatch-n [[:calendar-update-workouts workouts]
+              (fn [{:keys [db]} [_ workouts]]
+                {:db (assoc-in db [:home :calendar :loading] false)
+                 :dispatch-n [[:calendar-update-workouts workouts]
                               [:calendar-update-weeks]]}))
 
+(reg-event-fx :fetch-all-workouts-failure
+              (fn [{:keys [db]} _]
+                {:db (assoc-in db [:home :calendar :loading] false)}))
+
 (reg-event-fx :fetch-all-workouts
-              (fn [_ _]
-                {:dispatch [:fetch {:method :get
+              (fn [{:keys [db]} _]
+                {:db (assoc-in db [:home :calendar :loading] true)
+                 :dispatch [:fetch {:method :get
                                     :uri (str cfg/api-url "/api/workouts")
-                                    :on-success [:fetch-all-workouts-success]}]}))
+                                    :on-success [:fetch-all-workouts-success]
+                                    :on-failure [:fetch-all-workouts-failure]}]}))
 
 (reg-event-fx :create-workout-success
               (fn [{:keys [db]} [_ workout]]

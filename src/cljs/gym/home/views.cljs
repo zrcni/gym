@@ -505,6 +505,7 @@
     (let [start-date @(subscribe [:calendar-start-date])
           editing-index @(subscribe [:calendar-editing-index])
           weeks @(subscribe [:calendar-weeks])
+          loading @(subscribe [:calendar-loading])
           edit-day #(dispatch [:calendar-edit-day %])
           stop-editing #(dispatch [:calendar-stop-editing])
           show-earlier #(dispatch [:calendar-show-earlier (t/days (* num-weeks days-in-week))])
@@ -548,7 +549,8 @@
                                                                 ; TODO: display data about the date's activities
                      [:div {:class (day-minutes-style)}
                       [:button {:class (calendar-add-exercise-button-style)
-                                :on-click #(edit-day (+ (* week-index days-in-week) day-index))}
+                                :on-click #(edit-day (+ (* week-index days-in-week) day-index))
+                                :disabled loading}
                        (if (:workouts day)
                          (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
                            [:div {:class (calendar-day-duration-style)}
