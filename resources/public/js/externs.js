@@ -47,3 +47,9 @@ var SentryScope = {
   setTag: function() {},
   setLevel: function() {}
 }
+
+var reactColor = {
+  PhotoshopPicker: function() {}
+}
+
+var parseColor = function() {}

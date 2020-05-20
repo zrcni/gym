@@ -3,7 +3,7 @@
    [cljss.core :refer-macros [defstyles]]
    [gym.styles :as styles :refer [classes]]
    [gym.login.events :as events]
-   [re-frame.core :refer [dispatch]]))
+   [re-frame.core :refer [subscribe dispatch]]))
 
 (defstyles login-wrapper-style []
   {:display "grid"
@@ -25,10 +25,11 @@
           :text-align "center"}})
 
 (defn main []
-  [:div {:class (login-wrapper-style)}
-   [:div {:class (login-button-wrapper-style)}
-    [:button#login {:class (classes (styles/icon-button-cta) (login-button-style))
-                    :on-click #(dispatch [::events/login-auth0])}
-     "Log in"]]
-   [:div {:class (login-description-style)}
-    [:p "A new user account will automatically be created for you when you log in for the first time"]]])
+  (let [theme @(subscribe [:theme])]
+    [:div {:class (login-wrapper-style)}
+     [:div {:class (login-button-wrapper-style)}
+      [:button#login {:class (classes (styles/icon-button-cta {:theme theme}) (login-button-style))
+                      :on-click #(dispatch [::events/login-auth0])}
+       "Log in"]]
+     [:div {:class (login-description-style)}
+      [:p "A new user account will automatically be created for you when you log in for the first time"]]]))

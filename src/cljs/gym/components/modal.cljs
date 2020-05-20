@@ -1,5 +1,6 @@
 (ns gym.components.modal
   (:require
+   [re-frame.core :refer [subscribe]]
    [cljss.core :as css :refer-macros [defstyles]]
    [gym.styles :as styles]
    [gym.components.icons :as icons]
@@ -58,20 +59,21 @@
 
 (defn modal []
   (fn [{:keys [disable-auto-close is-open on-close title]} & children]
-    [:> js/ReactModal {:is-open (if (nil? is-open) true is-open)
-                       :on-request-close #(when-not (nil? on-close) (on-close))
-                       :content-label title
-                       :should-close-on-overlay-click (not disable-auto-close)
-                       :overlay-class-name (modal-overlay-style)
-                       :class (modal-content-style)}
-     [:div {:class (modal-container-style)}
-      (when title
-        [:div.row {:class (modal-header-style)}
-         [:div {:class (modal-title-style)}
-          [:span title]]
-         (when-not disable-auto-close
-           [:button {:class (styles/icon-button)
-                     :on-click #(when-not (nil? on-close) (on-close))}
-            [icons/times {:class (styles/base-icon)}]])])
-      [:div {:class (modal-content-container-style)}
-       children]]]))
+    (let [theme @(subscribe [:theme])]
+      [:> js/ReactModal {:is-open (if (nil? is-open) true is-open)
+                         :on-request-close #(when-not (nil? on-close) (on-close))
+                         :content-label title
+                         :should-close-on-overlay-click (not disable-auto-close)
+                         :overlay-class-name (modal-overlay-style)
+                         :class (modal-content-style)}
+       [:div {:class (modal-container-style)}
+        (when title
+          [:div.row {:class (modal-header-style)}
+           [:div {:class (modal-title-style)}
+            [:span title]]
+           (when-not disable-auto-close
+             [:button {:class (styles/icon-button {:theme theme})
+                       :on-click #(when-not (nil? on-close) (on-close))}
+              [icons/times {:class (styles/base-icon)}]])])
+        [:div {:class (modal-content-container-style)}
+         children]]])))

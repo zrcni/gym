@@ -1,7 +1,13 @@
 
-/* this not defined with cljss, because I don't know how to implement it with it  */
+/* This enabled placeholder in contenteditable */
+/* This not defined with cljss, because I don't know how to implement it with it */
 [contenteditable=true]:empty:before {
   content: attr(placeholder);
   display: block;
   color: #aaa;
+}
+
+/* dropdown menu display on hover - don't know how to implement with cljss yet */
+.dropdown:hover .dropdown-content {
+  display: block;
 }

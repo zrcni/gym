@@ -16,4 +16,4 @@
   (dispatch [:gym.login.events/handle-login-auth0-callback])
   (fn []
     [:div {:class (loader-wrapper-style)}
-     [loaders/circle]]))
+     [loaders/circle {:size 80}]]))

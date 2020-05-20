@@ -1,14 +1,15 @@
 (ns gym.views
   (:require
    [gym.login.events]
+   [gym.components.dropdown-menu :refer [dropdown-menu dropdown-item dropdown-button]]
    [gym.components.icons :as icons]
    [gym.styles :as styles :refer [classes]]
    [cljss.core :refer-macros [defstyles]]
    [re-frame.core :refer [subscribe dispatch]]))
 
-(defstyles header-title-style []
+(defstyles header-title-style [{:keys [theme]}]
   {:color styles/text-color
-   :&:hover {:color styles/accent-color-active}})
+   :&:hover {:color (:accent-color-active theme)}})
 
 (defstyles header-left-style []
   {:display "flex"
@@ -21,13 +22,9 @@
    :align-items "center"})
 
 (defstyles logout-button-style []
-  {:background-color styles/main-color
-   :border-color "#900c3f"
-   :color styles/text-color
-   :margin-left "4px"
-   :margin-right "4px"
-   :padding "4px"
-   :&:hover {:background-color styles/accent-color-active}})
+  {:background-color "darkred"
+   :&:hover {:background-color "red"}
+   :&:active {:color styles/text-color}})
 
 (defstyles header-style []
   {:display "flex"
@@ -45,16 +42,27 @@
 
 (defn layout []
   (fn [_ & children]
-    (let [user @(subscribe [:user])]
+    (let [theme @(subscribe [:theme])
+          user @(subscribe [:user])]
       [:<>
        [:header#header {:class (classes (header-style) "navbar navbar-expand navbar-dark flex-md-row bd-navbar")}
         [:div {:class (header-left-style)}
-         [:a {:class (header-title-style)
-              :href "/"} "Exercise tracker"]]
+         [:a {:class (header-title-style {:theme theme})
+              :href "/"}
+          "Exercise tracker"]]
         [:div {:class (header-right-style)}
-         (when user
-           [:button {:class (classes (logout-button-style) (styles/icon-button))
-                     :on-click #(dispatch [::gym.login.events/logout])}
-            [icons/power-off {:class (styles/base-icon)}]])]]
+         [dropdown-menu
+          [dropdown-button {:on-click #(dispatch [:navigate :settings])
+                            :key "settings"}
+           [icons/cog {:class (styles/base-icon)
+                       :key "settings-icon"}]
+           [:span {:key "settings-label"} " Settings"]]
+          (when user
+            [dropdown-button {:class (logout-button-style)
+                              :on-click #(dispatch [::gym.login.events/logout])
+                              :key "logout"}
+             [icons/power-off {:class (styles/base-icon)
+                               :key "logout-icon"}]
+             [:span {:key "logout-label"} " Log out"]])]]]
        [:main#content {:class (content-style)}
         children]])))

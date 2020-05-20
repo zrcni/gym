@@ -1,6 +1,6 @@
 (ns gym.components.loaders
   (:require
-   [gym.styles :as styles]
+   [re-frame.core :refer [subscribe]]
    [cljss.core :refer-macros [defkeyframes defstyles]]))
 
 (defkeyframes ^:private spin []
@@ -13,7 +13,7 @@
    :width (str size "px")
    :animation (str (spin) " 3s linear infinite")})
 
-(defstyles ^:private circle-span-style [size]
+(defstyles ^:private circle-span-style [{:keys [theme size]}]
   {:display "block"
    :position "absolute"
    :top 0
@@ -35,7 +35,7 @@
               :height (str size "px")
               :width (str size "px")
               :border "4px solid transparent"
-              :border-top (str "4px solid " styles/accent-color)
+              :border-top (str "4px solid " (:accent-color theme))
               :border-radius "50%"
               :animation (str (spin) " 1.5s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite")}
    :&:after {:content ""
@@ -48,9 +48,11 @@
              :margin "auto"
              :height (str size "px")
              :width (str size "px")
-             :border (str "4px solid " styles/accent-color-hover)
+             :border (str "4px solid " (:accent-color-hover theme))
              :border-radius "50%"}})
 
 (defn circle [{:keys [size]}]
-  [:div {:class (circle-style (or size 32))}
-   [:span {:class (circle-span-style (or size 32))}]])
+  (let [theme @(subscribe [:theme])]
+    [:div {:class (circle-style (or size 32))}
+     [:span {:class (circle-span-style {:theme theme
+                                        :size (or size 32)})}]]))

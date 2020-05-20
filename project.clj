@@ -79,13 +79,17 @@
               :pretty-print  false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["smileParser"
+                              :provides ["parse-color"
+                                         "react-color"
+                                         "smileParser"
                                          "emojiMart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {smileParser smileParser
+                              :global-exports {parse-color parseColor
+                                               react-color reactColor
+                                               smileParser smileParser
                                                emojiMart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
@@ -113,13 +117,17 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["smileParser"
+                              :provides ["parse-color"
+                                         "react-color"
+                                         "smileParser"
                                          "emojiMart"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {smileParser smileParser
+                              :global-exports {parse-color parseColor
+                                               react-color reactColor
+                                               smileParser smileParser
                                                emojiMart emojiMart
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal

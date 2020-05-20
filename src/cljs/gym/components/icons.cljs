@@ -1,25 +1,16 @@
 (ns gym.components.icons)
 
-(defn chevron-up [props]
-  [:i.fas.fa-chevron-up props])
+(defn make-fas-icon [name]
+  (fn [{:keys [class]} & props]
+    [:i {:class (str "fas fa-" name (when class (str " " class)))} props]))
 
-(defn chevron-down [props]
-  [:i.fas.fa-chevron-down props])
-
-(defn plus [props]
-  [:i.fas.fa-plus props])
-
-(defn minus [props]
-  [:i.fas.fa-minus props])
-
-(defn trash [props]
-  [:i.fas.fa-trash-alt props])
-
-(defn plus-circle [props]
-  [:i.fas.fa-plus-circle props])
-
-(defn times [props]
-  [:i.fas.fa-times props])
-
-(defn power-off [props]
- [:i.fas.fa-power-off props])
+(def chevron-up (make-fas-icon "chevron-up"))
+(def chevron-down (make-fas-icon "chevron-down"))
+(def plus (make-fas-icon "plus"))
+(def minus (make-fas-icon "minus"))
+(def trash (make-fas-icon "trash"))
+(def plus-circle (make-fas-icon "plus-circle"))
+(def times (make-fas-icon "times"))
+(def power-off (make-fas-icon "power-off"))
+(def bars (make-fas-icon "bars"))
+(def cog (make-fas-icon "cog"))

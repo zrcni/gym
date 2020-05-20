@@ -14,11 +14,11 @@
   (.removeItem js/localStorage k))
 
 (reg-fx :set-local-storage!
-        (fn [key value]
+        (fn [[key value]]
           (ls-set! key value)))
 
 (reg-fx :remove-local-storage!
-        (fn [key]
+        (fn [[key]]
           (ls-remove! key)))
 
 (reg-event-fx :set-local-storage

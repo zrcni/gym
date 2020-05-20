@@ -19,16 +19,16 @@
 
 "Navigate to /login if logged out"
 (defn private-route []
-  (let [user @(subscribe [:user])]
     (fn [& children]
-      (if-not user
-        [navigate {:to :login}]
-        [:<> children]))))
+      (let [user @(subscribe [:user])]
+        (if-not user
+          [navigate {:to :login}]
+          [:<> children]))))
 
 "Navigate to / if logged in"
 (defn public-route []
-  (let [user @(subscribe [:user])]
     (fn [& children]
-      (if user
-        [navigate {:to :home}]
-        [:<> children]))))
+      (let [user @(subscribe [:user])]
+        (if user
+          [navigate {:to :home}]
+          [:<> children]))))

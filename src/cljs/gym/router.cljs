@@ -6,6 +6,7 @@
    [gym.views :refer [layout]]
    [gym.home.routes :as home]
    [gym.login.routes :as login]
+   [gym.settings.routes :as settings]
    [gym.login.subs]
    [gym.login-callback.routes :as login-callback]
    [cljss.core :refer-macros [defstyles]]
@@ -28,7 +29,8 @@
   ["/"
    home/routes
    login/routes
-   login-callback/routes])
+   login-callback/routes
+   settings/routes])
 
 (def router
   (rf/router
@@ -40,7 +42,9 @@
         name (-> route :data :name)
         wrapper (-> route :data :wrapper)]
     (if-not (nil? wrapper)
-      ^{:key name} [wrapper [view]]
+      ^{:key name} [wrapper
+                    ^{:key name}
+                    [view]]
       ^{:key name} [view])))
 
 (defstyles loader-wrapper-style []
@@ -61,12 +65,15 @@
           current-route @(subscribe [:current-route])]
       [layout {:disabled (= auth-status :waiting)}
        (if (= auth-status :waiting)
+         ^{:key current-page}
          [:div {:class (loader-wrapper-style)}
           [loaders/circle {:size 80}]
           [:p {:class (loader-description-style)}
            "The server might be starting right now, if you're the first user in a while..."]]
+
          (when current-route
-           ^{:key (:path current-route)} [current-page {:route current-route}]))])))
+           ^{:key (:path current-route)}
+           [current-page {:route current-route}]))])))
 
 (defn on-navigate [new-match]
   (let [old-match (subscribe [:current-route])]

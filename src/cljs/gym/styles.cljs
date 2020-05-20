@@ -63,7 +63,7 @@
 (defn classes [& classnames]
   (join " " classnames))
 
-(defstyles icon-button []
+(defstyles icon-button [{:keys [theme]}]
   {:margin 0
    :background "none"
    :cursor "pointer"
@@ -74,7 +74,7 @@
    :border-radius "6px"
    :border "solid 1px transparent"
    :padding "0.5rem"
-   :&:hover {:background accent-color
+   :&:hover {:background (:accent-color theme)
              :color text-color}
    :&:focus {:outline "none"
              :border focus-border
@@ -85,7 +85,7 @@
    "&:focus:not(:focus-visible)" {:box-shadow "none !important"
                                   :border (str focus-border-inactive " !important")}})
 
-(defstyles icon-button-cta []
+(defstyles icon-button-cta [{:keys [theme]}]
   {:margin 0
    :cursor "pointer"
    :font-size "125%"
@@ -93,11 +93,11 @@
    :align-items "center"
    :border-radius "6px"
    :border "solid 1px transparent"
-   :background-color accent-color
+   :background-color (:accent-color theme)
    :color text-color
    :padding "0.5rem 1rem"
-   :&:hover {:background-color accent-color-hover}
-   :&:active {:background-color accent-color-active}
+   :&:hover {:background-color (:accent-color-hover theme)}
+   :&:active {:background-color (:accent-color-active theme)}
    :&:focus {:border-color text-color
              :box-shadow (str "0px 0px 4px 1px " main-color)}})
 

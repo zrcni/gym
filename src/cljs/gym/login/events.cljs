@@ -1,5 +1,6 @@
 (ns gym.login.events
   (:require
+   [gym.error-reporting]
    [gym.config :as cfg]
    [re-frame.core :refer [reg-event-fx inject-cofx dispatch]]))
 
@@ -30,7 +31,7 @@
                     (assoc events :navigate! [:home])
                     events)
                   (if cfg/sentry-dsn
-                    (assoc events :set-sentry-user-info! {:id (:user_id (:user body))})
+                    (assoc events ::gym.error-reporting/set-sentry-user-info! {:id (:user_id (:user body))})
                     events)
                   events)))
 
@@ -100,5 +101,5 @@
                     (assoc events :navigate! [:login])
                     events)
                   (if cfg/sentry-dsn
-                    (assoc events :set-sentry-user-info! nil)
+                    (assoc events ::gym.error-reporting/set-sentry-user-info! nil)
                     events))))

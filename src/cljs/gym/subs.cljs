@@ -22,3 +22,8 @@
 (reg-sub
  :user
  (fn [db _] (:user db)))
+
+(reg-sub
+ :theme
+ (fn [db _]
+   (:theme db)))

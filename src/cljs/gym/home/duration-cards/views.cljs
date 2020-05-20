@@ -49,11 +49,11 @@
                 {:margin 0
                  :margin-top "0.5em"}}})
 
-(defstyles duration-card-title-style []
+(defstyles duration-card-title-style [{:keys [theme]}]
   {:margin 0
    :font-size "1em"
    :font-weight 500
-   :background-color styles/accent-color
+   :background (:accent-color theme)
    :border-top-left-radius "6px"
    :border-bottom-left-radius "6px"})
 
@@ -67,17 +67,18 @@
    :border-bottom-right-radius "6px"})
 
 (defn duration-card [{:keys [title duration loading]}]
-  [:div {:class (duration-card-style)}
-   [:div {:class (duration-card-title-style)}
-    [:span
-     (str title " ")]]
-   [:div {:class (duration-card-duration-style)}
-    (if loading
-      [loaders/circle]
+  (let [theme @(subscribe [:theme])]
+    [:div {:class (duration-card-style)}
+     [:div {:class (duration-card-title-style {:theme theme})}
       [:span
-       (if (nil? duration)
-         ":("
-         (displayable-duration duration))])]])
+       (str title " ")]]
+     [:div {:class (duration-card-duration-style)}
+      (if loading
+        [loaders/circle]
+        [:span
+         (if (nil? duration)
+           ":("
+           (displayable-duration duration))])]]))
 
 (defn duration-cards []
   (dispatch [::events/fetch-current-week-exercise-duration])

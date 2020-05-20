@@ -5,6 +5,7 @@
    [day8.re-frame.http-fx]
    [gym.login.events]
    [gym.home.events]
+   [parse-color]
    [ajax.core :refer [text-request-format json-response-format]]
    [re-frame.core :refer [reg-event-db reg-event-fx]]))
 

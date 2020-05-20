@@ -1,6 +1,7 @@
 (ns gym.components.emoji-picker
  (:require
   [reagent.core :as reagent]
+  [gym.dom-utils :refer [parent-of?]]
   [cljss.core :refer-macros [defstyles]]
   [emojiMart]
   [smileParser]))
@@ -8,13 +9,6 @@
 (defn parse-emojis [str]
   (.smileParse smileParser str (clj->js {:url "/img/emojis/"
                                          :styles "height: 1.2em;"})))
-
-(defn parent-of? [el parent]
-  (if-not (.-parentNode el)
-    false
-    (if (= (.-parentNode el) parent)
-      true
-      (parent-of? (.-parentNode el) parent))))
 
 (defstyles emoji-picker-button-style []
   {:margin "4px"
@@ -34,7 +28,8 @@
                         (swap! state assoc :pos [right top])
                         (swap! state assoc :open true)))
         close-picker #(swap! state assoc :open false)
-        on-key-down #(when (and (:open state) (= 27 (.-keyCode %))) (close-picker))]
+        on-key-down #(when (and (:open state) (= 27 (.-keyCode %))) (close-picker))
+        on-click-away #(when-not (parent-of? (.-target %) @!el) (close-picker))]
 
     (reagent/create-class
      {:component-did-mount
@@ -43,15 +38,15 @@
 
       :component-will-unmount
       (fn []
-        (.removeEventListener js/window "keydown" on-key-down))
+        (.removeEventListener js/window "keydown" on-key-down)
+        (.removeEventListener js/document "mouseup" on-click-away))
 
       :component-did-update
       (fn []
         ;; Add clickaway listener whenever the picker is rendered for the first time
         ;; AFAIK no need to remove it because the element is removed
         (when (and @!el (nil? @!prev-el))
-          (.addEventListener js/document "mousedown"
-                             #(when-not (parent-of? (.-target %) @!el) (close-picker))))
+          (.addEventListener js/document "mouseup" on-click-away))
         (reset! !prev-el @!el))
 
       :reagent-render

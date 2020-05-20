@@ -5,15 +5,8 @@
   (:require
    [gym.database :refer [get-db]]
    [next.jdbc.result-set :as rs]
-   [next.jdbc.sql :as sql]))
-
-(defn inc-by [n]
-  (fn [m]
-    (if (nil? m) n (+ n m))))
-
-(defn dec-by [n]
-  (fn [m]
-    (if (nil? m) 0 (- m n))))
+   [next.jdbc.sql :as sql]
+   [gym.util :refer [inc-by dec-by]]))
 
 ;; TODO: figure out how to create an object/class or whatever,
 ;; because I know this isn't how it should be done because you
@@ -21,11 +14,7 @@
 (defn ^:private make-counter [& [data]]
   (let [data (atom (or data {}))]
     {:inc (fn [key & [n]]
-            (prn "key:" key)
-            (swap! data update key (inc-by (or n 1)))
-            (prn "---")
-            (prn data)
-            (prn "---"))
+            (swap! data update key (inc-by (or n 1))))
      :dec (fn [key & [n]]
             (swap! data update key (dec-by (or n 1))))
      :get (fn [key]

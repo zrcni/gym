@@ -57,18 +57,21 @@
    :margin "0.5rem"
    :font-size "85%"})
 
-(defstyles calendar-earlier-later-style []
-  {:&:hover {:background-color styles/accent-color}})
+(defstyles calendar-earlier-later-style [{:keys [theme]}]
+  {:&:hover {:background-color (:accent-color theme)}})
 
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
-  [:div {:class (calendar-nav-style)}
-   [:button {:on-click on-earlier-click :class (classes (calendar-earlier-later-style) (styles/icon-button))}
-    [icons/chevron-up {:class (styles/base-icon)}]
-    [:span "Earlier"]]
-   (when show-later
-     [:button {:on-click on-later-click :class (classes (calendar-earlier-later-style) (styles/icon-button))}
-      [icons/chevron-down {:class (styles/base-icon)}]
-      [:span "Later"]])])
+  (let [theme @(subscribe [:theme])]
+    [:div {:class (calendar-nav-style)}
+     [:button {:on-click on-earlier-click :class (classes (calendar-earlier-later-style {:theme theme})
+                                                          (styles/icon-button {:theme theme}))}
+      [icons/chevron-up {:class (styles/base-icon)}]
+      [:span "Earlier"]]
+     (when show-later
+       [:button {:on-click on-later-click :class (classes (calendar-earlier-later-style {:theme theme})
+                                                          (styles/icon-button {:theme theme}))}
+        [icons/chevron-down {:class (styles/base-icon)}]
+        [:span "Later"]])]))
 
 (defn first-displayed-day? [day-index week-index]
   (= 0 (+ day-index week-index)))
@@ -95,7 +98,7 @@
     (let [n (js/parseInt v)]
       (if (= n js/NaN) 0 n))))
 
-(defstyles tag-delete-style []
+(defstyles tag-delete-style [{:keys [theme]}]
   {:display "flex"
    :justify-content "center"
    :align-items "center"
@@ -103,14 +106,14 @@
    :cursor "pointer"
    :width "35px"
    :height "35px"
-   :&:hover {:background-color styles/accent-color-hover
+   :&:hover {:background-color (:accent-color-hover theme)
              :border-top-right-radius "6px"
              :border-bottom-right-radius "6px"}})
 
 (defstyles tag-chip-content-style []
   {:padding "0 8px 0 8px"})
 
-(defstyles tag-style []
+(defstyles tag-style [{:keys [theme]}]
   {:box-sizing "border-box"
    :color styles/text-color
    :display "flex"
@@ -118,7 +121,7 @@
    :height "35px"
    :line-height "20px"
    :white-space "nowrap"
-   :background styles/accent-color
+   :background (:accent-color theme)
    :border-radius "6px"
    :cursor "default"
    :opacity 1
@@ -126,15 +129,16 @@
    :margin "0 4px 0 4px"})
 
 (defn tag-chip [{:keys [value on-delete]}]
-  [:div {:class (tag-style)}
-   [:div {:class (tag-chip-content-style)}
-    value]
-   (when on-delete
-     [:button {:class (classes (tag-delete-style) "tag-chip-delete")
-               :role "button"
-               :aria-label "delete"
-               :on-click #(on-delete value)}
-      [icons/times]])])
+  (let [theme @(subscribe [:theme])]
+    [:div {:class (tag-style {:theme theme})}
+     [:div {:class (tag-chip-content-style)}
+      value]
+     (when on-delete
+       [:button {:class (classes (tag-delete-style {:theme theme}) "tag-chip-delete")
+                 :role "button"
+                 :aria-label "delete"
+                 :on-click #(on-delete value)}
+        [icons/times]])]))
 
 (defstyles tag-add-input-style []
   {:border "none"
@@ -148,17 +152,17 @@
    :&:focus {:outline "none"
              :box-shadow (str "inset 0px 0px 0.15rem " styles/main-color)}})
 
-(defstyles tag-add-button-style []
+(defstyles tag-add-button-style [{:keys [theme]}]
   {:border "none"
    :font-size "85%"
    :height "35px"
    :width "35px"
    :padding "3px 8px 0 8px"
-   :background-color styles/accent-color
+   :background-color (:accent-color theme)
    :color styles/text-color
    :border-top-right-radius "6px"
    :border-bottom-right-radius "6px"
-   :&:hover {:background-color styles/accent-color-hover}})
+   :&:hover {:background-color (:accent-color-hover theme)}})
 
 (defn add-tag [{:keys [on-add]}]
   (let [tag (reagent/atom "")
@@ -167,17 +171,18 @@
                (reset! tag ""))
         on-key-down #(when (= 13 (.-keyCode %)) (add))]
     (fn []
-      [:div
-       [:input {:class (tag-add-input-style)
-                :type "text"
-                :value @tag
-                :placeholder "tags"
-                :on-change #(reset! tag (get-value %))
-                :on-key-down on-key-down}]
-       [:button {:class (tag-add-button-style)
-                 :type "button"
-                 :on-click add}
-        [icons/plus]]])))
+      (let [theme @(subscribe [:theme])]
+        [:div
+         [:input {:class (tag-add-input-style)
+                  :type "text"
+                  :value @tag
+                  :placeholder "tags"
+                  :on-change #(reset! tag (get-value %))
+                  :on-key-down on-key-down}]
+         [:button {:class (tag-add-button-style {:keys [theme]})
+                   :type "button"
+                   :on-click add}
+          [icons/plus]]]))))
 
 (defstyles new-exercise-tags-style []
   {:display "flex"})
@@ -201,7 +206,7 @@
    :flex 1
    "> *:first-child" {:margin-top "1rem"}})
 
-(defstyles new-exercise-description-input-style []
+(defstyles new-exercise-description-input-style [{:keys [theme]}]
   {:display "block"
    :width "100%"
    :color styles/text-color
@@ -217,7 +222,7 @@
    :border-top "solid 2px transparent"
    :overflow-y "auto"
    :&:focus {:outline "none"
-             :border-bottom-color styles/accent-color-active}})
+             :border-bottom-color (:accent-color-active theme)}})
 
 (defstyles new-exercise-form-row []
   {:display "flex"
@@ -228,7 +233,7 @@
    :font-weight "bold"
    :color styles/gray})
 
-(defstyles new-exercise-minutes-input-style []
+(defstyles new-exercise-minutes-input-style [{:keys [theme]}]
   {:border "none"
    :outline "none"
    :background styles/bg-color-secondary
@@ -243,7 +248,7 @@
    :border-radius "6px"
    :font-weight "bold"
    :font-variant-numeric "tabular-nums"
-   :&:focus {:border-bottom-color styles/accent-color-active}})
+   :&:focus {:border-bottom-color (:accent-color-active theme)}})
 
 (defstyles new-exercise-minutes-style []
   {:display "flex"
@@ -261,7 +266,8 @@
 
 (defn new-workout [{:keys [local-date]}]
   ;; TODO: persist state, so closing the modal doesn't wipe the data
-  (let [state (reagent/atom {:minutes 30
+  (let [theme @(subscribe [:theme])
+        state (reagent/atom {:minutes 30
                              :description ""
                              :tags []})
         min-minutes 0
@@ -289,7 +295,7 @@
     (fn []
       [:div {:class (new-exercise-form-style)}
        [:div {:class (new-exercise-form-row)}
-        [:> react-contenteditable {:class (new-exercise-description-input-style)
+        [:> react-contenteditable {:class (new-exercise-description-input-style {:theme theme})
                                    :placeholder "How was the exercise?"
                                    :html (parse-emojis (:description @state))
                                    :on-change handle-description-change}]]
@@ -302,15 +308,15 @@
         ]
        [:div {:class (new-exercise-form-row)}
         [:div {:class (new-exercise-minutes-style)}
-         [:button {:class (classes (styles/icon-button) "minutes-button")
+         [:button {:class (classes (styles/icon-button {:theme theme}) "minutes-button")
                    :type "button"
                    :on-click #(dec-minutes)}
           [icons/minus]]
-         [:input {:class (classes (new-exercise-minutes-input-style) "minutes-input")
+         [:input {:class (classes (new-exercise-minutes-input-style {:theme theme}) "minutes-input")
                   :type "text"
                   :value (:minutes @state)
                   :on-change handle-minutes-change}]
-         [:button {:class (classes (styles/icon-button) "minutes-button")
+         [:button {:class (classes (styles/icon-button {:theme theme}) "minutes-button")
                    :type "button"
                    :on-click #(inc-minutes)}
           [icons/plus]]
@@ -318,7 +324,7 @@
                   :for "minutes"}
           "minutes"]]
 
-        [:button {:class (classes (styles/icon-button-cta) (new-exercise-button-style))
+        [:button {:class (classes (styles/icon-button-cta {:theme theme}) (new-exercise-button-style))
                   :type "button"
                   :on-click create-exercise}
          "Create"]]])))
@@ -339,10 +345,10 @@
    :align-items "center"
    :justify-content "space-between"})
 
-(defstyles exercise-minutes-style []
+(defstyles exercise-minutes-style [{:keys [theme]}]
   {:font-size "300%"
    :font-weight "bold"
-   :color styles/accent-color-active})
+   :color (:accent-color-active theme)})
 
 (defstyles exercise-description-style []
   {:color styles/text-color
@@ -368,7 +374,8 @@
    "> *:first-child" {:margin-left "0px"}})
 
 (defn created-workouts []
-  (let [adding (reagent/atom false)
+  (let [theme @(subscribe [:theme])
+        adding (reagent/atom false)
         delete-workout #(dispatch [:delete-workout %])]
 
     (fn [{:keys [local-date workouts]}]
@@ -379,9 +386,9 @@
            ^{:key (:workout_id workout)}
            [:div {:class (exercise-style)}
             [:div {:class (exercise-title-style)}
-             [:div {:class (exercise-minutes-style)}
+             [:div {:class (exercise-minutes-style {:keys [theme]})}
               [:span (str (ms->m (:duration workout)) " minutes")]]
-             [:button {:class (styles/icon-button)
+             [:button {:class (styles/icon-button {:theme theme})
                        :on-click #(delete-workout (:workout_id workout))}
               [icons/trash {:class (styles/base-icon)}]]]
             [:div {:class (exercise-description-style)
@@ -398,7 +405,7 @@
           [new-workout {:local-date local-date}]]
 
          [:div {:class (exercise-add-style)}
-          [:button {:class (classes (styles/icon-button) (exercise-add-button-style))
+          [:button {:class (classes (styles/icon-button {:theme theme}) (exercise-add-button-style))
                     :on-click #(reset! adding true)}
            [icons/plus-circle {:class (styles/base-icon)}]
            [:span {:class (exercise-add-button-text-style)} "Add another"]]])])))
@@ -434,7 +441,7 @@
    :margin "2px"
    ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:height "4rem"}}
-   :today? {:border (str "1px solid " styles/accent-color-active)}
+   :today? {:border (with-meta #(str "1px solid " (:accent-color-active %1)) [:theme])}
    :future? {:opacity "0.33"}})
 
 (defstyles day-date-style []
@@ -465,21 +472,23 @@
    :align-items "center"
    :justify-content "center"})
 
-(defstyles calendar-add-exercise-button-style []
+(defstyles calendar-add-exercise-button-style [{:keys [theme]}]
   {:color styles/middle-gray
    :flex 1
    :height "100%"
-   :&:hover {:background styles/accent-color
-             :cursor "pointer"}
+   :&:hover {:background (:accent-color theme)
+             :cursor "pointer"
+             :color styles/text-color}
    :&:focus {:outline "none"
              :border styles/focus-border
              :box-shadow styles/focus-shadow
              :color styles/text-color}
-   :&:active {:color styles/accent-color-active}
+   :&:active {:color (:accent-color-active theme)}
    :&:disabled {:cursor "not-allowed"
                 :border "none"
                 :box-shadow "none"
-                :background "inherit"}})
+                :background "inherit"
+                :color "inherit"}})
 
 (defstyles calendar-day-duration-style []
   {:font-weight 700
@@ -503,7 +512,8 @@
 (defn calendar []
   (dispatch [:fetch-all-workouts])
   (fn []
-    (let [start-date @(subscribe [:calendar-start-date])
+    (let [theme @(subscribe [:theme])
+          start-date @(subscribe [:calendar-start-date])
           editing-index @(subscribe [:calendar-editing-index])
           weeks @(subscribe [:calendar-weeks])
           loading @(subscribe [:calendar-loading])
@@ -534,7 +544,7 @@
                     ^{:key (:local-date day)}
                     [day-div {:today? is-today
                               :future? is-future}
-                     [:button {:class (calendar-add-exercise-button-style)
+                     [:button {:class (calendar-add-exercise-button-style {:theme theme})
                                :disabled true}
                       [icons/plus]]]
 
@@ -549,7 +559,7 @@
                        (t/day parsed-date)]]
                                                                 ; TODO: display data about the date's activities
                      [:div {:class (day-minutes-style)}
-                      [:button {:class (calendar-add-exercise-button-style)
+                      [:button {:class (calendar-add-exercise-button-style {:theme theme})
                                 :on-click #(edit-day (+ (* week-index days-in-week) day-index))
                                 :disabled loading}
                        (if (:workouts day)
