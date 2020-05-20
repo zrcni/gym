@@ -39,7 +39,7 @@
       [:div {:class (wrapper-style)}
        [color-picker {:class (color-picker-style)
                       :color (:accent-color theme)
-                      :on-change #(dispatch [::gym.theme/update-accent-color (.-hex %)])}]
+                      :on-change #(dispatch [::gym.theme/update-accent-color (.-hex ^js/Color %)])}]
        [:button {:class (classes (styles/icon-button-cta {:theme theme}) (save-button-style))}
         "Save"]]]))
 
