@@ -35,7 +35,7 @@
               :height (str size "px")
               :width (str size "px")
               :border "4px solid transparent"
-              :border-top (str "4px solid " (:accent-color theme))
+              :border-top (str "4px solid " (:theme-color theme))
               :border-radius "50%"
               :animation (str (spin) " 1.5s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite")}
    :&:after {:content ""
@@ -48,7 +48,7 @@
              :margin "auto"
              :height (str size "px")
              :width (str size "px")
-             :border (str "4px solid " (:accent-color-hover theme))
+             :border (str "4px solid " (:theme-color-hover theme))
              :border-radius "50%"}})
 
 (defn circle [{:keys [size]}]

@@ -9,7 +9,7 @@
 
 (defstyles header-title-style [{:keys [theme]}]
   {:color styles/text-color
-   :&:hover {:color (:accent-color-active theme)}})
+   :&:hover {:color (:theme-color-active theme)}})
 
 (defstyles header-left-style []
   {:display "flex"

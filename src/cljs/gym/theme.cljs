@@ -11,25 +11,26 @@
         l (get hsl 2)]
     (str "hsl(" h ", " s "%, " l "%" ")")))
 
-(reg-event-fx ::update-accent-color
-              (fn [{:keys [db]} [_ accent-color]]
+(reg-event-fx ::update-theme-color
+              (fn [{:keys [db]} [_ theme-color]]
                 ;; [h s l]
-                (let [hsl (-> accent-color parse-color .-hsl js->clj)
+                (let [hsl (-> theme-color parse-color .-hsl js->clj)
                       hover (update hsl 2 (inc-by 12))
                       active (update hsl 2 (inc-by 24))]
                   {:db (-> db
-                           (assoc-in [:theme :accent-color] (hsl-vec->css-color hsl))
-                           (assoc-in [:theme :accent-color-hover] (hsl-vec->css-color hover))
-                           (assoc-in [:theme :accent-color-active] (hsl-vec->css-color active)))
-                   :dispatch [::persist-theme]})))
+                           (assoc-in [:theme :theme-color] (hsl-vec->css-color hsl))
+                           (assoc-in [:theme :theme-color-hover] (hsl-vec->css-color hover))
+                           (assoc-in [:theme :theme-color-active] (hsl-vec->css-color active))
+                           (assoc-in [:theme :preview?] true))})))
 
 (reg-event-fx ::persist-theme
               (fn [{:keys [db]} _]
-                {:set-local-storage! [:theme (:theme db)]}))
+                {:db (assoc-in db [:theme :preview?] false)
+                 :set-local-storage! [:theme (:theme db)]}))
 
-(def req-theme-keys [:accent-color
-                     :accent-color-hover
-                     :accent-color-active])
+(def req-theme-keys [:theme-color
+                     :theme-color-hover
+                     :theme-color-active])
 
 (reg-event-db ::initialize
               (fn [db _]

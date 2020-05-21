@@ -18,7 +18,7 @@
    :position "absolute"
    :background-color styles/bg-color
    :min-width "160px"
-   :box-shadow (str "0px 4px 8px 0px " (:accent-color theme))
+   :box-shadow (str "0px 4px 8px 0px " (:theme-color theme))
    :z-index 1
    :right 0})
 

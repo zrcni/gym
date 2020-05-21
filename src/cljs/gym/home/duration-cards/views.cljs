@@ -53,7 +53,7 @@
   {:margin 0
    :font-size "1em"
    :font-weight 500
-   :background (:accent-color theme)
+   :background (:theme-color theme)
    :border-top-left-radius "6px"
    :border-bottom-left-radius "6px"})
 

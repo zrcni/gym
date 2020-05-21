@@ -58,7 +58,7 @@
    :font-size "85%"})
 
 (defstyles calendar-earlier-later-style [{:keys [theme]}]
-  {:&:hover {:background-color (:accent-color theme)}})
+  {:&:hover {:background-color (:theme-color theme)}})
 
 (defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
   (let [theme @(subscribe [:theme])]
@@ -106,7 +106,7 @@
    :cursor "pointer"
    :width "35px"
    :height "35px"
-   :&:hover {:background-color (:accent-color-hover theme)
+   :&:hover {:background-color (:theme-color-hover theme)
              :border-top-right-radius "6px"
              :border-bottom-right-radius "6px"}})
 
@@ -121,7 +121,7 @@
    :height "35px"
    :line-height "20px"
    :white-space "nowrap"
-   :background (:accent-color theme)
+   :background (:theme-color theme)
    :border-radius "6px"
    :cursor "default"
    :opacity 1
@@ -158,11 +158,11 @@
    :height "35px"
    :width "35px"
    :padding "3px 8px 0 8px"
-   :background-color (:accent-color theme)
+   :background-color (:theme-color theme)
    :color styles/text-color
    :border-top-right-radius "6px"
    :border-bottom-right-radius "6px"
-   :&:hover {:background-color (:accent-color-hover theme)}})
+   :&:hover {:background-color (:theme-color-hover theme)}})
 
 (defn add-tag [{:keys [on-add]}]
   (let [tag (reagent/atom "")
@@ -222,7 +222,7 @@
    :border-top "solid 2px transparent"
    :overflow-y "auto"
    :&:focus {:outline "none"
-             :border-bottom-color (:accent-color-active theme)}})
+             :border-bottom-color (:theme-color-active theme)}})
 
 (defstyles new-exercise-form-row []
   {:display "flex"
@@ -248,7 +248,7 @@
    :border-radius "6px"
    :font-weight "bold"
    :font-variant-numeric "tabular-nums"
-   :&:focus {:border-bottom-color (:accent-color-active theme)}})
+   :&:focus {:border-bottom-color (:theme-color-active theme)}})
 
 (defstyles new-exercise-minutes-style []
   {:display "flex"
@@ -348,7 +348,7 @@
 (defstyles exercise-minutes-style [{:keys [theme]}]
   {:font-size "300%"
    :font-weight "bold"
-   :color (:accent-color-active theme)})
+   :color (:theme-color-active theme)})
 
 (defstyles exercise-description-style []
   {:color styles/text-color
@@ -441,7 +441,7 @@
    :margin "2px"
    ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:height "4rem"}}
-   :today? {:border (with-meta #(str "1px solid " (:accent-color-active %1)) [:theme])}
+   :today? {:border (with-meta #(str "1px solid " (:theme-color-active %1)) [:theme])}
    :future? {:opacity "0.33"}})
 
 (defstyles day-date-style []
@@ -476,14 +476,14 @@
   {:color styles/middle-gray
    :flex 1
    :height "100%"
-   :&:hover {:background (:accent-color theme)
+   :&:hover {:background (:theme-color theme)
              :cursor "pointer"
              :color styles/text-color}
    :&:focus {:outline "none"
              :border styles/focus-border
              :box-shadow styles/focus-shadow
              :color styles/text-color}
-   :&:active {:color (:accent-color-active theme)}
+   :&:active {:color (:theme-color-active theme)}
    :&:disabled {:cursor "not-allowed"
                 :border "none"
                 :box-shadow "none"

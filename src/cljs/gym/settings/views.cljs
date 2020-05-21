@@ -32,16 +32,36 @@
   {:display "flex"
    :align-items "flex-end"})
 
-(defn main []
+(defstyles setting-row-style []
+  {:margin-bottom "16px"})
+
+(defstyles preview-description-style []
+  {:margin-left "0.5rem"
+   :margin-top "0.25rem"})
+
+(defn theme-color []
   (let [theme @(subscribe [:theme])]
+    (prn "Preview: " (:preview? theme))
+    [:div {:class (setting-row-style)}
+     [:h4 "Theme color"]
      [:div
-      [:h4 "Accent color"]
       [:div {:class (wrapper-style)}
        [color-picker {:class (color-picker-style)
-                      :color (:accent-color theme)
-                      :on-change #(dispatch [::gym.theme/update-accent-color (.-hex ^js/Color %)])}]
-       [:button {:class (classes (styles/icon-button-cta {:theme theme}) (save-button-style))}
-        "Save"]]]))
+                      :color (:theme-color theme)
+                      :on-change #(dispatch [::gym.theme/update-theme-color (.-hex ^js/Color %)])}]
+
+       [:button {:class (classes (styles/icon-button-cta {:theme theme}) (save-button-style))
+                 :on-click #(dispatch [::gym.theme/persist-theme])
+                 :disabled (not (:preview? theme))}
+        "Save"]]
+      
+      (when (:preview? theme)
+        [:p {:class (preview-description-style)}
+         "Theme color is not saved yet, but you can preview it in other parts of the application."])]]))
+
+(defn main []
+  [:div#settings
+   [theme-color]])
 
 ;; [:div {:class (loader-wrapper-style)}
 ;;  [loaders/circle {:size 80}]]

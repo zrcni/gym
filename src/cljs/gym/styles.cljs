@@ -3,9 +3,9 @@
    [clojure.string :refer [join]]
    [cljss.core :refer [inject-global remove-styles!] :refer-macros [defstyles defkeyframes]]))
 
-(def accent-color "hsl(200, 70%, 16%)")
-(def accent-color-hover "hsl(200, 70%, 22%)")
-(def accent-color-active "hsl(200, 70%, 38%)")
+(def theme-color "hsl(200, 70%, 16%)")
+(def theme-color-hover "hsl(200, 70%, 22%)")
+(def theme-color-active "hsl(200, 70%, 38%)")
 
 (def main-color "#1d1d1d")
 (def main-color-secondary "#2d2d2d")
@@ -21,8 +21,8 @@
 (def middle-gray "hsl(210, 6%, 50%)")
 (def light-gray "hsl(240, 6%, 97%)")
 
-(def focus-shadow (str "0px 0px 2px " accent-color-active))
-(def focus-border (str "solid 1px " accent-color-active))
+(def focus-shadow (str "0px 0px 2px " theme-color-active))
+(def focus-border (str "solid 1px " theme-color-active))
 (def focus-border-inactive "solid 1px transparent")
 
 (def transparent-white "hsla(0, 100%, 100%, 1)")
@@ -74,7 +74,7 @@
    :border-radius "6px"
    :border "solid 1px transparent"
    :padding "0.5rem"
-   :&:hover {:background (:accent-color theme)
+   :&:hover {:background (:theme-color theme)
              :color text-color}
    :&:focus {:outline "none"
              :border focus-border
@@ -93,11 +93,11 @@
    :align-items "center"
    :border-radius "6px"
    :border "solid 1px transparent"
-   :background-color (:accent-color theme)
+   :background-color (:theme-color theme)
    :color text-color
    :padding "0.5rem 1rem"
-   :&:hover {:background-color (:accent-color-hover theme)}
-   :&:active {:background-color (:accent-color-active theme)}
+   :&:hover {:background-color (:theme-color-hover theme)}
+   :&:active {:background-color (:theme-color-active theme)}
    :&:focus {:border-color text-color
              :box-shadow (str "0px 0px 4px 1px " main-color)}})
 
