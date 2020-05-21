@@ -179,7 +179,7 @@
                   :placeholder "tags"
                   :on-change #(reset! tag (get-value %))
                   :on-key-down on-key-down}]
-         [:button {:class (tag-add-button-style {:keys [theme]})
+         [:button {:class (tag-add-button-style {:theme theme})
                    :type "button"
                    :on-click add}
           [icons/plus]]]))))
@@ -386,7 +386,7 @@
            ^{:key (:workout_id workout)}
            [:div {:class (exercise-style)}
             [:div {:class (exercise-title-style)}
-             [:div {:class (exercise-minutes-style {:keys [theme]})}
+             [:div {:class (exercise-minutes-style {:theme theme})}
               [:span (str (ms->m (:duration workout)) " minutes")]]
              [:button {:class (styles/icon-button {:theme theme})
                        :on-click #(delete-workout (:workout_id workout))}
