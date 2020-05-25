@@ -28,6 +28,7 @@
    :outline "none"
    ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:width "100%"
+                 :height "100vh"
                  :margin 0}}})
 
 (defstyles modal-header-style []
@@ -46,14 +47,15 @@
 
 (defstyles modal-content-container-style []
   {:max-height "600px"
-   :css/media {[:only :screen :and [:max-width "800px"]]
-               {:height "initial"}}})
+   :overflow-y "auto"
+   :padding-bottom "16px"
+   ::css/media {[:only :screen :and [:max-width "800px"]]
+                {:max-height "initial"}}})
 
 (defstyles modal-container-style []
-  {:width "100%"
+  {:overflow "hidden"
+   :width "100%"
    :background-color styles/bg-color
-   :padding-right "16px"
-   :padding-left "16px"
    :margin-right "auto"
    :margin-left "auto"})
 
@@ -68,7 +70,7 @@
                          :class (modal-content-style)}
        [:div {:class (modal-container-style)}
         (when title
-          [:div.row {:class (modal-header-style)}
+          [:div {:class (modal-header-style)}
            [:div {:class (modal-title-style)}
             [:span title]]
            (when-not disable-auto-close

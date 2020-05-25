@@ -204,6 +204,8 @@
   {:position "relative"
    :margin "0px"
    :flex 1
+   :padding-left "16px"
+   :padding-right "16px"
    "> *:first-child" {:margin-top "1rem"}})
 
 (defstyles new-exercise-description-input-style [{:keys [theme]}]
@@ -331,9 +333,11 @@
 
 (defstyles exercises-content-style []
   {:flex 1
-   :margin-bottom "16px"
    :overflow-y "auto"
-   :height "calc(100vh - 4rem)"})
+   :padding-left "16px"
+   :padding-right "16px"
+   ::css/media {[:only :screen :and [:max-width "800px"]]
+                {:height "calc(100vh - 4rem)"}}})
 
 (defstyles exercises-exercises-style []
   {:margin "0 0 0.25rem 0"})
