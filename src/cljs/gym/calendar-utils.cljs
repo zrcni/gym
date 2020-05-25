@@ -113,13 +113,14 @@
    workouts))
 
 (defn calculate-weeks [start-date & [workouts]]
-  (let [cursor (atom -1)
+  (let [start-week-num (t/week-number-of-year start-date)
+        cursor (atom -1)
         workouts-by-day (map-workouts-by-day workouts)]
     (reduce-kv
-     (fn [weeks week-index]
+     (fn [weeks day-index]
        (let [local-date (-> start-date
                             (start-of-week)
-                            (t/plus (t/days week-index))
+                            (t/plus (t/days day-index))
                             (date-time->local-date))
              workouts (get workouts-by-day local-date)
              day-data {:local-date local-date
@@ -127,11 +128,16 @@
                                    (->> workouts
                                         (sort #(compare (iso->ms (:created_at %1))
                                                         (iso->ms (:created_at %2))))))}]
-         (if (< 0 (mod week-index days-in-week))
-           (assoc weeks @cursor (conj (get weeks @cursor) day-data))
+         (if (< 0 (mod day-index days-in-week))
+           (vec (map-indexed
+                 (fn [idx week]
+                   (if (= idx @cursor)
+                     (assoc week :days (conj (:days week) day-data))
+                     week))
+                 weeks))
            (do
              (swap! cursor inc)
-             (conj weeks [day-data])))))
+             (conj weeks {:week-num (+ start-week-num @cursor) :days [day-data]})))))
      []
      (vec (replicate (* num-weeks days-in-week) nil)))))
 

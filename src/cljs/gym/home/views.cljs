@@ -505,6 +505,15 @@
    :margin-bottom "0.5rem"
    :grid-template-columns "5rem auto 5rem"})
 
+(defstyles week-num-wrapper-style []
+  {:margin "2px 4px 2px 4px"
+   :display "flex"
+   :align-items "center"})
+
+(defstyles week-num-style []
+  {:text-align "center"
+   :font-size "0.85rem"})
+
 ; Basically copy-pasted the calendar functionality (and look) from this repo:
 ; https://github.com/ReactTraining/hooks-workshop
 
@@ -539,6 +548,10 @@
           (fn [week-index week]
             ^{:key week-index}
             [:div {:class (calendar-week-style)}
+             [:div {:class (week-num-wrapper-style)}
+              [:span {:class (week-num-style)}
+               (:week-num week)]]
+
              (map-indexed
               (fn [day-index day]
                 (let [parsed-date (local-date->date-time (:local-date day))
@@ -582,7 +595,7 @@
                                              :workouts (:workouts day)}]
                           ^{:key "new-workout"}
                           [new-workout {:local-date (:local-date day)}])])])))
-              week)])
+              (:days week))])
           weeks)]]
        [calendar-nav {:show-later (not (same-day? start-date (calculate-start-date (t/now) num-weeks)))
                       :on-earlier-click show-earlier
