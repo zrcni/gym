@@ -331,7 +331,9 @@
 
 (defstyles exercises-content-style []
   {:flex 1
-   :margin-bottom "16px"})
+   :margin-bottom "16px"
+   :overflow-y "auto"
+   :height "calc(100vh - 4rem)"})
 
 (defstyles exercises-exercises-style []
   {:margin "0 0 0.25rem 0"})

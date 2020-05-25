@@ -27,9 +27,8 @@
    :border-radius "6px"
    :outline "none"
    ::css/media {[:only :screen :and [:max-width "800px"]]
-                {:width "100%"}
-                [:only :screen :and [:max-height "400px"]]
-                {:margin 0}}})
+                {:width "100%"
+                 :margin 0}}})
 
 (defstyles modal-header-style []
   {:padding "8px"
@@ -46,8 +45,9 @@
   {:padding-left "0.5rem"})
 
 (defstyles modal-content-container-style []
-  {:overflow-y "auto"
-   :max-height "600px"})
+  {:max-height "600px"
+   :css/media {[:only :screen :and [:max-width "800px"]]
+               {:height "initial"}}})
 
 (defstyles modal-container-style []
   {:width "100%"

@@ -25,7 +25,7 @@
   {:display "flex"
    :justify-content "center"
    :flex-direction "row"
-   ::css/media {[:only :screen :and [:max-width "700px"]]
+   ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:flex-direction "column"
                  :align-items "center"}}})
 
@@ -45,7 +45,7 @@
    :white-space "nowrap"
    :text-overflow "ellipsis"
    :overflow "hidden"
-   ::css/media {[:only :screen :and [:max-width "700px"]]
+   ::css/media {[:only :screen :and [:max-width "800px"]]
                 {:margin 0
                  :margin-top "0.5em"}}})
 
