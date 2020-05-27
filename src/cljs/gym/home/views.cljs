@@ -35,22 +35,30 @@
   {:display "flex"
    :flex 1
    :margin 2
-   "> *" {:text-transform "uppercase"
-          :flex 1
-          :text-align "center"
-          :font-weight "bold"
-          :color styles/text-color-secondary
-          :font-size "85%"}})
+   "> .weekday" {:text-transform "uppercase"
+                 :flex 1
+                 :text-align "center"
+                 :font-weight "bold"
+                 :color styles/text-color-secondary
+                 :font-size "85%"}})
+
+(def week-num-width "16px")
+(def week-num-margin-right "4px")
+
+(defstyles week-num-pad-style []
+ {:width week-num-width
+  :margin-right week-num-margin-right})
 
 (defn weekdays []
   [:div {:class (weekdays-style)}
-   [:div "Mon"]
-   [:div "Tue"]
-   [:div "Wed"]
-   [:div "Thu"]
-   [:div "Fri"]
-   [:div "Sat"]
-   [:div "Sun"]])
+   [:div {:class (week-num-pad-style)}]
+   [:div.weekday "Mon"]
+   [:div.weekday "Tue"]
+   [:div.weekday "Wed"]
+   [:div.weekday "Thu"]
+   [:div.weekday "Fri"]
+   [:div.weekday "Sat"]
+   [:div.weekday "Sun"]])
 
 (defstyles calendar-nav-style []
   {:display "flex"
@@ -506,9 +514,11 @@
    :grid-template-columns "5rem auto 5rem"})
 
 (defstyles week-num-wrapper-style []
-  {:margin "2px 4px 2px 4px"
+  {:width week-num-width
+   :margin-right week-num-margin-right
    :display "flex"
-   :align-items "center"})
+   :align-items "center"
+   :justify-content "flex-end"})
 
 (defstyles week-num-style []
   {:text-align "center"
