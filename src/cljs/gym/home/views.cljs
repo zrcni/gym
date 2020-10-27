@@ -291,14 +291,14 @@
                        (when (> n min-minutes)
                          (update-minutes (dec n))))
         add-tag #(when-not (or (includes? (:tags @state) %) (blank? %))
-                   (swap! state assoc :tags (conj (:tags @state) %)))
+                   (swap! state update :tags conj %))
         delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
         create-exercise #(dispatch [:create-workout-request {:date local-date
                                                              :description (:description @state)
                                                              :duration (-> (:minutes @state)
                                                                            (to-number)
                                                                            (m->ms))
-                                                             :tags (:tags @state)}])
+                                                             :tags (vec (:tags @state))}])
         ;; on-pick-emoji (fn [emoji]
         ;;                 (update-description (+ (:description @state) (.-colons ^js/Emoji emoji))))
         ]

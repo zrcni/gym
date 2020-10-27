@@ -2,7 +2,8 @@
   (:require
    [gym.middleware :refer [wrap-user]]
    [gym.workouts.repository :refer [get-by-user-id get-by-id create! delete-by-id!]]
-   [clojure.walk :refer [keywordize-keys]]))
+   [clojure.walk :refer [keywordize-keys]]
+   [gym.workout :refer [make-workout]]))
 
 (defn ^:private get-user-workouts-handler [request]
   {:status 200
@@ -19,7 +20,7 @@
 (defn ^:private create-workout-handler [request]
   (let [body (keywordize-keys (:body request))
         create-args (assoc body :user_id (-> request :context :user :user_id))
-        workout (create! create-args)]
+        workout (create! (make-workout create-args))]
     {:status 201
      :headers {"Content-Type" "application/json"}
      :body workout}))

@@ -41,7 +41,6 @@
 
 (defn theme-color []
   (let [theme @(subscribe [:theme])]
-    (prn "Preview: " (:preview? theme))
     [:div {:class (setting-row-style)}
      [:h4 "Theme color"]
      [:div

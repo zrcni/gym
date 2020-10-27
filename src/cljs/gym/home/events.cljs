@@ -1,7 +1,6 @@
 (ns gym.home.events
   (:require
-   [clojure.spec.alpha :as spec]
-   [gym.specs]
+   [gym.workout :refer [validate-workout-new make-workout-new]]
    [gym.config :as cfg]
    [goog.string :as gstring]
    [goog.string.format]
@@ -76,14 +75,12 @@
 
 (reg-event-fx :create-workout-request
               (fn [_ [_ workout]]
-                (let [result (spec/explain-data ::gym.specs/workout-new workout)]
-                  (if result
-                    (let [problems (:cljs.spec.alpha/problems result)
-                          keys (mapcat #(as-> % v (:in v) (map name v)) problems)]
-                      {:toast-error! (gstring/format "%s is invalid" (first keys))})
+                (let [workout-new  (make-workout-new workout)]
+                  (if-let [invalid-keys (validate-workout-new workout-new)]                    
+                    {:toast-error! (gstring/format "%s is invalid" (first invalid-keys))}
 
                     {:dispatch [:fetch {:method :post
-                                        :params workout
+                                        :params workout-new
                                         :uri (str cfg/api-url "/api/workouts")
                                         :format (json-request-format)
                                         :on-success [:create-workout-success]}]}))))
