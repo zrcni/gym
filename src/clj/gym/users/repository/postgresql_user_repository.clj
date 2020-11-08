@@ -13,7 +13,7 @@
 
 (defn row->user [row]
   (-> row
-      (assoc :user_id (.toString (:user_id row)))))
+      (assoc :user_id (str (:user_id row)))))
 
 
 

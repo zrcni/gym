@@ -1,10 +1,10 @@
 (ns gym.stats.controllers.get-current-month-exercises-total-duration
-  (:require [gym.stats.counter :refer [current-month-exercise-durations]]))
+  (:require [gym.stats.counters.workout-duration-counter :refer [get-duration]]))
 
-(defn create []
+(defn create [monthly-workout-duration-counter]
   (fn [req]
    (let [user-id (get-in req [:context :user :user_id])
-         duration ((-> current-month-exercise-durations :get) user-id)]
+         duration (get-duration monthly-workout-duration-counter user-id)]
 
      {:status 200
       :body {:duration duration}

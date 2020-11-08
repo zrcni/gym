@@ -1,5 +1,4 @@
 (ns gym.middleware
-  (:import java.time.Instant)
   (:require
    [ring.middleware.cors :refer [wrap-cors]]
    [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
@@ -9,7 +8,8 @@
    [gym.users.repository.core :refer [user-repository]]
    [gym.auth :refer [get-public-key headers->token get-token-user-id]]
    [ring.middleware.reload :refer [wrap-reload]]
-   [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
+   [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+   [gym.date-utils :refer [instant]]))
 
 (defn parse-token [token]
   (jwt/unsign token (get-public-key) {:alg :rs256}))
@@ -25,7 +25,7 @@
       (str " - origin: " (get-in request [:headers "origin"]))
       (str " - user-agent: " (get-in request [:headers "user-agent"]))
       (str " - content-length: " (or (get-in request [:headers "content-length"] 0)))
-      (str " - timestamp: " (.toString (Instant/now)))))
+      (str " - timestamp: " (str (instant)))))
 
 (defn wrap-log [handler]
   (fn [request]

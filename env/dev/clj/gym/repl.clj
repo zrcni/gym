@@ -2,7 +2,8 @@
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [gym.config :as cfg]
             [gym.handlers.api :as api-handler]
-            [gym.handlers.web :as web-handler])
+            [gym.handlers.web :as web-handler]
+            [gym.subscriptions])
   (:use figwheel-sidecar.repl-api
         ring.server.standalone
         [ring.middleware file-info file]))
