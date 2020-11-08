@@ -3,7 +3,7 @@
            java.time.temporal.TemporalAdjusters
            java.time.DayOfWeek)
   (:require
-   [gym.database :refer [get-db]]
+   [gym.database :refer [db-conn]]
    [next.jdbc.result-set :as rs]
    [next.jdbc.sql :as sql]
    [gym.util :refer [inc-by dec-by]]))
@@ -28,7 +28,7 @@
   (assoc result :user_id (.toString (:user_id result))))
 
 (defn get-exercise-durations [start-date end-date]
-  (let [results (sql/query (get-db)
+  (let [results (sql/query db-conn
                            ["SELECT SUM(duration), user_id FROM workouts WHERE date BETWEEN SYMMETRIC ? AND ? GROUP BY user_id" start-date end-date]
                            {:builder-fn rs/as-unqualified-maps})]
     (map format-duration-result results)))

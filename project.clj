@@ -43,7 +43,7 @@
             [lein-asset-minifier "0.4.6"
              :exclusions [org.clojure/clojure]]]
 
-  :ring {:handler gym.handler/web-handler
+  :ring {:handler gym.handlers.web/handler
          :uberwar-name "gym.jar"}
 
   :min-lein-version "2.5.0"
@@ -144,7 +144,7 @@
    :nrepl-port 7002
    :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
    :css-dirs ["resources/public/css"]
-   :ring-handler gym.handler/web-handler}
+   :ring-handler gym.handlers.web/handler}
 
 
 

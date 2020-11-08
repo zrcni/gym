@@ -1,6 +1,6 @@
 (ns gym.users.repository
   (:require
-   [gym.database :refer [get-db]]
+   [gym.database :refer [db-conn]]
    [next.jdbc.result-set :as rs]
    [next.jdbc.sql :as sql]))
 
@@ -17,7 +17,7 @@
       (assoc :user_id (.toString (:user_id row)))))
 
 (defn create! [{:keys [token-user-id username avatar-url]}]
-  (let [new-user (sql/insert! (get-db)
+  (let [new-user (sql/insert! db-conn
                               "users"
                               {:token_user_id token-user-id
                                :username username
@@ -27,7 +27,7 @@
     (row->user new-user)))
 
 (defn get-by-token-user-id [token_user_id]
-  (let [users (sql/query (get-db)
+  (let [users (sql/query db-conn
                          [(users-query "token_user_id = ?" 1) token_user_id]
                          {:builder-fn rs/as-unqualified-maps})]
     (if (> (count users) 0)

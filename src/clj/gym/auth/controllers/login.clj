@@ -1,8 +1,7 @@
-(ns gym.auth.route
- (:require
-  [clj-http.client :as http]
-  [gym.auth :refer [get-token-user-id get-token-payload headers->token]]
-  [gym.users.repository :refer [get-by-token-user-id create!]]))
+(ns gym.auth.controllers.login
+  (:require [clj-http.client :as http]
+            [gym.auth :refer [get-token-user-id get-token-payload headers->token]]
+            [gym.users.repository :refer [get-by-token-user-id create!]]))
 
 (defn parse-auth0-user-info [user-info]
   {:username (:nickname user-info)
@@ -23,14 +22,12 @@
         new-user (create! (parse-auth0-user-info user-info))]
     new-user))
 
-(defn login [request]
-  (let [user (or
-              (get-by-token-user-id (get-token-user-id request))
-              (create-new-user request))]
-    {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body {:user user}}))
+(defn create []
+  (fn [req]
+    (let [user (or
+                (get-by-token-user-id (get-token-user-id req))
+                (create-new-user req))]
 
-(defn create-auth-route [path]
-  [path
-   ["/login" {:post {:handler login}}]])
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body {:user user}})))
