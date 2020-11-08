@@ -5,7 +5,8 @@
    [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
    [prone.middleware :refer [wrap-exceptions]]
    [buddy.sign.jwt :as jwt]
-   [gym.users.repository :refer [get-by-token-user-id]]
+   [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
+   [gym.users.repository.core :refer [user-repository]]
    [gym.auth :refer [get-public-key headers->token get-token-user-id]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
@@ -51,7 +52,7 @@
 (defn wrap-user [handler]
   (fn [request]
     (let [token-user-id (get-token-user-id request)
-          user (get-by-token-user-id token-user-id)]
+          user (get-user-by-token-user-id user-repository token-user-id)]
       (handler (assoc-in request [:context :user] user)))))
 
 (def api-middlewares

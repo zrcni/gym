@@ -60,19 +60,19 @@
 
 
 
-(defrecord PostgresqlWorkoutRepository [db]
+(defrecord PostgresqlWorkoutRepository [db-conn]
   WorkoutRepository
 
   (get-workouts-by-user-id
     [this user_id]
-    (let [workouts (sql/query db
+    (let [workouts (sql/query db-conn
                               [(workouts-with-tags-query "workouts.user_id = ?") (create-uuid user_id)]
                               {:builder-fn rs/as-unqualified-maps})]
       (map row->workout-and-tags workouts)))
 
   (get-workout-by-workout-id
     [this workout_id]
-    (let [workouts (sql/query db
+    (let [workouts (sql/query db-conn
                               [(workouts-with-tags-query "workouts.workout_id = ?" 1) (create-uuid workout_id)]
                               {:builder-fn rs/as-unqualified-maps})]
       (if (> (count workouts) 0)
@@ -81,7 +81,7 @@
 
   (create-workout!
     [this {:keys [description duration date tags user_id]}]
-    (jdbc/with-transaction [tx db]
+    (jdbc/with-transaction [tx db-conn]
       (let [workout (sql/insert! tx
                                  "workouts"
                                  {:description description
@@ -107,27 +107,27 @@
             (assoc :tags (map #(row->tag %) tags))))))
 
   (delete-workout-by-workout-id!
-    [this workout_id]
-    (jdbc/with-transaction [tx db]
-      (let [w-id (create-uuid workout_id)
-            _ (sql/delete! tx
-                           "workout_tags"
-                           ["workout_id = ?" w-id])
-            workout (jdbc/execute-one! tx
-                                       ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
-                                       {:builder-fn rs/as-unqualified-maps})
-            duration-sec (/ (:duration workout) 1000)
-            local-date (.toLocalDate (:date workout))]
-        (if workout
-          (do
-            (when (current-week? local-date)
-              ((-> current-week-exercise-durations :dec) (-> workout :user_id .toString) duration-sec))
-            (when (current-month? local-date)
-              ((-> current-month-exercise-durations :dec) (-> workout :user_id .toString) duration-sec))
-            1)
-          0)))))
+   [this workout_id]
+   (jdbc/with-transaction [tx db-conn]
+     (let [w-id (create-uuid workout_id)
+           _ (sql/delete! tx
+                          "workout_tags"
+                          ["workout_id = ?" w-id])
+           workout (jdbc/execute-one! tx
+                                      ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
+                                      {:builder-fn rs/as-unqualified-maps})
+           duration-sec (/ (:duration workout) 1000)
+           local-date (.toLocalDate (:date workout))]
+       (if workout
+         (do
+           (when (current-week? local-date)
+             ((-> current-week-exercise-durations :dec) (-> workout :user_id .toString) duration-sec))
+           (when (current-month? local-date)
+             ((-> current-month-exercise-durations :dec) (-> workout :user_id .toString) duration-sec))
+           1)
+         0)))))
 
 
 
-(defn create-postgresql-workout-repository [db]
-  (->PostgresqlWorkoutRepository db))
+(defn create-postgresql-workout-repository [db-conn]
+  (->PostgresqlWorkoutRepository db-conn))
