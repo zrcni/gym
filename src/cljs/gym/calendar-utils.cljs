@@ -42,8 +42,8 @@
   "If a number only has one digit, add 0 to the beginning and return it as a string."
   [n]
   (if (< n 10)
-    (str "0" (.toString n))
-    (.toString n)))
+    (str "0" (str n))
+    (str n)))
 
 (defn date-time->local-date [date]
   (let [day (t/day date)
