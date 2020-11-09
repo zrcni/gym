@@ -26,8 +26,8 @@
    {}
    results))
 
-(defonce weekly-data (atom (-> (get-current-week-durations) workout-durations->counter-data)))
-(defonce monthly-data (atom (-> (get-current-month-durations) workout-durations->counter-data)))
+(defonce weekly-data (atom (workout-durations->counter-data (get-current-week-durations))))
+(defonce monthly-data (atom (workout-durations->counter-data (get-current-month-durations))))
 
 (def weekly-workout-duration-counter (create-in-memory-workout-duration-counter weekly-data))
 (def monthly-workout-duration-counter (create-in-memory-workout-duration-counter monthly-data))
