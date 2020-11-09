@@ -30,8 +30,6 @@
     (weekly-counter/incr-count weekly-workout-duration-counter week year user-id duration-sec)
     (monthly-counter/incr-count monthly-workout-duration-counter month year user-id duration-sec)))
 
-(defn reinitialize-counters []
+(defn exec []
   (clear-counters)
   (dorun (map update-counters (get-workout-durations))))
-
-(reinitialize-counters)

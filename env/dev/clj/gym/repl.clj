@@ -1,10 +1,10 @@
 (ns gym.repl
-  (:require [gym.setup]
-            [ring.adapter.jetty :refer [run-jetty]]
+  (:require [ring.adapter.jetty :refer [run-jetty]]
             [gym.config :as cfg]
             [gym.handlers.api :as api-handler]
             [gym.handlers.web :as web-handler]
-            [gym.subscriptions])
+            [gym.subscriptions :as subscriptions]
+            [gym.stats.counters.reinitialize-counters :as reinitialize-counters])
   (:use figwheel-sidecar.repl-api
         ring.server.standalone
         [ring.middleware file-info file]))
@@ -50,4 +50,9 @@
   (.stop @api-server)
   (reset! api-server nil))
 
-(start-api-server cfg/port)
+(defn initialize []
+  (subscriptions/register)
+  (reinitialize-counters/exec)
+  (start-api-server cfg/port))
+
+(initialize)

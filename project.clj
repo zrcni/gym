@@ -177,7 +177,7 @@
                                         (slurp "./certs/auth0-public-key.pem")
                                         (catch Exception _ ""))
                          :commit-sha ~(System/getenv "COMMIT_REF")
-                         :redis-url "redis://localhost:6379/0"}}
+                         :redis-url "redis://localhost:6379"}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]

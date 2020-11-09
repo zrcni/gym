@@ -1,4 +1,5 @@
 (ns gym.subscriptions
-  (:require [gym.workouts.subscriptions.core]))
+  (:require [gym.workouts.subscriptions.core :as workout-subscriptions]))
 
-;; register all subscriptions by requiring this namespace
+(defn register []
+  (workout-subscriptions/register))
