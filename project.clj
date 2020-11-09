@@ -133,8 +133,8 @@
                                                react-modal ReactModal
                                                toastr toastr
                                                auth0spa auth0spa}}]
-              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "http://localhost:3001")
-                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
+              :closure-defines {gym.config/api-url "http://localhost:3001"
+                                gym.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"
                                 gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
                                 gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}}}
 
