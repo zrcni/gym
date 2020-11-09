@@ -4,5 +4,4 @@
   (get-workouts-by-user-id [this user-id])
   (get-workout-by-workout-id [this workout-id])
   (create-workout! [this params])
-  (delete-workout-by-workout-id! [this workout-id])
-  (get-all-workout-durations [this start-date end-date]))
+  (delete-workout-by-workout-id! [this workout-id]))

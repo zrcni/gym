@@ -33,6 +33,7 @@
                  [clojure-humanize "0.2.2"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [day8.re-frame/http-fx "v0.2.0"]
+                 [com.taoensso/carmine "3.0.1"]
                  [venantius/accountant "0.2.5"
                   :exclusions [org.clojure/tools.reader]]]
 
@@ -175,7 +176,8 @@
                          :public-key ~(try
                                         (slurp "./certs/auth0-public-key.pem")
                                         (catch Exception _ ""))
-                         :commit-sha ~(System/getenv "COMMIT_REF")}}
+                         :commit-sha ~(System/getenv "COMMIT_REF")
+                         :redis-url "redis://localhost:6379/0"}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                   ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
@@ -187,9 +189,10 @@
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")
                              :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")
-                             :commit-sha ~(System/getenv "COMMIT_REF")}
+                             :commit-sha ~(System/getenv "COMMIT_REF")
+                             :redis-url ~(System/getenv "REDIS_URL")}
                        :aot :all
                        :omit-source true}}
-    :migratus {:store :database
-               :migration-dir "migrations"
-               :db ~(or (System/getenv "PG_URL") "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres")})
+  :migratus {:store :database
+             :migration-dir "migrations"
+             :db ~(or (System/getenv "PG_URL") "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres")})

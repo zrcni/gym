@@ -1,8 +1,8 @@
 (ns gym.server
-    (:require
-     [gym.handlers.api :as api-handler]
-     [gym.config :as cfg]
-     [ring.adapter.jetty :refer [run-jetty]])
+    (:require [gym.setup]
+              [gym.handlers.api :as api-handler]
+              [gym.config :as cfg]
+              [ring.adapter.jetty :refer [run-jetty]])
     (:gen-class))
 
 ;; (defn start-web []

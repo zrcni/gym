@@ -3,7 +3,11 @@
             [next.jdbc :as jdbc]))
 
 (def db-config {:dbtype "postgresql"
-         :classname "org.postgresql.Driver"
-         :jdbcUrl cfg/jdbc-database-url})
+                :classname "org.postgresql.Driver"
+                :jdbcUrl cfg/jdbc-database-url})
 
 (def db-conn (jdbc/get-datasource db-config))
+
+(def redis-conn {:pool {}
+                 :spec {:uri cfg/redis-url}})
+

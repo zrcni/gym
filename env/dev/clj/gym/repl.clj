@@ -1,5 +1,6 @@
 (ns gym.repl
-  (:require [ring.adapter.jetty :refer [run-jetty]]
+  (:require [gym.setup]
+            [ring.adapter.jetty :refer [run-jetty]]
             [gym.config :as cfg]
             [gym.handlers.api :as api-handler]
             [gym.handlers.web :as web-handler]

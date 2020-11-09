@@ -8,3 +8,4 @@
 (def host-url (:host-url env))
 (def public-key (:public-key env))
 (def commit-sha (:commit-sha env))
+(def redis-url (:redis-url env))

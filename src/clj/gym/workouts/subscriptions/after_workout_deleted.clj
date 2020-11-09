@@ -1,7 +1,7 @@
 (ns gym.workouts.subscriptions.after-workout-deleted
-  (:import java.time.LocalDate)
-  (:require [gym.stats.counters.workout-duration-counter :refer [decrement-duration]]
-            [gym.date-utils :refer [current-week? current-month?]]
+  (:require [gym.stats.counters.weekly-counter :as weekly-counter]
+            [gym.stats.counters.monthly-counter :as monthly-counter]
+            [gym.date-utils :refer [get-week-of-year get-year local-date get-month]]
             [gym.util :refer [ms->s]]))
 
 (defn create [weekly-workout-duration-counter
@@ -9,10 +9,14 @@
   (fn [event]
     (let [workout (-> event :payload :workout)
           duration-sec (ms->s (:duration workout))
-          local-date (LocalDate/parse (:date workout))
-          user_id (str (:user_id workout))]
+          user_id (str (:user_id workout))
+          date (local-date (:date workout))
+          week (get-week-of-year date)
+          month (get-month date)
+          year (get-year date)]
 
-      (when (current-week? local-date)
-        (decrement-duration weekly-workout-duration-counter user_id duration-sec))
-      (when (current-month? local-date)
-        (decrement-duration monthly-workout-duration-counter user_id duration-sec)))))
+      (weekly-counter/decr-count weekly-workout-duration-counter
+                                 week year user_id duration-sec)
+      
+      (monthly-counter/decr-count monthly-workout-duration-counter
+                                  month year user_id duration-sec))))

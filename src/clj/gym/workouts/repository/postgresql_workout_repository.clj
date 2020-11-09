@@ -40,9 +40,6 @@
 (defn row->tag [row]
   (:tag row))
 
-(defn format-duration-result [result]
-  (assoc result :user_id (str (:user_id result))))
-
 
 
 (defrecord PostgresqlWorkoutRepository [db-conn domain-events]
@@ -89,29 +86,22 @@
         workout)))
 
   (delete-workout-by-workout-id!
-   [this workout_id]
-   (let [workout (get-workout-by-workout-id this workout_id)]
+    [this workout_id]
+    (let [workout (get-workout-by-workout-id this workout_id)]
 
-     (jdbc/with-transaction [tx db-conn]
-       (let [w-id (create-uuid workout_id)
-             _ (sql/delete! tx
-                            "workout_tags"
-                            ["workout_id = ?" w-id])
-             deleted-workout (jdbc/execute-one! tx
-                                                ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
-                                                {:builder-fn rs/as-unqualified-maps})]
-         (if deleted-workout
-           (do
-             (dispatch-event domain-events (workout-deleted workout))
-             1)
-           0)))))
-
-  (get-all-workout-durations
-   [this start-date end-date]
-   (let [results (sql/query db-conn
-                            ["SELECT SUM(duration), user_id FROM workouts WHERE date BETWEEN SYMMETRIC ? AND ? GROUP BY user_id" start-date end-date]
-                            {:builder-fn rs/as-unqualified-maps})]
-     (map format-duration-result results))))
+      (jdbc/with-transaction [tx db-conn]
+        (let [w-id (create-uuid workout_id)
+              _ (sql/delete! tx
+                             "workout_tags"
+                             ["workout_id = ?" w-id])
+              deleted-workout (jdbc/execute-one! tx
+                                                 ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
+                                                 {:builder-fn rs/as-unqualified-maps})]
+          (if deleted-workout
+            (do
+              (dispatch-event domain-events (workout-deleted workout))
+              1)
+            0))))))
 
 
 
