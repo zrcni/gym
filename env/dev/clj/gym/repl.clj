@@ -1,8 +1,11 @@
 (ns gym.repl
-  (:require [ring.adapter.jetty :refer [run-jetty]]
-            [gym.config :as cfg])
-  (:use gym.handler
-        figwheel-sidecar.repl-api
+  (:require [gym.setup]
+            [ring.adapter.jetty :refer [run-jetty]]
+            [gym.config :as cfg]
+            [gym.handlers.api :as api-handler]
+            [gym.handlers.web :as web-handler]
+            [gym.subscriptions])
+  (:use figwheel-sidecar.repl-api
         ring.server.standalone
         [ring.middleware file-info file]))
 
@@ -13,7 +16,7 @@
   ;; the server is forced to re-resolve the symbol in the var
   ;; rather than having its own copy. When the root binding
   ;; changes, the server picks it up without having to restart.
-  (-> #'web-handler
+  (-> #'web-handler/handler
       ; Makes static assets in $PROJECT_DIR/resources/public/ available.
       (wrap-file "resources")
       ; Content-Type, Content-Length, and Last Modified headers for files in body
@@ -38,9 +41,9 @@
 
 (defn start-api-server [& [port]]
     (reset! server
-            (run-jetty #'api-handler {:port (Integer/parseInt port)
-                                      :auto-reload? true
-                                      :join? false}))
+            (run-jetty #'api-handler/handler {:port (Integer/parseInt port)
+                                    :auto-reload? true
+                                    :join? false}))
     (println (str "API server listening on port " port)))
 
 (defn stop-api-server []

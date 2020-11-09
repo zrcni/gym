@@ -1,8 +1,8 @@
 (ns gym.server
-    (:require
-     [gym.handler :refer [web-handler api-handler]]
-     [gym.config :as cfg]
-     [ring.adapter.jetty :refer [run-jetty]])
+    (:require [gym.setup]
+              [gym.handlers.api :as api-handler]
+              [gym.config :as cfg]
+              [ring.adapter.jetty :refer [run-jetty]])
     (:gen-class))
 
 ;; (defn start-web []
@@ -12,7 +12,7 @@
 (defn start-api []
   (let [port (Integer/parseInt cfg/port)]
     (println (str "Starting server on port " port))
-    (run-jetty api-handler {:port port :join? true})))
+    (run-jetty api-handler/handler {:port port :join? true})))
 
 (defn -main [& args]
   ;; (start-web)

@@ -8,3 +8,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
+
+  redis:
+    image: redis:6.0.9
+    ports:
+      - 6379:6379
+    
