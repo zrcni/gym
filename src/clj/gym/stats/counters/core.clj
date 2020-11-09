@@ -4,7 +4,8 @@
            java.time.DayOfWeek)
   (:require [gym.stats.counters.in-memory-workout-duration-counter :refer [create-in-memory-workout-duration-counter]]
             [gym.workouts.repository.core :refer [workout-repository]]
-            [gym.workouts.repository.workout-repository :refer [get-all-workout-durations]]))
+            [gym.workouts.repository.workout-repository :refer [get-all-workout-durations]]
+            [gym.util :refer [ms->s]]))
 
 (defn get-current-week-durations []
   (let [today (LocalDate/now)
@@ -21,7 +22,7 @@
 (defn workout-durations->counter-data [results]
   (reduce
    (fn [acc result]
-     (assoc acc (:user_id result) (/ (:sum result) 1000)))
+     (assoc acc (:user_id result) (ms->s (:sum result))))
    {}
    results))
 

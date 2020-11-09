@@ -1,7 +1,9 @@
 (ns gym.util
   #?(:clj (:import java.util.UUID))
-   (:require
-    [clojure.spec.alpha :as s]))
+  (:require
+   [clojure.spec.alpha :as s]))
+
+(defn ms->s [ms] (/ ms 1000))
 
 (defn exception [message]
   #?(:clj (Exception. message)
