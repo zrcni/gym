@@ -3,6 +3,7 @@
   (:require [environ.core :refer [env]]
             [clojure.string :refer [split]]))
 
+(def dev? (:dev env))
 (def frontend-urls (split (:frontend-urls env) #","))
 (def jdbc-database-url (:jdbc-database-url env))
 (def port (:port env))
