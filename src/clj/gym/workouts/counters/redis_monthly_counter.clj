@@ -1,7 +1,7 @@
-(ns gym.stats.counters.redis-monthly-counter
+(ns gym.workouts.counters.redis-monthly-counter
   (:require [clojure.string :refer [join]]
-            [gym.stats.counters.monthly-counter :refer [MonthlyCounter]]
-            [gym.stats.counters.counter :refer [incr-count
+            [gym.workouts.counters.monthly-counter :refer [MonthlyCounter]]
+            [gym.workouts.counters.counter :refer [incr-count
                                                 decr-count
                                                 get-count]]))
 

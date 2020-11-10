@@ -1,6 +1,6 @@
 (ns gym.auth.controllers.login
   (:require [clj-http.client :as http]
-            [gym.auth :refer [get-token-user-id get-token-payload headers->token]]
+            [gym.auth.utils :refer [get-token-user-id get-token-payload headers->token]]
             [gym.users.repository.user-repository :refer [get-user-by-token-user-id create-user!]]
             [gym.users.repository.core :refer [user-repository]]))
 

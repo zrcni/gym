@@ -1,8 +1,8 @@
-(ns gym.stats.counters.reinitialize-counters
-  (:require [gym.stats.counters.core :refer [weekly-workout-duration-counter
-                                             monthly-workout-duration-counter]]
-            [gym.stats.counters.weekly-counter :as weekly-counter]
-            [gym.stats.counters.monthly-counter :as monthly-counter]
+(ns gym.workouts.counters.reinitialize-counters
+  (:require [gym.workouts.counters.core :refer [weekly-workout-duration-counter
+                                                monthly-workout-duration-counter]]
+            [gym.workouts.counters.weekly-counter :as weekly-counter]
+            [gym.workouts.counters.monthly-counter :as monthly-counter]
             [gym.database :refer [db-conn redis-conn]]
             [gym.util :refer [ms->s]]
             [gym.date-utils :refer [get-week-of-year get-month get-year]]

@@ -1,6 +1,6 @@
-(ns gym.stats.counters.redis-counter
+(ns gym.workouts.counters.redis-counter
   (:require [taoensso.carmine :as car :refer (wcar)]
-            [gym.stats.counters.counter :refer [Counter]]))
+            [gym.workouts.counters.counter :refer [Counter]]))
 
 (defn key-name [key]
   (format "count:%s" key))

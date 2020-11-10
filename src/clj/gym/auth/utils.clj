@@ -1,15 +1,14 @@
-(ns gym.auth
-  (:require
-   [clojure.string :as string]
-   [gym.config :as cfg]
-   [buddy.core.keys :as keys]))
+(ns gym.auth.utils
+  (:require [clojure.string :refer [split]]
+            [gym.config :as cfg]
+            [buddy.core.keys :as keys]))
 
 ;; Need to create the cert lazily, because keys/str->public-key throws
 ;; an exception if the public key is invalid, wihch is during the build.
 (def ^:private cert (atom nil))
 
 (defn get-public-key []
-  (when (nil? @cert)
+  (when-not @cert
     (reset! cert (keys/str->public-key cfg/public-key)))
   @cert)
 
@@ -20,5 +19,7 @@
   (:sub (get-token-payload request)))
 
 (defn headers->token [headers]
-  (let [[_prefix token] (string/split (get headers "authorization") #" ")]
-    token))
+  (-> headers
+      (get "authorization")
+      (split #" ")
+      (second)))

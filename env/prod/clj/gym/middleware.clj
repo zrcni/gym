@@ -6,7 +6,7 @@
    [buddy.sign.jwt :as jwt]
    [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
    [gym.users.repository.core :refer [user-repository]]
-   [gym.auth :refer [get-public-key headers->token get-token-user-id]]   
+   [gym.auth.utils :refer [get-public-key headers->token get-token-user-id]]   
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [gym.date-utils :refer [instant]]))
 
@@ -30,8 +30,7 @@
   (jwt/unsign token (get-public-key) {:alg :rs256}))
 
 ;; array of regex patterns
-(def allowed-origins ((comp vec flatten vector)
-                           [(map #(re-pattern %) cfg/frontend-urls) (re-pattern cfg/host-url)]))
+(def allowed-origins (mapv #(re-pattern %) (conj cfg/frontend-urls cfg/host-url)))
 
 (defn unauthorized-response [& [message]]
   {:status 401

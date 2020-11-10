@@ -4,7 +4,6 @@
    [gym.middleware :refer [api-middlewares wrap-user]]
    [gym.workouts.controllers.core :as workouts-controllers]
    [gym.users.controllers.core :as users-controllers]
-   [gym.stats.controllers.core :as stats-controllers]
    [gym.auth.controllers.core :as auth-controllers]))
 
 (def handler
@@ -19,18 +18,17 @@
 
       ["/:workout-id" {:get {:handler #'workouts-controllers/get-workout-by-workout-id}
                        :delete {:handler #'workouts-controllers/delete-workout-by-workout-id
-                                :middleware [wrap-user]}}]]
+                                :middleware [wrap-user]}}]
+      
+      ["/duration"
+       ["/week" {:get {:handler #'workouts-controllers/get-current-week-exercises-total-duration
+                       :middleware [wrap-user]}}]
+       ["/month" {:get {:handler #'workouts-controllers/get-current-month-exercises-total-duration
+                        :middleware [wrap-user]}}]]]
      ["/users/token" {:get {:handler #'users-controllers/get-authenticated-user}}]
 
      ["/auth"
-      ["/login" {:post {:handler #'auth-controllers/login}}]]
-
-     ["/stats"
-      ["/exercises"
-       ["/week" {:get {:handler #'stats-controllers/get-current-week-exercises-total-duration
-                       :middleware [wrap-user]}}]
-       ["/month" {:get {:handler #'stats-controllers/get-current-month-exercises-total-duration
-                        :middleware [wrap-user]}}]]]])
+      ["/login" {:post {:handler #'auth-controllers/login}}]]])
 
    (reitit-ring/routes
     (reitit-ring/create-default-handler))

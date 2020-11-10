@@ -1,8 +1,8 @@
-(ns gym.stats.counters.core
-  (:require [gym.stats.counters.redis-weekly-counter :refer [create-redis-weekly-counter]]
-            [gym.stats.counters.redis-monthly-counter :refer [create-redis-monthly-counter]]
+(ns gym.workouts.counters.core
+  (:require [gym.workouts.counters.redis-weekly-counter :refer [create-redis-weekly-counter]]
+            [gym.workouts.counters.redis-monthly-counter :refer [create-redis-monthly-counter]]
             [gym.database :refer [redis-conn]]
-            [gym.stats.counters.redis-counter :refer [create-redis-counter]]))
+            [gym.workouts.counters.redis-counter :refer [create-redis-counter]]))
 
 (def weekly-workout-duration-counter
   (create-redis-weekly-counter "workout-duration-week" (create-redis-counter redis-conn)))

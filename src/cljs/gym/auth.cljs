@@ -7,7 +7,7 @@
 ;; https://auth0.github.io/auth0-spa-js/interfaces/auth0clientoptions.html
 (defn create-auth0-client []
   (new js/auth0spa.Auth0Client (clj->js
-                                {:domain "samulir.eu.auth0.com"
+                                {:domain cfg/auth0-domain
                                  :client_id cfg/auth0-client-id
                                  :display "popup"
                                  :useRefreshTokens true

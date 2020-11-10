@@ -3,7 +3,7 @@
             [gym.config :as cfg]
             [ring.adapter.jetty :refer [run-jetty]]
             [gym.subscriptions :as subscriptions]
-            [gym.stats.counters.reinitialize-counters :as reinitialize-counters])
+            [gym.workouts.counters.reinitialize-counters :as reinitialize-counters])
   (:gen-class))
 
 ;; (defn start-web []

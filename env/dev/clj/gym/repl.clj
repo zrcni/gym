@@ -4,7 +4,7 @@
             [gym.handlers.api :as api-handler]
             [gym.handlers.web :as web-handler]
             [gym.subscriptions :as subscriptions]
-            [gym.stats.counters.reinitialize-counters :as reinitialize-counters])
+            [gym.workouts.counters.reinitialize-counters :as reinitialize-counters])
   (:use figwheel-sidecar.repl-api
         ring.server.standalone
         [ring.middleware file-info file]))

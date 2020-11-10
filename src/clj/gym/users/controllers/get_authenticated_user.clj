@@ -1,6 +1,6 @@
 (ns gym.users.controllers.get-authenticated-user
   (:require    [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
-               [gym.auth :refer [get-token-user-id]]))
+               [gym.auth.utils :refer [get-token-user-id]]))
 
 
 (defn create [user-repository]

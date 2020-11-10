@@ -98,6 +98,7 @@
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")
                                 gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
+                                gym.config/auth0-domain ~(or (System/getenv "AUTH0_DOMAIN") "")
                                 gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
                                 ;; this comes from netlify in prod
                                 gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}
@@ -136,6 +137,7 @@
                                                auth0spa auth0spa}}]
               :closure-defines {gym.config/api-url "http://localhost:3001"
                                 gym.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"
+                                gym.config/auth0-domain "samulir.eu.auth0.com"
                                 gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
                                 gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}}}
 

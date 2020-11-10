@@ -1,4 +1,4 @@
-(ns gym.stats.counters.counter)
+(ns gym.workouts.counters.counter)
 
 (defprotocol Counter
   (incr-count [this key count])

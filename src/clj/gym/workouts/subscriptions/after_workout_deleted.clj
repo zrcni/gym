@@ -1,6 +1,6 @@
 (ns gym.workouts.subscriptions.after-workout-deleted
-  (:require [gym.stats.counters.weekly-counter :as weekly-counter]
-            [gym.stats.counters.monthly-counter :as monthly-counter]
+  (:require [gym.workouts.counters.weekly-counter :as weekly-counter]
+            [gym.workouts.counters.monthly-counter :as monthly-counter]
             [gym.date-utils :refer [get-week-of-year get-year local-date get-month]]
             [gym.util :refer [ms->s]]))
 

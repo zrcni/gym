@@ -1,4 +1,4 @@
-(ns gym.stats.counters.weekly-counter)
+(ns gym.workouts.counters.weekly-counter)
 
 (defprotocol WeeklyCounter
   (incr-count [this key week year count])

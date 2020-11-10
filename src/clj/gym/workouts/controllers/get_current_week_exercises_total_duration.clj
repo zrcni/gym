@@ -1,5 +1,5 @@
-(ns gym.stats.controllers.get-current-week-exercises-total-duration
-  (:require [gym.stats.counters.weekly-counter :refer [get-count]]
+(ns gym.workouts.controllers.get-current-week-exercises-total-duration
+  (:require [gym.workouts.counters.weekly-counter :refer [get-count]]
             [gym.date-utils :refer [local-date get-week-of-year get-year]]))
 
 ;; TODO: ?week=48&year=2020

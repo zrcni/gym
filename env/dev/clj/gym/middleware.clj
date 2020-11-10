@@ -6,7 +6,7 @@
    [buddy.sign.jwt :as jwt]
    [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
    [gym.users.repository.core :refer [user-repository]]
-   [gym.auth :refer [get-public-key headers->token get-token-user-id]]
+   [gym.auth.utils :refer [get-public-key headers->token get-token-user-id]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [gym.date-utils :refer [instant]]))

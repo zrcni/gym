@@ -7,7 +7,7 @@
               (fn [{:keys [db]} _]
                 {:db (assoc-in db [:home :duration-cards :loading] true)
                  :dispatch [:fetch {:method :get
-                                    :uri (str cfg/api-url "/api/stats/exercises/week")
+                                    :uri (str cfg/api-url "/api/workouts/duration/week")
                                     :on-success [::fetch-current-week-exercise-duration-success]
                                     :on-failure [::fetch-exercise-duration-failure]}]}))
 
@@ -20,7 +20,7 @@
 (reg-event-fx ::fetch-current-month-exercise-duration
               (fn [_ _]
                 {:dispatch [:fetch {:method :get
-                                    :uri (str cfg/api-url "/api/stats/exercises/month")
+                                    :uri (str cfg/api-url "/api/workouts/duration/month")
                                     :on-success [::fetch-current-month-exercise-duration-success]
                                     :on-failure [::fetch-exercise-duration-failure]}]}))
 

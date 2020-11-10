@@ -3,7 +3,7 @@
             [gym.events.core :refer [domain-events]]
             [gym.workouts.subscriptions.after-workout-created :as after-workout-created]
             [gym.workouts.subscriptions.after-workout-deleted :as after-workout-deleted]
-            [gym.stats.counters.core :refer [weekly-workout-duration-counter
+            [gym.workouts.counters.core :refer [weekly-workout-duration-counter
                                              monthly-workout-duration-counter]]))
 
 (defn register []
