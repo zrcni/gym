@@ -1,4 +1,4 @@
-(ns gym.server
+(ns gym.main
   (:require [gym.workouts.counters.reinitialize-counters :as reinitialize-counters]
             [gym.system.core :refer [start-system!]])
   (:gen-class))

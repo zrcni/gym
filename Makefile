@@ -22,7 +22,7 @@ dev-seed:
 	lein run -m gym.seed
 
 run-api:
-	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.server
+	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.main
 
 deploy-api:
 	git push heroku master

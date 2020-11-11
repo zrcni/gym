@@ -51,7 +51,7 @@
 
   :min-lein-version "2.5.0"
   :uberjar-name "gym.jar"
-  :main gym.server
+  :main gym.main
   :clean-targets ^{:protect false}
   [:target-path
    [:cljsbuild :builds :app :compiler :output-dir]
