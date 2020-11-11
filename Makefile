@@ -18,6 +18,9 @@ dev-api:
 	COMMIT_REF=$(shell git rev-parse HEAD) \
 	lein repl
 
+dev-seed:
+	lein run -m gym.seed
+
 run-api:
 	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.server
 

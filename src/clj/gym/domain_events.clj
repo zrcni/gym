@@ -1,5 +1,7 @@
-(ns gym.events.domain-events
-  (:require [clojure.core.async :refer [chan >! <! go go-loop]]))
+(ns gym.domain-events
+  (:require [clojure.core.async :refer [chan >! <! go go-loop]]
+            [gym.date-utils :refer [instant instant?]]
+            [clojure.spec.alpha :as s]))
 
 (defprotocol DomainEventsAPI
   (dispatch-event [this event])
@@ -53,3 +55,23 @@
 
 (defn create-domain-events [channels-atom]
   (->DomainEvents channels-atom))
+
+
+
+(s/def :event/event-name keyword?)
+(s/def :event/payload map?)
+(s/def :event/created-at instant?)
+
+(s/def ::event (s/keys :req-un [:event/event-name
+                                :event/payload
+                                :event/created-at]))
+
+
+
+(defn create-domain-event [event-name payload]
+  (let [event {:event-name event-name
+               :payload payload
+               :created-at (instant)}]
+    (if (s/valid? ::event event)
+      event
+      (throw (ex-info "Invalid event" {:event event})))))

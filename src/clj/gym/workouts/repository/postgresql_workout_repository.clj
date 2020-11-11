@@ -1,7 +1,7 @@
 (ns gym.workouts.repository.postgresql-workout-repository
   (:import java.time.LocalDate)
   (:require [gym.util :refer [create-uuid]]
-            [gym.events.domain-events :refer [dispatch-event]]
+            [gym.domain-events :refer [dispatch-event]]
             [gym.workouts.events :refer [workout-created workout-deleted]]
             [gym.workouts.repository.workout-repository :refer [WorkoutRepository get-workout-by-workout-id]]
             [next.jdbc :as jdbc]

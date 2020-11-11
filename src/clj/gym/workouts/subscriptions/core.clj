@@ -1,21 +1,20 @@
 (ns gym.workouts.subscriptions.core
-  (:require [gym.events.domain-events :refer [subscribe-event]]
-            [gym.events.core :refer [domain-events]]
+  (:require [gym.domain-events :refer [subscribe-event]]
             [gym.workouts.subscriptions.after-workout-created :as after-workout-created]
-            [gym.workouts.subscriptions.after-workout-deleted :as after-workout-deleted]
-            [gym.workouts.counters.core :refer [weekly-workout-duration-counter
-                                             monthly-workout-duration-counter]]))
+            [gym.workouts.subscriptions.after-workout-deleted :as after-workout-deleted]))
 
-(defn register []
+(defn register [{:keys [domain-events
+                        workout-duration-counter-weekly
+                        workout-duration-counter-monthly]}]
 
   (subscribe-event
    domain-events
    :workout-created
-   (after-workout-created/create weekly-workout-duration-counter
-                                 monthly-workout-duration-counter))
+   (after-workout-created/create workout-duration-counter-weekly
+                                 workout-duration-counter-monthly))
 
   (subscribe-event
    domain-events
    :workout-deleted
-   (after-workout-deleted/create weekly-workout-duration-counter
-                                 monthly-workout-duration-counter)))
+   (after-workout-deleted/create workout-duration-counter-weekly
+                                 workout-duration-counter-monthly)))

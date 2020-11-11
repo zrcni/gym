@@ -1,5 +1,5 @@
 (ns gym.workouts.events
-  (:require [gym.events.create-domain-event :refer [create-domain-event]]))
+  (:require [gym.domain-events :refer [create-domain-event]]))
 
 (defn workout-created [workout]
   (create-domain-event :workout-created

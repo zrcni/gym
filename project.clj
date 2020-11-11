@@ -21,6 +21,8 @@
                  [ring/ring-json "0.5.0"]
                  [hiccup "1.0.5"]
                  [yogthos/config "1.1.7"]
+                 [integrant "0.8.0"]
+                 [integrant/repl "0.3.2"]
                  [org.clojure/clojurescript "1.10.597"
                   :scope "provided"]
                  [metosin/reitit "0.4.2"]
@@ -44,7 +46,7 @@
             [lein-asset-minifier "0.4.6"
              :exclusions [org.clojure/clojure]]]
 
-  :ring {:handler gym.handlers.web/handler
+  :ring {:handler gym.web/handler
          :uberwar-name "gym.jar"}
 
   :min-lein-version "2.5.0"
@@ -147,7 +149,7 @@
    :nrepl-port 7002
    :nrepl-middleware [cider.piggieback/wrap-cljs-repl]
    :css-dirs ["resources/public/css"]
-   :ring-handler gym.handlers.web/handler}
+   :ring-handler gym.web/handler}
 
 
 

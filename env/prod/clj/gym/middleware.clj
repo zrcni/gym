@@ -5,7 +5,6 @@
    [gym.config :as cfg]
    [buddy.sign.jwt :as jwt]
    [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
-   [gym.users.repository.core :refer [user-repository]]
    [gym.auth.utils :refer [get-public-key headers->token get-token-user-id]]   
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [gym.date-utils :refer [instant]]))
@@ -59,11 +58,12 @@
       (unauthorized-response))))
 
 ;; expected to be used after wrap-token middleware
-(defn wrap-user [handler]
-  (fn [request]
-    (let [token-user-id (get-token-user-id request)
-          user (get-user-by-token-user-id user-repository token-user-id)]
-      (handler (assoc-in request [:context :user] user)))))
+(defn wrap-user [user-repository]
+  (fn [handler]
+    (fn [request]
+      (let [token-user-id (get-token-user-id request)
+            user (get-user-by-token-user-id user-repository token-user-id)]
+        (handler (assoc-in request [:context :user] user))))))
 
 (def api-middlewares
   [wrap-log

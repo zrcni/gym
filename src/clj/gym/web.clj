@@ -1,7 +1,9 @@
 (ns gym.web
   (:require
    [hiccup.page :refer [include-js include-css html5]]
-   [gym.config :as cfg]))
+   [gym.config :as cfg]
+   [reitit.ring :as reitit-ring]
+   [gym.middleware :refer [web-middlewares]]))
 
 (def mount-target
   [:div#app
@@ -35,3 +37,17 @@
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body (loading-page)})
+
+
+;; TODO: move to gym.system.handler
+;; and combine into the same handler with the API
+
+(def handler
+  (reitit-ring/ring-handler
+   (reitit-ring/router
+    ["*" {:get {:handler index-handler}}])
+   (reitit-ring/routes
+    (reitit-ring/create-resource-handler {:path "/" :root "/public"})
+    (reitit-ring/create-default-handler))
+   {:middleware web-middlewares}))
+
