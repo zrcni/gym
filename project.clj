@@ -70,12 +70,12 @@
   {:builds {:min
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler
-             {:output-to        "site/js/app.js"
-              :output-dir       "site/js"
-              :source-map       "site/js/app.js.map"
-            ;;   :output-to        "target/cljsbuild/public/js/app.js"
-            ;;   :output-dir       "target/cljsbuild/public/js"
-            ;;   :source-map       "target/cljsbuild/public/js/app.js.map"
+       ;;       {:output-to        "site/js/app.js"
+       ;;        :output-dir       "site/js"
+       ;;        :source-map       "site/js/app.js.map"
+              {:output-to        "target/cljsbuild/public/js/app.js"
+              :output-dir       "target/cljsbuild/public/js"
+              :source-map       "target/cljsbuild/public/js/app.js.map"
               :externs ["resources/public/js/externs.js"]
               :optimizations :advanced
               :infer-externs true
@@ -183,8 +183,7 @@
                          :redis-url "redis://localhost:6379"}}
 
              :uberjar {:source-paths ["env/prod/clj"]
-                       :hooks [minify-assets.plugin/hooks]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
+                       :prep-tasks ["compile" ["cljsbuild" "once" "min"] ["minify-assets"]]
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku
                              :jdbc-database-url ~(System/getenv "JDBC_DATABASE_URL")

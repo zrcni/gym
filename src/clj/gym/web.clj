@@ -17,7 +17,7 @@
            :content "width=device-width, initial-scale=1"}]
    [:link {:rel "manifest" :href "/manifest.webmanifest"}]
    (include-css (if cfg/dev? "/css/site.css" "/css/site.min.css"))
-   (include-css "/css/emoji-mart.css")
+   (include-css (if cfg/dev? "/css/emoji-mart.css" "/css/emoji-mart.min.css"))
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css")
    (include-css "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
    (include-css "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css")])
