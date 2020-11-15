@@ -57,7 +57,7 @@
 
 (def api-middlewares
   [wrap-log
-   #(wrap-cors % :access-control-allow-origin #"http://localhost:3449"
+   #(wrap-cors % :access-control-allow-origin #"http://localhost:3001"
                :access-control-allow-methods [:get :put :post :delete :options])
    wrap-json-response
    wrap-json-body

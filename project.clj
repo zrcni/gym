@@ -174,7 +174,7 @@
                    :env {:dev true
                          ;; jdbc connection uri
                          :jdbc-database-url "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
-                         :frontend-urls "http://localhost:3449"
+                         :frontend-urls "http://localhost:3001"
                          :port "3001"
                          :host-url "http://localhost:3001"
                          :public-key ~(try
