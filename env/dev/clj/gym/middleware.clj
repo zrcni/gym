@@ -5,7 +5,7 @@
    [prone.middleware :refer [wrap-exceptions]]
    [buddy.sign.jwt :as jwt]
    [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
-   [gym.auth.utils :refer [get-public-key headers->token get-token-user-id]]
+   [gym.auth.utils :refer [get-public-key headers->token]]
    [ring.middleware.reload :refer [wrap-reload]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [gym.date-utils :refer [instant]]))
@@ -50,10 +50,10 @@
 ;; expected to be used after wrap-token middleware
 (defn wrap-user [user-repository]
   (fn [handler]
-    (fn [request]
-      (let [token-user-id (get-token-user-id request)
+    (fn [req]
+      (let [token-user-id (-> req :token-payload :sub)
             user (get-user-by-token-user-id user-repository token-user-id)]
-        (handler (assoc-in request [:context :user] user))))))
+        (handler (assoc-in req [:context :user] user))))))
 
 (def api-middlewares
   [wrap-log

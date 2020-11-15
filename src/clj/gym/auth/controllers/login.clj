@@ -1,6 +1,6 @@
 (ns gym.auth.controllers.login
   (:require [clj-http.client :as http]
-            [gym.auth.utils :refer [get-token-user-id get-token-payload headers->token]]
+            [gym.auth.utils :refer [get-token-payload headers->token]]
             [gym.users.repository.user-repository :refer [get-user-by-token-user-id create-user!]]))
 
 (defn parse-auth0-user-info [user-info]
@@ -25,7 +25,7 @@
 (defn create [user-repository]
   (fn [req]
     (let [user (or
-                (get-user-by-token-user-id user-repository (get-token-user-id req))
+                (get-user-by-token-user-id user-repository (-> req :token-payload :sub))
                 (create-new-user user-repository req))]
 
       {:status 200

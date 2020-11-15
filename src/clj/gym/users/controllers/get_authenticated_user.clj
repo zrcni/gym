@@ -1,12 +1,11 @@
 (ns gym.users.controllers.get-authenticated-user
-  (:require    [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]
-               [gym.auth.utils :refer [get-token-user-id]]))
+  (:require [gym.users.repository.user-repository :refer [get-user-by-token-user-id]]))
 
 
 (defn create [user-repository]
   (fn [request]
-    (let [user-id (get-token-user-id request)
-          user (get-user-by-token-user-id user-repository user-id)]
+    (let [token-user-id (-> request :token-payload :sub)
+          user (get-user-by-token-user-id user-repository token-user-id)]
 
       (if user
         {:status 200
