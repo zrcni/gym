@@ -1,11 +1,19 @@
 (ns gym.system.handler
-  (:require [integrant.core :as ig]
+  (:require [clojure.java.io :as io]
+            [integrant.core :as ig]
             [reitit.ring :as reitit-ring]
-            [gym.web :refer [index-handler]]
             [gym.middleware :refer [api-middlewares web-middlewares wrap-user]]
             [gym.workouts.controllers.core :as workouts-controllers]
             [gym.users.controllers.core :as users-controllers]
-            [gym.auth.controllers.core :as auth-controllers]))
+            [gym.auth.controllers.core :as auth-controllers]
+            [gym.config :as cfg]))
+
+(defn index-handler [_]
+  {:status  200
+   :headers {"Content-Type" "text/html"}
+   :body (-> (if cfg/dev? "public/index-dev.html" "public/index.html")
+             (io/resource)
+             (io/input-stream))})
 
 (defn wrap [handler middleware]
   (middleware handler))

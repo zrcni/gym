@@ -46,9 +46,6 @@
             [lein-asset-minifier "0.4.6"
              :exclusions [org.clojure/clojure]]]
 
-  :ring {:handler gym.web/handler
-         :uberwar-name "gym.jar"}
-
   :min-lein-version "2.5.0"
   :uberjar-name "gym.jar"
   :main gym.main
@@ -70,16 +67,13 @@
   {:builds {:min
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler
-       ;;       {:output-to        "site/js/app.js"
-       ;;        :output-dir       "site/js"
-       ;;        :source-map       "site/js/app.js.map"
-              {:output-to        "target/cljsbuild/public/js/app.js"
-              :output-dir       "target/cljsbuild/public/js"
-              :source-map       "target/cljsbuild/public/js/app.js.map"
+              {:output-to "target/cljsbuild/public/js/app.js"
+              :output-dir "target/cljsbuild/public/js"
+              :source-map "target/cljsbuild/public/js/app.js.map"
               :externs ["resources/public/js/externs.js"]
               :optimizations :advanced
               :infer-externs true
-              :pretty-print  false
+              :pretty-print false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
                               :provides ["parse-color"
