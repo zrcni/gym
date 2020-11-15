@@ -62,9 +62,9 @@
 
   :minify-assets
   [[:css {:source "resources/public/css/site.css"
-          :target "public/css/site.min.css"}]
+          :target "resources/public/css/site.min.css"}]
    [:css {:source "resources/public/css/emoji-mart.css"
-          :target "public/css/emoji-mart.min.css"}]]
+          :target "resources/public/css/emoji-mart.min.css"}]]
 
   :cljsbuild
   {:builds {:min
