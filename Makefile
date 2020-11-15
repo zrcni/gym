@@ -12,10 +12,10 @@ build-server:
 	lein uberjar
 
 dev-seed:
-	lein run -m gym.seed
+	lein run -m gym.backend.seed
 
 run-prod:
-	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.main
+	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.backend.main
 
 deploy-prod:
 	git push heroku master

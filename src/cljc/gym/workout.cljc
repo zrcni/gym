@@ -1,7 +1,6 @@
 (ns gym.workout
-  (:require 
-   [clojure.string :as string]
-   [clojure.spec.alpha :as s]))
+  (:require [clojure.string :as string]
+            [clojure.spec.alpha :as s]))
 
 ;; TODO: finish this function,
 ;;       find a complete predicate

@@ -48,7 +48,7 @@
 
   :min-lein-version "2.5.0"
   :uberjar-name "gym.jar"
-  :main gym.main
+  :main gym.backend.main
   :clean-targets ^{:protect false}
   [:target-path
    [:cljsbuild :builds :app :compiler :output-dir]
@@ -92,20 +92,19 @@
                                                react-modal ReactModal
                                                toastr toastr
                                                auth0spa auth0spa}}]
-              :closure-defines {gym.config/api-url ~(or (System/getenv "API_URL") "")
-                                gym.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
-                                gym.config/auth0-domain ~(or (System/getenv "AUTH0_DOMAIN") "")
-                                gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
-                                ;; this comes from netlify in prod
-                                gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}
+              :closure-defines {gym.frontend.config/api-url ~(or (System/getenv "API_URL") "")
+                                gym.frontend.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
+                                gym.frontend.config/auth0-domain ~(or (System/getenv "AUTH0_DOMAIN") "")
+                                gym.frontend.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
+                                gym.frontend.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-             :figwheel {:on-jsload "gym.core/mount-root"
+             :figwheel {:on-jsload "gym.frontend.core/mount-root"
                         ;; I turned this on, because of reagent deprecation warnings
                         ;; which don't affect anything right now. TODO: update reagent?
                         :load-warninged-code true}
              :compiler
-             {:main "gym.dev"
+             {:main "gym.frontend.dev"
               :asset-path "/js/out"
               :output-to "target/cljsbuild/public/js/app.js"
               :output-dir "target/cljsbuild/public/js/out"
@@ -131,11 +130,11 @@
                                                react-modal ReactModal
                                                toastr toastr
                                                auth0spa auth0spa}}]
-              :closure-defines {gym.config/api-url "http://localhost:3001"
-                                gym.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"
-                                gym.config/auth0-domain "samulir.eu.auth0.com"
-                                gym.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
-                                gym.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}}}
+              :closure-defines {gym.frontend.config/api-url "http://localhost:3001"
+                                gym.frontend.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"
+                                gym.frontend.config/auth0-domain "samulir.eu.auth0.com"
+                                gym.frontend.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
+                                gym.frontend.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}}}
 
   :figwheel
   {:http-server-root "public"
@@ -146,7 +145,7 @@
 
 
 
-  :profiles {:dev {:repl-options {:init-ns gym.repl}
+  :profiles {:dev {:repl-options {:init-ns gym.backend.repl}
                    :dependencies [[cider/piggieback "0.4.2"]
                                   [binaryage/devtools "0.9.11"]
                                   [ring/ring-mock "0.4.0"]

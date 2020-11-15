@@ -1,8 +1,9 @@
 (ns gym.workouts.domain
-  (:require
-   [clojure.string :as string]
-   [clojure.spec.alpha :as s]
-   [gym.util :refer [make-validate-fn generate-uuid exception]]))
+  (:require [clojure.string :as string]
+            [clojure.spec.alpha :as s]
+            [gym.util :refer [make-validate-fn generate-uuid exception]]))
+
+;; TODO: replace gym.workout with this namespace
 
 (defn local-date? [s]
   (and (string? s) (= 10 (count s))))
