@@ -184,8 +184,8 @@
                          :redis-url "redis://localhost:6379"}}
 
              :uberjar {:source-paths ["env/prod/clj"]
-                  ;;      :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
-                       :prep-tasks ["compile"]
+                       :hooks [minify-assets.plugin/hooks]
+                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku
                              :jdbc-database-url ~(System/getenv "JDBC_DATABASE_URL")
