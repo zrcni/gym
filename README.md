@@ -2,6 +2,21 @@
 
 ![exercise-tracker](./exercise-tracker.png)
 
+
+## run in dev
+start services
+```
+docker-compose up
+```
+start the server in REPL
+```
+lein repl
+```
+start the frontend's REPL
+```
+lein figwheel
+```
+
 ## Development mode
 
 To start the Figwheel compiler, navigate to the project folder and run the following command in the terminal:

@@ -1,6 +1,3 @@
-build-site:
-	npm run build && lein minify-assets && lein cljsbuild once min
-
 build-server:
 	AUTH0_PUBLIC_KEY=${AUTH0_PUBLIC_KEY} \
 	JDBC_DATABASE_URL=${JDBC_DATABASE_URL} \
@@ -14,19 +11,11 @@ build-server:
 	SENTRY_DSN=${SENTRY_DSN} \
 	lein uberjar
 
-dev-site:
-	COMMIT_REF=$(shell git rev-parse HEAD) \
-	lein figwheel
-
-dev-api:
-	COMMIT_REF=$(shell git rev-parse HEAD) \
-	lein repl
-
 dev-seed:
 	lein run -m gym.seed
 
-run-api:
+run-prod:
 	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.main
 
-deploy-api:
+deploy-prod:
 	git push heroku master

@@ -1,1 +1,1 @@
-web: make run-api
+web: make run-prod
