@@ -28,3 +28,4 @@ site/js
 !site/manifest.webmanifest
 !site/img
 !site/favicon.ico
+.lsp
