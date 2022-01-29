@@ -35,7 +35,8 @@
 (def router
   (rf/router
    routes
-   {:data {:coercion rss/coercion}}))
+   {:data {:coercion rss/coercion}
+    :conflicts nil}))
 
 (defn current-page [{:keys [route]}]
   (let [view (-> route :data :view)

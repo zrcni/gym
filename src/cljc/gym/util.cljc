@@ -3,6 +3,9 @@
   (:require
    [clojure.spec.alpha :as s]))
 
+(defn str-insert [s c i]
+  (str (subs s 0 i) c (subs s i)))
+
 (defn ms->s [ms] (/ ms 1000))
 
 (defn exception [message]

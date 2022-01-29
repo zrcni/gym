@@ -30,3 +30,4 @@ site/js
 !site/img
 !site/favicon.ico
 .lsp
+.calva/output-window

@@ -3,18 +3,16 @@
             [reagent.core :as reagent]
             [clojure.string :refer [trim blank?]]
             [goog.string.format]
-            [gym.util :refer [includes?]]
+            [gym.util :refer [str-insert includes?]]
             [react-modal]
             [react-contenteditable]
-            [emojiMart]
-            [smileParser]
             [cljs-time.core :as t]
             [cljss.core :as css :refer-macros [defstyles]]
             [cljss.reagent :refer-macros [defstyled]]
             [gym.frontend.components.icons :as icons]
             [gym.frontend.styles :as styles :refer [classes]]
             [gym.frontend.js-interop :refer [get-value]]
-            [gym.frontend.components.emoji-picker :refer [emoji-picker parse-emojis modal]]
+            [gym.frontend.components.emoji-picker :refer [emoji-picker]]
             [gym.frontend.components.modal :refer [modal]]
             [gym.frontend.calendar-utils :refer [ms->m
                                                  m->ms
@@ -164,7 +162,7 @@
    :font-size "85%"
    :height "35px"
    :width "35px"
-   :padding "3px 8px 0 8px"
+   :padding "2px 8px 0 8px"
    :background-color (:theme-color theme)
    :color styles/text-color
    :border-top-right-radius "6px"
@@ -235,7 +233,9 @@
 
 (defstyles new-exercise-form-row []
   {:display "flex"
-   :margin "16px 0 16px 0"})
+   :margin "16px 0 16px 0"
+   :align-items "center"
+   :justify-content "space-between"})
 
 (defstyles new-exercise-minutes-label-style []
   {:font-size "150%"
@@ -276,6 +276,7 @@
 (defn new-workout [{:keys [local-date]}]
   ;; TODO: persist state, so closing the modal doesn't wipe the data
   (let [theme @(subscribe [:theme])
+        caret-pos (atom nil)
         state (reagent/atom {:minutes 30
                              :description ""
                              :tags []})
@@ -283,6 +284,7 @@
         update-minutes #(swap! state assoc :minutes %)
         update-description #(swap! state assoc :description %)
         handle-description-change #(update-description (get-value %))
+        handle-save-caret-pos #(reset! caret-pos (js/window.getCaretPosition (.-target %)))
         handle-minutes-change #(update-minutes (get-value %))
         inc-minutes #(let [n (to-number (:minutes @state))]
                        (update-minutes (inc n)))
@@ -298,22 +300,25 @@
                                                                            (to-number)
                                                                            (m->ms))
                                                              :tags (vec (:tags @state))}])
-        ;; on-pick-emoji (fn [emoji]
-        ;;                 (update-description (+ (:description @state) (.-colons ^js/Emoji emoji))))
-        ]
+        on-pick-emoji (fn [_ emoji]
+                        (if @caret-pos
+                          (update-description (str-insert (:description @state) (.-emoji emoji) @caret-pos))
+                          (update-description (str (:description @state) (.-emoji emoji)))))]
+
     (fn []
       [:div {:class (new-exercise-form-style)}
        [:div {:class (new-exercise-form-row)}
         [:> react-contenteditable {:class (new-exercise-description-input-style {:theme theme})
                                    :placeholder "How was the exercise?"
-                                   :html (parse-emojis (:description @state))
-                                   :on-change handle-description-change}]]
+                                   :html (:description @state)
+                                   :on-change handle-description-change
+                                   :on-blur handle-save-caret-pos}]]
        [:div {:class (new-exercise-form-row)}
         [exercise-tags {:tags (:tags @state)
                         :on-add add-tag
                         :on-delete delete-tag}]
-        ;; [:div
-        ;;  [emoji-picker {:on-select on-pick-emoji}]]
+        [:div
+         [emoji-picker {:on-select on-pick-emoji}]]
         ]
        [:div {:class (new-exercise-form-row)}
         [:div {:class (new-exercise-minutes-style)}
@@ -404,8 +409,8 @@
              [:button {:class (styles/icon-button {:theme theme})
                        :on-click #(delete-workout (:workout_id workout))}
               [icons/trash {:class (styles/base-icon)}]]]
-            [:div {:class (exercise-description-style)
-                   :dangerouslySetInnerHTML {:__html (parse-emojis (:description workout))}}]
+            [:div {:class (exercise-description-style)}
+             (:description workout)]
             (when (> (count (:tags workout)) 0)
               [:div {:class (exercise-tags-wrapper-style)}
                (map

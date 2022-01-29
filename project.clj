@@ -8,9 +8,9 @@
                  [org.postgresql/postgresql "42.2.11"]
                  [ring-server "0.5.0"]
                  [environ "1.1.0"]
-                 [reagent "0.10.0"]
-                 [reagent-utils "0.3.3"]
-                 [re-frame "0.11.0"]
+                 [reagent "1.1.0"]
+                 [reagent-utils "0.3.4"]
+                 [re-frame "1.2.0"]
                  [seancorfield/next.jdbc "1.0.409"]
                  [migratus "1.2.8"]
                  [buddy/buddy-core "1.6.0"]
@@ -30,11 +30,11 @@
                  [pez/clerk "1.0.0"]
                  [clj-http "3.10.0"]
                  [cljs-http "0.1.46"]
-                 [cljs-ajax "0.7.3"]
+                 [cljs-ajax "0.8.4"]
                  [clj-commons/cljss "1.6.4"]
                  [clojure-humanize "0.2.2"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
-                 [day8.re-frame/http-fx "v0.2.0"]
+                 [day8.re-frame/http-fx "0.2.4"]
                  [com.taoensso/carmine "3.0.1"]
                  [venantius/accountant "0.2.5"
                   :exclusions [org.clojure/tools.reader]]]
@@ -59,9 +59,7 @@
 
   :minify-assets
   [[:css {:source "resources/public/css/site.css"
-          :target "resources/public/css/site.min.css"}]
-   [:css {:source "resources/public/css/emoji-mart.css"
-          :target "resources/public/css/emoji-mart.min.css"}]]
+          :target "resources/public/css/site.min.css"}]]
 
   :cljsbuild
   {:builds {:min
@@ -76,18 +74,20 @@
               :pretty-print false
               :npm-deps false
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["parse-color"
+                              :provides ["react"
+                                         "react-dom"
+                                         "parse-color"
                                          "react-color"
-                                         "smileParser"
-                                         "emojiMart"
+                                         "emoji-picker-react"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {parse-color parseColor
+                              :global-exports {react React
+                                               react-dom ReactDOM
+                                               parse-color parseColor
                                                react-color reactColor
-                                               smileParser smileParser
-                                               emojiMart emojiMart
+                                               emoji-picker-react EmojiPickerReact
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
                                                toastr toastr
@@ -114,18 +114,20 @@
               :npm-deps false
               :infer-externs true
               :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["parse-color"
+                              :provides ["react"
+                                         "react-dom"
+                                         "parse-color"
                                          "react-color"
-                                         "smileParser"
-                                         "emojiMart"
+                                         "emoji-picker-react"
                                          "react-contenteditable"
                                          "react-modal"
                                          "toastr"
                                          "auth0spa"]
-                              :global-exports {parse-color parseColor
+                              :global-exports {react React
+                                               react-dom ReactDOM
+                                               parse-color parseColor
                                                react-color reactColor
-                                               smileParser smileParser
-                                               emojiMart emojiMart
+                                               emoji-picker-react EmojiPickerReact
                                                react-contenteditable ReactContenteditable
                                                react-modal ReactModal
                                                toastr toastr
@@ -153,7 +155,7 @@
                                   [prone "2019-07-08"]
                                   [figwheel-sidecar "0.5.19"]
                                   [nrepl "0.6.0"]
-                                  [re-frisk "1.1.0"]
+                                  [re-frisk "1.5.2"]
                                   [pjstadig/humane-test-output "0.10.0"]]
 
                    :source-paths ["env/dev/clj"]

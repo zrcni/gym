@@ -5,8 +5,6 @@
    [goog.string.format]
    [react-modal]
    [react-contenteditable]
-   [emojiMart]
-   [smileParser]
    [clojure.contrib.humanize :as humanize]
    [gym.frontend.styles :as styles]
    [cljss.core :as css :refer-macros [defstyles]]

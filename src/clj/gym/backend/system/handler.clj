@@ -11,7 +11,7 @@
 (defn index-handler [_]
   {:status  200
    :headers {"Content-Type" "text/html"}
-   :body (-> (if cfg/dev? "public/index-dev.html" "public/index.html")
+   :body (-> (if cfg/dev? "public/html/index-dev.html" "public/html/index.html")
              (io/resource)
              (io/input-stream))})
 

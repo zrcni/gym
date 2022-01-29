@@ -1,3 +1,7 @@
+# TODO
+
+redirect in frontend when route doesn't exist
+
 # Exercise tracker
 
 ![exercise-tracker](./exercise-tracker.png)

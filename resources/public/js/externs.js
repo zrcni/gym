@@ -1,3 +1,6 @@
+var React = function () {}
+var ReactDOM = function () {}
+
 var auth0spa = function () {}
 
 auth0spa.Auth0Client = function () {
@@ -21,21 +24,7 @@ auth0spa.Auth0Client = function () {
   }
 }
 
-var smileParser = function () {}
-smileParser.smileParse = function () {} 
-
-var emojiMart = function () {}
-emojiMart.Emoji = function() {}
-emojiMart.Picker = function() {}
-
-var Emoji = {
-  id: '',
-  colons: '',
-  text: '',
-  emoticons: [''],
-  skin: 0,
-  native: ''
-}
+var EmojiPickerReact = function () {}
 
 var Sentry = {
   init: function() {},
