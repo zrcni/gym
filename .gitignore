@@ -20,6 +20,7 @@ node_modules
 resources/public/js/compiled
 certs/*
 !certs/.gitkeep
+!certs/*.md
 test-server
 dist
 site/css
