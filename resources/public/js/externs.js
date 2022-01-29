@@ -25,6 +25,9 @@ auth0spa.Auth0Client = function () {
 }
 
 var EmojiPickerReact = function () {}
+var Emoji = {
+  emoji: ''
+}
 
 var Sentry = {
   init: function() {},

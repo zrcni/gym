@@ -301,10 +301,11 @@
                                                                            (m->ms))
                                                              :tags (vec (:tags @state))}])
         on-pick-emoji (fn [_ emoji]
-                        (if @caret-pos
-                          (do (update-description (str-insert (:description @state) (.-emoji emoji) @caret-pos))
-                              (swap! caret-pos + (count (.-emoji emoji))))
-                          (update-description (str (:description @state) (.-emoji emoji)))))]
+                        (let [emoji-str (.-emoji ^js/Emoji emoji)]
+                          (if @caret-pos
+                            (do (update-description (str-insert (:description @state) emoji-str @caret-pos))
+                                (swap! caret-pos + (count emoji-str)))
+                            (update-description (str (:description @state) emoji-str)))))]
 
     (fn []
       [:div {:class (new-exercise-form-style)}
