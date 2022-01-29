@@ -8,13 +8,13 @@
    [gym.frontend.theme]
    [gym.frontend.styles :refer [inject-global-styles]]
    [gym.frontend.auth :refer [create-auth0-client reg-auth0-cofx]]
-   [reagent.core :as reagent]
+   [reagent.dom :as reagent-dom]
    [re-frame.core :refer [dispatch dispatch-sync clear-subscription-cache!]]
    [gym.frontend.router :as router]))
 
 (defn mount-root []
   (inject-global-styles)
-  (reagent/render [router/root] (.getElementById js/document "app")))
+  (reagent-dom/render [router/root] (.getElementById js/document "app")))
 
 (defn init! []
   (dispatch-sync [:initialize-db])
