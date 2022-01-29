@@ -302,7 +302,8 @@
                                                              :tags (vec (:tags @state))}])
         on-pick-emoji (fn [_ emoji]
                         (if @caret-pos
-                          (update-description (str-insert (:description @state) (.-emoji emoji) @caret-pos))
+                          (do (update-description (str-insert (:description @state) (.-emoji emoji) @caret-pos))
+                              (swap! caret-pos + (count (.-emoji emoji))))
                           (update-description (str (:description @state) (.-emoji emoji)))))]
 
     (fn []

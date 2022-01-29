@@ -56,7 +56,7 @@
                                  :style {:position "fixed"
                                          :right (str (-> @state :pos :right) "px")
                                          :top (str (-> @state :pos :top) "px")}}
-              [:> emoji-picker-react {:on-emoji-click on-select
+              [:> emoji-picker-react {:onEmojiClick on-select
                                       :native true}]])
 
            [:button {:class (classes (styles/icon-button-cta {:theme theme}) (emoji-picker-button-style))
