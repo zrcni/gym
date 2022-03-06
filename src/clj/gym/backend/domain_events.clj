@@ -16,8 +16,6 @@
   DomainEventsAPI
 
   (dispatch-event
-   "Dispatch the event to all channels for the specific event
-    as well as all global channels."
    [_this event]
    (go
      (let [event-channels (get @channels (:event-name event))
@@ -27,7 +25,6 @@
            (>! c event))))))
 
   (register-event
-   "Create a new channel and return it."
    [_this event-name]
    (let [c (chan)]
      (swap! channels update event-name conj c)
@@ -38,7 +35,6 @@
     (register-event this :global))
 
   (subscribe-event
-   "Subscribe to events via callback."
    [this event-name callback]
    (let [c (register-event this event-name)]
      (go-loop []
