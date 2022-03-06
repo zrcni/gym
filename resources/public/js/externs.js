@@ -61,3 +61,14 @@ var Color = {
     a: 0
   }
 }
+
+var toastr = {
+  success: function() {},
+  error: function() {},
+  info: function() {},
+  warning: function() {},
+  clear: function() {},
+  remove: function() {},
+}
+
+var recharts = {}

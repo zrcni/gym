@@ -6,6 +6,7 @@
             [gym.backend.workouts.controllers.core :as workouts-controllers]
             [gym.backend.users.controllers.core :as users-controllers]
             [gym.backend.auth.controllers.core :as auth-controllers]
+            [gym.backend.analytics.controllers.core :as analytics-controllers]
             [gym.backend.config :as cfg]))
 
 (defn index-handler [_]
@@ -18,7 +19,8 @@
 (defn wrap [handler middleware]
   (middleware handler))
 
-(defn create-handler [{:keys [user-repo
+(defn create-handler [{:keys [postgres
+                              user-repo
                               workout-repo
                               workout-duration-counter-weekly
                               workout-duration-counter-monthly]}]  
@@ -26,6 +28,14 @@
   (reitit-ring/ring-handler
    (reitit-ring/router
     ["/api"
+     ["/analytics"
+      ["/workout_duration_by_tag" {:get {:handler (analytics-controllers/workout-duration-by-tag postgres)
+                                         :middleware [(wrap-user user-repo)]}}]
+      ["/workouts_by_day_of_week" {:get {:handler (analytics-controllers/workouts-by-day-of-week postgres)
+                                         :middleware [(wrap-user user-repo)]}}]
+      ["/workouts_by_month_of_year" {:get {:handler (analytics-controllers/workouts-by-month-of-year postgres)
+                                           :middleware [(wrap-user user-repo)]}}]]
+
      ["/workouts"
       ["" {:get {:handler (workouts-controllers/get-workouts-by-user-id workout-repo)
                  :middleware [(wrap-user user-repo)]}

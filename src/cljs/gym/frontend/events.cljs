@@ -5,6 +5,7 @@
    [day8.re-frame.http-fx]
    [gym.frontend.login.events]
    [gym.frontend.home.events]
+   [gym.frontend.analytics.events]
    [parse-color]
    [ajax.core :refer [text-request-format json-response-format]]
    [re-frame.core :refer [reg-event-db reg-event-fx]]))
@@ -26,9 +27,8 @@
 
 (reg-event-fx :fetch
   (fn [cofx [_ params]]
-    {:http-xhrio (merge-with into
-                             (make-default-fetch-params cofx)
-                             params)}))
+    {:http-xhrio (merge (make-default-fetch-params cofx)
+                        params)}))
 
 (reg-event-fx :handle-unauthorized-request
   (fn [_ [_ error]]

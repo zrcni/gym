@@ -7,6 +7,12 @@ redirect in frontend when route doesn't exist
 ![exercise-tracker](./exercise-tracker.png)
 
 
+# copy table from one db to another
+
+```
+pg_dump -d \<connection-string\> -a -t \<table-name\> | psql -Atx \<connection-string\>
+```
+
 ## run in dev
 start services
 ```

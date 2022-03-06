@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactModal from 'react-modal'
 import toastr from 'toastr'
+import * as recharts from 'recharts'
 import * as reactColor from 'react-color'
 import ReactContenteditable from 'react-contenteditable'
 import * as auth0spa from '@auth0/auth0-spa-js'
@@ -13,6 +14,7 @@ window.React = React
 window.ReactDOM = ReactDOM
 window.ReactModal = ReactModal
 window.toastr = toastr
+window.recharts = recharts
 window.reactColor = reactColor
 window.auth0spa = auth0spa
 window.ReactContenteditable = ReactContenteditable

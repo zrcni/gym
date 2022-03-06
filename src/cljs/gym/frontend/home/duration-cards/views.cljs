@@ -12,7 +12,7 @@
    [gym.frontend.home.duration-cards.events :as events]
    [gym.frontend.components.loaders :as loaders]))
 
-(defn displayable-duration [duration]
+(defn human-duration [duration]
   (if (= 0 duration)
     "None"
     (as-> (* duration 1000) d
@@ -76,7 +76,7 @@
         [:span
          (if (nil? duration)
            ":("
-           (displayable-duration duration))])]]))
+           (human-duration duration))])]]))
 
 (defn duration-cards []
   (dispatch [::events/fetch-current-week-exercise-duration])

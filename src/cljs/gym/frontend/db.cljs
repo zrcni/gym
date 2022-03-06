@@ -1,7 +1,8 @@
 (ns gym.frontend.db
   (:require
    [gym.frontend.styles :as styles]
-   [gym.frontend.home.db :as home]))
+   [gym.frontend.home.db :as home]
+   [gym.frontend.analytics.db :as analytics]))
 
 (def default-db
   {:theme {:theme-color styles/theme-color
@@ -13,4 +14,5 @@
    :user nil
    :token nil
    :auth-status :waiting
-   :home home/default-db})
+   :home home/default-db
+   :analytics analytics/default-db})
