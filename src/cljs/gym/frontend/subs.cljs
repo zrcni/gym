@@ -2,6 +2,7 @@
   (:require
    [gym.frontend.home.subs]
    [gym.frontend.login.subs]
+   [gym.frontend.analytics.subs]
    [re-frame.core :refer [reg-sub]]))
 
 (reg-sub

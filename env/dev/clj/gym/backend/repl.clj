@@ -9,3 +9,7 @@
 (integrant.repl/set-prep! (constantly default-config))
 
 (go)
+
+(comment
+  
+  (reset))

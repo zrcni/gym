@@ -4,6 +4,7 @@
    [clerk.core :as clerk]
    [gym.frontend.components.loaders :as loaders]
    [gym.frontend.views :refer [layout]]
+   [gym.frontend.analytics.routes :as analytics]
    [gym.frontend.home.routes :as home]
    [gym.frontend.login.routes :as login]
    [gym.frontend.settings.routes :as settings]
@@ -30,7 +31,8 @@
    home/routes
    login/routes
    login-callback/routes
-   settings/routes])
+   settings/routes
+   analytics/routes])
 
 (def router
   (rf/router

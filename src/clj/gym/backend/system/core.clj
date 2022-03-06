@@ -35,7 +35,8 @@
    :system/handler {:user-repo (ig/ref :system/user-repo)
                     :workout-repo (ig/ref :system/workout-repo)
                     :workout-duration-counter-weekly (ig/ref :system/workout-duration-counter-weekly)
-                    :workout-duration-counter-monthly (ig/ref :system/workout-duration-counter-monthly)}
+                    :workout-duration-counter-monthly (ig/ref :system/workout-duration-counter-monthly)
+                    :postgres (ig/ref :system/postgres)}
 
    :system/server {:handler (ig/ref :system/handler)
                    :opts {:port cfg/port

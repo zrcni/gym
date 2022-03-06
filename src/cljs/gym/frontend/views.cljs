@@ -9,6 +9,7 @@
 
 (defstyles header-title-style [{:keys [theme]}]
   {:color styles/text-color
+   :margin-right "1em"
    :&:hover {:color (:theme-color-active theme)}})
 
 (defstyles header-left-style []
@@ -49,7 +50,10 @@
         [:div {:class (header-left-style)}
          [:a {:class (header-title-style {:theme theme})
               :href "/"}
-          "Exercise tracker"]]
+          "Exercise tracker"]
+         [:a {:class (header-title-style {:theme theme})
+              :href "/analytics"}
+          "Analytics"]]
         [:div {:class (header-right-style)}
          [dropdown-menu
           [dropdown-button {:on-click #(dispatch [:navigate :settings])

@@ -11,3 +11,11 @@
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+.analytics-container > * {
+  margin-top: 2em;
+}
+
+.analytics-container > *:first-child {
+  margin-top: 0;
+}
