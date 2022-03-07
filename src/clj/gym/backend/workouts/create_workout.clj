@@ -8,7 +8,7 @@
 (defn controller [req]
   (let [repo (-> req :deps :workout-repo)
         body (keywordize-keys (:body req))
-        create-args (assoc body :user_id (get-in req [:context :user :user_id]))
+        create-args (assoc body :user_id (get-in req [:user :user_id]))
         workout (create-workout! repo (make-workout create-args))]
 
     {:status 201

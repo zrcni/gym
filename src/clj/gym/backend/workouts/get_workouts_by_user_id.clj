@@ -4,7 +4,7 @@
 
 (defn controller [req]
   (let [repo (-> req :deps :workout-repo)
-        user-id (get-in req [:context :user :user_id])
+        user-id (get-in req [:user :user_id])
         workouts  (get-workouts-by-user-id repo user-id)]
 
     {:status 200

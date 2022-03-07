@@ -5,7 +5,7 @@
 ;; TODO: ?week=48&year=2020
 (defn controller [req]
   (let [{:keys [workout-duration-counter-monthly]} (-> req :deps)
-        user-id (get-in req [:context :user :user_id])
+        user-id (get-in req [:user :user_id])
         date (local-date)
         month (get-month date)
         year (get-year date)

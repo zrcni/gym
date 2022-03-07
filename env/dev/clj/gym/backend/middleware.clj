@@ -52,7 +52,7 @@
     (let [repo (-> req :deps :user-repo)
           token-user-id (-> req :token-payload :sub)
           user (get-user-by-token-user-id repo token-user-id)]
-      (handler (assoc-in req [:context :user] user)))))
+      (handler (assoc req :user user)))))
 
 (defn wrap-prop
   "Add a property to the request object."

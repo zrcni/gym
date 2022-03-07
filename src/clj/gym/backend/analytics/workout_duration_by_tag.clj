@@ -12,7 +12,7 @@
    ORDER BY \"tags\".\"tag\" ASC")
 
 (defn controller [req]
-  (let [user-id (create-uuid (-> req :context :user :user_id))
+  (let [user-id (create-uuid (-> req :user :user_id))
         res (sql/query (-> req :deps :postgres)
                        [query user-id]
                        {:builder-fn rs/as-unqualified-maps})]
