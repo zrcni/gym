@@ -8,6 +8,7 @@
             [gym.backend.workouts.get-workouts-by-user-id :as get-workouts-by-user-id]
             [gym.backend.users.get-authenticated-user :as get-authenticated-user]
             [gym.backend.auth.login :as login]
+            [gym.backend.analytics.analytics-query :as analytics-query]
             [gym.backend.analytics.workout-duration-by-tag :as workout-duration-by-tag]
             [gym.backend.analytics.workouts-by-day-of-week :as workouts-by-day-of-week]
             [gym.backend.analytics.workouts-by-month-of-year :as workouts-by-month-of-year]
@@ -30,6 +31,8 @@
    (reitit-ring/router
     ["/api"
      ["/analytics"
+      ["/query" {:get {:handler analytics-query/controller
+                       :middleware [wrap-user]}}]
       ["/workout_duration_by_tag" {:get {:handler workout-duration-by-tag/controller
                                          :middleware [wrap-user]}}]
       ["/workouts_by_day_of_week" {:get {:handler workouts-by-day-of-week/controller

@@ -24,19 +24,12 @@
          (assoc-in [:analytics :results query-name :data] nil)
          (assoc-in [:analytics :results query-name :error] error-message)))))
 
-(def query-name->pathname-suffix
-  {:duration-by-tag "workout_duration_by_tag"
-   :workouts-by-day-of-week "workouts_by_day_of_week"
-   :workouts-by-month-of-year "workouts_by_month_of_year"
-   :workout-duration-this-week "workout_duration_this_week"
-   :workout-duration-this-month "workout_duration_this_month"})
-
 (reg-event-fx
  :analytics-query
  (fn [_ [_ query-name]]
-   (let [suffix (query-name->pathname-suffix query-name)]
-     {:dispatch-n [[:fetch {:method :get
-                            :uri (str cfg/api-url "/api/analytics/" suffix)
-                            :on-success [:analytics-query-succeeded query-name]
-                            :on-failure [:analytics-query-failed query-name]}]
-                   [:analytics-query-started query-name]]})))
+   {:dispatch-n [[:fetch {:method :get
+                          :uri (str cfg/api-url "/api/analytics/query")
+                          :params {:query query-name}
+                          :on-success [:analytics-query-succeeded query-name]
+                          :on-failure [:analytics-query-failed query-name]}]
+                 [:analytics-query-started query-name]]}))

@@ -118,19 +118,19 @@
 
 
 (defn main []
-  (dispatch [:analytics-query :duration-by-tag])
+  (dispatch [:analytics-query :workout-duration-by-tag])
   (dispatch [:analytics-query :workouts-by-day-of-week])
   (dispatch [:analytics-query :workouts-by-month-of-year])
   
   (fn []
     (let [loading? @(subscribe [:analytics-loading?])
-          duration-by-tag @(subscribe [:analytics-query :duration-by-tag])
+          workout-duration-by-tag @(subscribe [:analytics-query :workout-duration-by-tag])
           workouts-by-day-of-week @(subscribe [:analytics-query :workouts-by-day-of-week])
           workouts-by-month-of-year @(subscribe [:analytics-query :workouts-by-month-of-year])]
       [:div
        (if loading?
          [loaders/circle]
          [:div.analytics-container
-          [workout-duration-by-tags-chart duration-by-tag]
+          [workout-duration-by-tags-chart workout-duration-by-tag]
           [workouts-by-day-of-week-chart workouts-by-day-of-week]
           [workouts-by-month-of-year-chart workouts-by-month-of-year]])])))
