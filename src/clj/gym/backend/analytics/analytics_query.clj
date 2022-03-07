@@ -61,11 +61,19 @@
           req-params (-> (:params req)
                          (dissoc :query)
                          (assoc :user-id user-id))
-          res (sql/query (-> req :deps :postgres)
-                         (cons query (map #(% req-params) params))
-                         {:builder-fn rs/as-unqualified-maps})]
-      {:status 200
-       :body (resolve res)})
+          query-params (map #(% req-params) params)
+          missing-param-indexes (keep-indexed #(when (nil? %2) %1) query-params)]
+      
+      ;; All query params are required
+      (if-not (empty? missing-param-indexes)
+        {:status 400
+         :body {:error "Query parameters are missing"
+                :missing-params (map #(get params %) missing-param-indexes)}}
+
+        {:status 200
+         :body (resolve (sql/query (-> req :deps :postgres)
+                                   (cons query query-params)
+                                   {:builder-fn rs/as-unqualified-maps}))}))
 
     {:status 404
      :body {:error "Query not found"}}))
