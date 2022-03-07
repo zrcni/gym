@@ -95,7 +95,7 @@
                                   {:date date}
                                   maps))))]
     [:div
-     [:h4 "Exercises by day of week, all time"]
+     [:h4 "Exercises by month of year, all time"]
      (when error
        [:div (str "Query failed: " error " :(")])
      (when data
