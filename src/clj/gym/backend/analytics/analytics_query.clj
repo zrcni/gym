@@ -55,11 +55,7 @@
    :workouts-by-day-of-week workouts-by-day-of-week
    :workouts-by-month-of-year workouts-by-month-of-year})
 
-(def ^:dynamic r)
-
 (defn controller [req]
-  (alter-var-root #'r (fn [_] req))
-
   (if-let [{:keys [query params resolve] :or {resolve identity}} (queries (-> req :params :query keyword))]
     (let [user-id (create-uuid (-> req :user :user_id))
           req-params (-> (:params req)
