@@ -8,14 +8,12 @@
    [clojure.contrib.humanize :as humanize]
    [gym.frontend.styles :as styles]
    [cljss.core :as css :refer-macros [defstyles]]
-   [gym.frontend.home.duration-cards.subs :as subs]
-   [gym.frontend.home.duration-cards.events :as events]
    [gym.frontend.components.loaders :as loaders]))
 
 (defn human-duration [duration]
   (if (= 0 duration)
     "None"
-    (as-> (* duration 1000) d
+    (as-> duration d
       (humanize/duration d {:number-format str})
       (capitalize d))))
 
@@ -79,17 +77,17 @@
            (human-duration duration))])]]))
 
 (defn duration-cards []
-  (dispatch [::events/fetch-current-week-exercise-duration])
-  (dispatch [::events/fetch-current-month-exercise-duration])
+  (dispatch [:analytics-query :workout-duration-this-week])
+  (dispatch [:analytics-query :workout-duration-this-month])
 
   (fn []
-    (let [week-duration @(subscribe [::subs/week-exercise-duration])
-          month-duration @(subscribe [::subs/month-exercise-duration])
-          loading @(subscribe [::subs/exercise-duration-loading])]
+    (let [week-result @(subscribe [:analytics-query :workout-duration-this-week])
+          month-result @(subscribe [:analytics-query :workout-duration-this-month])]
+
       [:div {:class (duration-cards-style)}
-       [duration-card {:duration month-duration
+       [duration-card {:duration (-> week-result :data :duration)
                        :title "This month"
-                       :loading loading}]
-       [duration-card {:duration week-duration
+                       :loading (:loading week-result)}]
+       [duration-card {:duration (-> month-result :data :duration)
                        :title "This week"
-                       :loading loading}]])))
+                       :loading (:loading month-result)}]])))

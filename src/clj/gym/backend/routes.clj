@@ -13,6 +13,8 @@
             [gym.backend.analytics.workout-duration-by-tag :as workout-duration-by-tag]
             [gym.backend.analytics.workouts-by-day-of-week :as workouts-by-day-of-week]
             [gym.backend.analytics.workouts-by-month-of-year :as workouts-by-month-of-year]
+            [gym.backend.analytics.workout-duration-this-week :as workout-duration-this-week]
+            [gym.backend.analytics.workout-duration-this-month :as workout-duration-this-month]
             [gym.backend.config :as cfg]))
 
 (defn index-handler [_]
@@ -35,8 +37,12 @@
       ["/workouts_by_day_of_week" {:get {:handler workouts-by-day-of-week/controller
                                          :middleware [wrap-user]}}]
       ["/workouts_by_month_of_year" {:get {:handler workouts-by-month-of-year/controller
-                                           :middleware [wrap-user]}}]]
-
+                                           :middleware [wrap-user]}}]
+      ["/workout_duration_this_week" {:get {:handler workout-duration-this-week/controller
+                                            :middleware [wrap-user]}}]
+      ["/workout_duration_this_month" {:get {:handler workout-duration-this-month/controller
+                                             :middleware [wrap-user]}}]]
+     
      ["/workouts"
       ["" {:get {:handler get-workouts-by-user-id/controller
                  :middleware [wrap-user]}

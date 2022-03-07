@@ -27,7 +27,9 @@
 (def query-name->pathname-suffix
   {:duration-by-tag "workout_duration_by_tag"
    :workouts-by-day-of-week "workouts_by_day_of_week"
-   :workouts-by-month-of-year "workouts_by_month_of_year"})
+   :workouts-by-month-of-year "workouts_by_month_of_year"
+   :workout-duration-this-week "workout_duration_this_week"
+   :workout-duration-this-month "workout_duration_this_month"})
 
 (reg-event-fx
  :analytics-query
