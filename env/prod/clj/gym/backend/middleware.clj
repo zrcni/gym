@@ -3,10 +3,13 @@
    [ring.middleware.cors :refer [wrap-cors]]
    [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+   [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+   [ring.middleware.params :refer [wrap-params]]
+   [ring.middleware.content-type :refer [wrap-content-type]]
    [buddy.sign.jwt :as jwt]
    [gym.backend.config :as cfg]
    [gym.backend.users.repository.user-repository :refer [get-user-by-token-user-id]]
-   [gym.backend.auth.utils :refer [get-public-key headers->token]]   
+   [gym.backend.auth.utils :refer [get-public-key headers->token]]
    [gym.backend.date-utils :refer [instant]]))
 
 (defn pretty-request [request]
@@ -76,6 +79,9 @@
   [wrap-log
    #(wrap-cors % :access-control-allow-origin allowed-origins
                :access-control-allow-methods [:get :post :put :delete :options])
+   wrap-params
+   wrap-keyword-params
+   wrap-content-type
    wrap-json-response
    wrap-json-body
    wrap-token])
