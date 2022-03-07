@@ -12,5 +12,4 @@
         workout (create-workout! repo (make-workout create-args))]
 
     {:status 201
-     :headers {"Content-Type" "application/json"}
      :body workout}))

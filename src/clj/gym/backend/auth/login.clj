@@ -29,5 +29,4 @@
               (create-new-user repo req))]
 
     {:status 200
-     :headers {"Content-Type" "application/json"}
      :body {:user user}}))

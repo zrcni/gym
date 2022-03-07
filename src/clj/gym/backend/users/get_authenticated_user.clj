@@ -8,6 +8,5 @@
 
     (if user
       {:status 200
-       :headers {"Content-Type" "application/json"}
        :body user}
       {:status 404})))

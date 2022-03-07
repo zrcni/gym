@@ -8,5 +8,4 @@
         workout (get-workout-by-workout-id repo workout-id)]
 
     {:status 200
-     :headers {"Content-Type" "application/json"}
      :body workout}))
