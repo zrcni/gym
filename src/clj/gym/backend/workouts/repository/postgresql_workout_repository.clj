@@ -1,9 +1,7 @@
 (ns gym.backend.workouts.repository.postgresql-workout-repository
   (:import java.time.LocalDate)
   (:require [gym.util :refer [create-uuid]]
-            [gym.backend.domain-events :refer [dispatch-event]]
-            [gym.backend.workouts.events :refer [workout-created workout-deleted]]
-            [gym.backend.workouts.repository.workout-repository :refer [WorkoutRepository get-workout-by-workout-id]]
+            [gym.backend.workouts.repository.workout-repository :refer [WorkoutRepository]]
             [next.jdbc :as jdbc]
             [next.jdbc.result-set :as rs]
             [next.jdbc.sql :as sql]))
@@ -42,18 +40,18 @@
 
 
 
-(defrecord PostgresqlWorkoutRepository [db-conn domain-events]
+(defrecord PostgresqlWorkoutRepository [db-conn]
   WorkoutRepository
 
   (get-workouts-by-user-id
-    [this user_id]
+    [_ user_id]
     (let [workouts (sql/query db-conn
                               [(workouts-with-tags-query "workouts.user_id = ?") (create-uuid user_id)]
                               {:builder-fn rs/as-unqualified-maps})]
       (map row->workout-and-tags workouts)))
 
   (get-workout-by-workout-id
-    [this workout_id]
+    [_ workout_id]
     (let [workouts (sql/query db-conn
                               [(workouts-with-tags-query "workouts.workout_id = ?" 1) (create-uuid workout_id)]
                               {:builder-fn rs/as-unqualified-maps})]
@@ -62,7 +60,7 @@
         nil)))
 
   (create-workout!
-    [this {:keys [description duration date tags user_id]}]
+    [_ {:keys [description duration date tags user_id]}]
     (jdbc/with-transaction [tx db-conn]
       (let [workout (sql/insert! tx
                                  "workouts"
@@ -77,33 +75,26 @@
                                     [:workout_id :tag]
                                     (vec (map #(vector (:workout_id workout) %) tags))
                                     {:return-keys true
-                                     :builder-fn rs/as-unqualified-maps})
-            workout (-> (row->workout workout)
-                        (assoc :tags (map #(row->tag %) tags)))]
+                                     :builder-fn rs/as-unqualified-maps})]
 
-        (dispatch-event domain-events (workout-created workout))
-
-        workout)))
+        (-> (row->workout workout)
+            (assoc :tags (map #(row->tag %) tags))))))
 
   (delete-workout-by-workout-id!
-    [this workout_id]
-    (let [workout (get-workout-by-workout-id this workout_id)]
-
-      (jdbc/with-transaction [tx db-conn]
-        (let [w-id (create-uuid workout_id)
-              _ (sql/delete! tx
-                             "workout_tags"
-                             ["workout_id = ?" w-id])
-              deleted-workout (jdbc/execute-one! tx
-                                                 ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
-                                                 {:builder-fn rs/as-unqualified-maps})]
-          (if deleted-workout
-            (do
-              (dispatch-event domain-events (workout-deleted workout))
-              1)
-            0))))))
+   [_ workout_id]
+   (jdbc/with-transaction [tx db-conn]
+     (let [w-id (create-uuid workout_id)
+           _ (sql/delete! tx
+                          "workout_tags"
+                          ["workout_id = ?" w-id])
+           deleted-workout (jdbc/execute-one! tx
+                                              ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
+                                              {:builder-fn rs/as-unqualified-maps})]
+       (if deleted-workout
+         1
+         0)))))
 
 
 
-(defn create-postgresql-workout-repository [db-conn domain-events]
-  (->PostgresqlWorkoutRepository db-conn domain-events))
+(defn create-postgresql-workout-repository [db-conn]
+  (->PostgresqlWorkoutRepository db-conn))

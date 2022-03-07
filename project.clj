@@ -178,8 +178,7 @@
                          :public-key ~(try
                                         (slurp "./certs/auth0-public-key.pem")
                                         (catch Exception _ ""))
-                         :commit-sha ~(System/getenv "COMMIT_REF")
-                         :redis-url "redis://localhost:6379"}}
+                         :commit-sha ~(System/getenv "COMMIT_REF")}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"] ["minify-assets"]]
@@ -190,8 +189,7 @@
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")
                              :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")
-                             :commit-sha ~(System/getenv "COMMIT_REF")
-                             :redis-url ~(System/getenv "REDIS_URL")}
+                             :commit-sha ~(System/getenv "COMMIT_REF")}
                        :aot :all
                        :omit-source true}}
   :migratus {:store :database

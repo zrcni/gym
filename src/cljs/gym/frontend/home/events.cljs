@@ -7,7 +7,6 @@
             [gym.frontend.login.events]
             [gym.frontend.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
             [ajax.core :refer [json-request-format]]
-            [gym.frontend.home.duration-cards.events :as duration-cards-events]
             [re-frame.core :refer [reg-event-db reg-event-fx]]))
 
 (reg-event-db :calendar-update-start-date
@@ -65,12 +64,11 @@
                                     :on-success [:fetch-all-workouts-success]
                                     :on-failure [:fetch-all-workouts-failure]}]}))
 
+;; TODO: update analytics queries that duration cards use?
 (reg-event-fx :create-workout-success
               (fn [{:keys [db]} [_ workout]]
                 {:db (update-in db [:home :calendar :workouts] conj workout)
-                 :dispatch-n [[:calendar-update-weeks]
-                              [::duration-cards-events/fetch-current-week-exercise-duration]
-                              [::duration-cards-events/fetch-current-month-exercise-duration]]}))
+                 :dispatch-n [[:calendar-update-weeks]]}))
 
 (reg-event-fx :create-workout-request
               (fn [_ [_ workout]]
@@ -84,6 +82,7 @@
                                         :format (json-request-format)
                                         :on-success [:create-workout-success]}]}))))
 
+;; TODO: update analytics queries that duration cards use?
 (reg-event-fx :delete-workout-success
               (fn [{:keys [db]} [_ workout-id]]
                 {:db (assoc-in
@@ -91,9 +90,7 @@
                       [:home :calendar :workouts]
                       (->> (-> db :home :calendar :workouts)
                            (filter #(not= workout-id (:workout_id %)))))
-                 :dispatch-n [[:calendar-update-weeks]
-                              [::duration-cards-events/fetch-current-week-exercise-duration]
-                              [::duration-cards-events/fetch-current-month-exercise-duration]]}))
+                 :dispatch-n [[:calendar-update-weeks]]}))
 
 (reg-event-fx :delete-workout
               (fn [_ [_ workout-id]]

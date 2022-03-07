@@ -6,8 +6,6 @@
             [gym.backend.workouts.delete-workout-by-workout-id :as delete-workout-by-workout-id]
             [gym.backend.workouts.get-workout-by-workout-id :as get-workout-by-workout-id]
             [gym.backend.workouts.get-workouts-by-user-id :as get-workouts-by-user-id]
-            [gym.backend.workouts.get-current-week-exercises-total-duration :as get-current-week-exercises-total-duration]
-            [gym.backend.workouts.get-current-month-exercises-total-duration :as get-current-month-exercises-total-duration]
             [gym.backend.users.get-authenticated-user :as get-authenticated-user]
             [gym.backend.auth.login :as login]
             [gym.backend.analytics.workout-duration-by-tag :as workout-duration-by-tag]
@@ -51,13 +49,8 @@
 
       ["/:workout-id" {:get {:handler get-workout-by-workout-id/controller}
                        :delete {:handler delete-workout-by-workout-id/controller
-                                :middleware [wrap-user]}}]
+                                :middleware [wrap-user]}}]]
 
-      ["/duration"
-       ["/week" {:get {:handler get-current-week-exercises-total-duration/controller
-                       :middleware [wrap-user]}}]
-       ["/month" {:get {:handler get-current-month-exercises-total-duration/controller
-                        :middleware [wrap-user]}}]]]
      ["/users/token" {:get {:handler get-authenticated-user/controller}}]
 
      ["/auth"
