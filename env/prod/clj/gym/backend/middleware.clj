@@ -58,12 +58,19 @@
       (unauthorized-response))))
 
 ;; expected to be used after wrap-token middleware
-(defn wrap-user [user-repository]
+(defn wrap-user [handler]
+  (fn [req]
+    (let [repo (-> req :deps :user-repo)
+          token-user-id (-> req :token-payload :sub)
+          user (get-user-by-token-user-id repo token-user-id)]
+      (handler (assoc-in req [:context :user] user)))))
+
+(defn wrap-prop
+  "Add a property to the request object."
+  [kw val]
   (fn [handler]
     (fn [req]
-      (let [token-user-id (-> req :token-payload :sub)
-            user (get-user-by-token-user-id user-repository token-user-id)]
-        (handler (assoc-in req [:context :user] user))))))
+      (handler (assoc req kw val)))))
 
 (def api-middlewares
   [wrap-log

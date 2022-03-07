@@ -1,4 +1,4 @@
-(ns gym.backend.analytics.controllers.workouts-by-month-of-year
+(ns gym.backend.analytics.workouts-by-month-of-year
   (:require [next.jdbc.sql :as sql]
             [next.jdbc.result-set :as rs]
             [gym.util :refer [create-uuid]]))
@@ -11,11 +11,10 @@
    GROUP BY CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer), \"tags\".\"tag\"
    ORDER BY CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer) ASC, \"tags\".\"tag\" ASC")
 
-(defn create [postgres]
-  (fn [req]
-    (let [user-id (create-uuid (-> req :context :user :user_id))
-          res (sql/query postgres
-                         [query user-id]
-                         {:builder-fn rs/as-unqualified-maps})]
-      {:status 200
-       :body res})))
+(defn controller [req]
+  (let [user-id (create-uuid (-> req :context :user :user_id))
+        res (sql/query (-> req :deps :postgres)
+                       [query user-id]
+                       {:builder-fn rs/as-unqualified-maps})]
+    {:status 200
+     :body res}))

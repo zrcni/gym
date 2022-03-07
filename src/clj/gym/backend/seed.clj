@@ -1,5 +1,5 @@
 (ns gym.backend.seed
-  (:require [gym.backend.system.core :refer [start-system! stop-system! default-config]]
+  (:require [gym.backend.system :refer [start-system! stop-system! default-config]]
             [gym.backend.workouts.counters.reinitialize-counters :as reinitialize-counters]))
 
 (defn -main [& _args]

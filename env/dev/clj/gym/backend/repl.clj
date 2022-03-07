@@ -1,5 +1,5 @@
 (ns gym.backend.repl
-  (:require [gym.backend.system.core :refer [default-config]]
+  (:require [gym.backend.system :refer [default-config]]
             [integrant.repl :refer [go reset]]))
 
 ;; Starts the system
@@ -8,8 +8,8 @@
 
 (integrant.repl/set-prep! (constantly default-config))
 
-(go)
-
 (comment
-  
+
+  (go)
+
   (reset))

@@ -1,4 +1,4 @@
-(ns gym.backend.auth.controllers.login
+(ns gym.backend.auth.login
   (:require [clj-http.client :as http]
             [gym.backend.auth.utils :refer [get-token-payload headers->token]]
             [gym.backend.users.repository.user-repository :refer [get-user-by-token-user-id create-user!]]))
@@ -22,12 +22,12 @@
         new-user (create-user! user-repository (parse-auth0-user-info user-info))]
     new-user))
 
-(defn create [user-repository]
-  (fn [req]
-    (let [user (or
-                (get-user-by-token-user-id user-repository (-> req :token-payload :sub))
-                (create-new-user user-repository req))]
+(defn controller [req]
+  (let [repo (-> req :deps :user-repo)
+        user (or
+              (get-user-by-token-user-id repo (-> req :token-payload :sub))
+              (create-new-user repo req))]
 
-      {:status 200
-       :headers {"Content-Type" "application/json"}
-       :body {:user user}})))
+    {:status 200
+     :headers {"Content-Type" "application/json"}
+     :body {:user user}}))

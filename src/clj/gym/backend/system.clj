@@ -1,4 +1,4 @@
-(ns gym.backend.system.core
+(ns gym.backend.system
   (:require [gym.backend.config :as cfg]
             [integrant.core :as ig]
             [gym.backend.system.domain-events]
