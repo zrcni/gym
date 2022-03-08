@@ -18,8 +18,9 @@
            WHERE (\"public\".\"workouts\".\"user_id\" = ?
            AND \"public\".\"workouts\".\"date\" >= date_trunc('week', now()))"
    :params [:user-id]
-   :resolve (fn [res]
-              {:duration (or (-> res first :sum) 0)})})
+   :resolve
+   (fn [res]
+     {:duration (or (-> res first :sum) 0)})})
 
 (def workout-duration-this-month
   {:query "SELECT sum(\"public\".\"workouts\".\"duration\") AS \"sum\"
@@ -27,8 +28,9 @@
            WHERE (\"public\".\"workouts\".\"user_id\" = ?
            AND \"public\".\"workouts\".\"date\" >= date_trunc('month', now()))"
    :params [:user-id]
-   :resolve (fn [res]
-              {:duration (or (-> res first :sum) 0)})})
+   :resolve
+   (fn [res]
+     {:duration (or (-> res first :sum) 0)})})
 
 (def workouts-by-day-of-week
   {:query "SELECT CAST(extract(isodow from \"public\".\"workouts\".\"date\") AS integer) AS \"date\", \"tags\".\"tag\" AS \"tag\", count(*) AS \"count\"
@@ -37,7 +39,17 @@
            WHERE \"public\".\"workouts\".\"user_id\" = ?
            GROUP BY CAST(extract(isodow from \"public\".\"workouts\".\"date\") AS integer), \"tags\".\"tag\"
            ORDER BY CAST(extract(isodow from \"public\".\"workouts\".\"date\") AS integer) ASC, \"tags\".\"tag\" ASC"
-   :params [:user-id]})
+   :params [:user-id]
+   :resolve
+   (fn [res]
+     {:all-tags (reduce #(conj %1 (:tag %2)) #{} res)
+      :entries (->> res
+                    (group-by :date)
+                    (map (fn [[date maps]]
+                           (reduce (fn [acc {:keys [tag count]}]
+                                     (assoc acc tag count))
+                                   {:date date}
+                                   maps))))})})
 
 (def workouts-by-month-of-year
   {:query "SELECT CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer) AS \"date\", \"tags\".\"tag\" AS \"tag\", count(*) AS \"count\"
@@ -46,7 +58,18 @@
            WHERE \"public\".\"workouts\".\"user_id\" = ?
            GROUP BY CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer), \"tags\".\"tag\"
            ORDER BY CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer) ASC, \"tags\".\"tag\" ASC"
-   :params [:user-id]})
+   :params [:user-id]
+   :resolve
+   (fn [res]
+     {:all-tags (reduce #(conj %1 (:tag %2)) #{} res)
+      :entries (->> res
+                    (group-by :date)
+                    (map (fn [[date maps]]
+                           (reduce (fn [acc {:keys [tag count]}]
+                                     (assoc acc tag count))
+                                   {:date date}
+                                   maps)))
+                    (sort-by :date))})})
 
 (def queries
   {:workout-duration-this-week workout-duration-this-week

@@ -5,6 +5,27 @@
             [clojure.contrib.humanize :as humanize]
             [clojure.string :refer [capitalize]]))
 
+(def bar-colors
+  ["#176BA0"
+   "#19AADE"
+   "#FDA58F"
+   "#C02323"
+   "#EF7E32"
+   "#FF5733"
+   "#3F5DC0"
+   "#A1414B"
+   "#52A343"
+   "#41A15D"
+   "#ACB232"
+   "#43A376"
+   "#7027B2"
+   "#DAF7A6"
+   "#FFC300"
+   "#43A3A2"])
+
+(def bar-color-default
+  (first bar-colors))
+
 (defn human-duration [duration]
   (if (= 0 duration)
     "None"
@@ -13,18 +34,17 @@
       (capitalize d))))
 
 (defn workout-duration-by-tags-chart [{:keys [data error]}]
-  (let [theme @(subscribe [:theme])]
-    [:div
-     [:h4 "Duration by tag, all time"]
-     (when error
-       [:div (str "Query failed: " error " :(")])
-     (when data
-       [:> recharts/ResponsiveContainer {:width "100%" :height 400}
-        [:> recharts/BarChart {:data data}
-         [:> recharts/XAxis {:dataKey "tag"}]
-         [:> recharts/Tooltip {:formatter #(array (human-duration %) nil)}]
-         [:> recharts/Bar {:dataKey "duration"
-                           :fill (:theme-color theme)}]]])]))
+  [:div
+   [:h4 "Duration by tag, all time"]
+   (when error
+     [:div (str "Query failed: " error " :(")])
+   (when data
+     [:> recharts/ResponsiveContainer {:width "100%" :height 400}
+      [:> recharts/BarChart {:data data}
+       [:> recharts/XAxis {:dataKey "tag"}]
+       [:> recharts/Tooltip {:formatter #(array (human-duration %) nil)}]
+       [:> recharts/Bar {:dataKey "duration"
+                         :fill bar-color-default}]]])])
 
 (def week-of-day-num->human
   {1 "Monday"
@@ -35,37 +55,27 @@
    6 "Saturday"
    7 "Sunday"})
 
-;; TODO: different colored bars
 (defn workouts-by-day-of-week-chart [{:keys [data error]}]
-  (let [theme @(subscribe [:theme])
-        bars (into #{} (map :tag data))
-        data (->> data
-                  (group-by :date)
-                  (mapv (fn [[date maps]]
-                          (reduce (fn [acc {:keys [tag count]}]
-                                    (assoc acc tag count))
-                                  {:date date}
-                                  maps))))]
-    [:div
-     [:h4 "Exercises by day of week, all time"]
-     (when error
-       [:div (str "Query failed: " error " :(")])
-     (when data
-       [:> recharts/ResponsiveContainer {:width "100%" :height 400}
-        [:> recharts/BarChart {:data data}
-         [:> recharts/XAxis {:dataKey "date"
-                             :tickFormatter #(week-of-day-num->human %)}]
-         [:> recharts/YAxis]
-         [:> recharts/Tooltip {:separator ": "
-                               :labelFormatter #(week-of-day-num->human %)}]
-         [:> recharts/Legend]
-         (map
-          (fn [bar-name]
-            [:> recharts/Bar {:key bar-name
-                              :dataKey bar-name
-                              :stackId "a"
-                              :fill (:theme-color theme)}])
-          bars)]])]))
+  [:div
+   [:h4 "Exercises by day of week, all time"]
+   (when error
+     [:div (str "Query failed: " error " :(")])
+   (when data
+     [:> recharts/ResponsiveContainer {:width "100%" :height 400}
+      [:> recharts/BarChart {:data (:entries data)}
+       [:> recharts/XAxis {:dataKey "date"
+                           :tickFormatter #(week-of-day-num->human %)}]
+       [:> recharts/YAxis]
+       [:> recharts/Tooltip {:separator ": "
+                             :labelFormatter #(week-of-day-num->human %)}]
+       [:> recharts/Legend]
+       (map-indexed
+        (fn [i bar-name]
+          [:> recharts/Bar {:key bar-name
+                            :dataKey bar-name
+                            :stackId "a"
+                            :fill (nth bar-colors i bar-color-default)}])
+        (:all-tags data))]])])
 
 
 
@@ -83,37 +93,27 @@
    11 "November"
    12 "December"})
 
-;; TODO: different colored bars
 (defn workouts-by-month-of-year-chart [{:keys [data error]}]
-  (let [theme @(subscribe [:theme])
-        bars (into #{} (map :tag data))
-        data (->> data
-                  (group-by :date)
-                  (mapv (fn [[date maps]]
-                          (reduce (fn [acc {:keys [tag count]}]
-                                    (assoc acc tag count))
-                                  {:date date}
-                                  maps))))]
-    [:div
-     [:h4 "Exercises by month of year, all time"]
-     (when error
-       [:div (str "Query failed: " error " :(")])
-     (when data
-       [:> recharts/ResponsiveContainer {:width "100%" :height 400}
-        [:> recharts/BarChart {:data data}
-         [:> recharts/XAxis {:dataKey "date"
-                             :tickFormatter #(month-of-year-num->human %)}]
-         [:> recharts/YAxis]
-         [:> recharts/Tooltip {:separator ": "
-                               :labelFormatter #(month-of-year-num->human %)}]
-         [:> recharts/Legend]
-         (map
-          (fn [bar-name]
-            [:> recharts/Bar {:key bar-name
-                              :dataKey bar-name
-                              :stackId "a"
-                              :fill (:theme-color theme)}])
-          bars)]])]))
+  [:div
+   [:h4 "Exercises by month of year, all time"]
+   (when error
+     [:div (str "Query failed: " error " :(")])
+   (when data
+     [:> recharts/ResponsiveContainer {:width "100%" :height 400}
+      [:> recharts/BarChart {:data (:entries data)}
+       [:> recharts/XAxis {:dataKey "date"
+                           :tickFormatter #(month-of-year-num->human %)}]
+       [:> recharts/YAxis]
+       [:> recharts/Tooltip {:separator ": "
+                             :labelFormatter #(month-of-year-num->human %)}]
+       [:> recharts/Legend]
+       (map-indexed
+        (fn [i bar-name]
+          [:> recharts/Bar {:key bar-name
+                            :dataKey bar-name
+                            :stackId "a"
+                            :fill (nth bar-colors i bar-color-default)}])
+        (:all-tags data))]])])
 
 
 
