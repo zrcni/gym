@@ -2,6 +2,7 @@
   (:require [ring.middleware.cors :refer [wrap-cors]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+            [ring.middleware.nested-params :refer [wrap-nested-params]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [prone.middleware :refer [wrap-exceptions]]
@@ -69,6 +70,7 @@
    #(wrap-cors % :access-control-allow-origin #"http://localhost:3001"
                :access-control-allow-methods [:get :put :post :delete :options])
    wrap-params
+   wrap-nested-params
    wrap-keyword-params
    wrap-content-type
    wrap-json-response

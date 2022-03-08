@@ -4,6 +4,7 @@
    [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
    [ring.middleware.keyword-params :refer [wrap-keyword-params]]
+   [ring.middleware.nested-params :refer [wrap-nested-params]]
    [ring.middleware.params :refer [wrap-params]]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [buddy.sign.jwt :as jwt]
@@ -80,6 +81,7 @@
    #(wrap-cors % :access-control-allow-origin allowed-origins
                :access-control-allow-methods [:get :post :put :delete :options])
    wrap-params
+   wrap-nested-params
    wrap-keyword-params
    wrap-content-type
    wrap-json-response

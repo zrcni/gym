@@ -26,10 +26,11 @@
 
 (reg-event-fx
  :analytics-query
- (fn [_ [_ query-name]]
-   {:dispatch-n [[:fetch {:method :get
-                          :uri (str cfg/api-url "/api/analytics/query")
-                          :params {:query query-name}
-                          :on-success [:analytics-query-succeeded query-name]
-                          :on-failure [:analytics-query-failed query-name]}]
-                 [:analytics-query-started query-name]]}))
+ (fn [_ [_ query]]
+   (let [[query-name params] (if (vector? query) query [query {}])]
+     {:dispatch-n [[:fetch {:method :get
+                            :uri (str cfg/api-url "/api/analytics/query")
+                            :params (merge params {:query query-name})
+                            :on-success [:analytics-query-succeeded query-name]
+                            :on-failure [:analytics-query-failed query-name]}]
+                   [:analytics-query-started query-name]]})))

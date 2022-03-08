@@ -6,6 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.postgresql/postgresql "42.2.11"]
+                 [com.github.seancorfield/honeysql "2.2.868"]
                  [ring-server "0.5.0"]
                  [environ "1.1.0"]
                  [reagent "1.1.0"]
