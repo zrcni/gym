@@ -10,14 +10,14 @@
            WHERE \"public\".\"workouts\".\"user_id\" = ?
            GROUP BY \"tags\".\"tag\"
            ORDER BY \"tags\".\"tag\" ASC"
-   :params [:user-id]})
+   :params {:req [:user-id]}})
 
 (def workout-duration-this-week
   {:query "SELECT sum(\"public\".\"workouts\".\"duration\") AS \"sum\"
            FROM \"public\".\"workouts\"
            WHERE (\"public\".\"workouts\".\"user_id\" = ?
            AND \"public\".\"workouts\".\"date\" >= date_trunc('week', now()))"
-   :params [:user-id]
+   :params {:req [:user-id]}
    :resolve
    (fn [res]
      {:duration (or (-> res first :sum) 0)})})
@@ -27,7 +27,7 @@
            FROM \"public\".\"workouts\"
            WHERE (\"public\".\"workouts\".\"user_id\" = ?
            AND \"public\".\"workouts\".\"date\" >= date_trunc('month', now()))"
-   :params [:user-id]
+   :params {:req [:user-id]}
    :resolve
    (fn [res]
      {:duration (or (-> res first :sum) 0)})})
@@ -39,7 +39,7 @@
            WHERE \"public\".\"workouts\".\"user_id\" = ?
            GROUP BY CAST(extract(isodow from \"public\".\"workouts\".\"date\") AS integer), \"tags\".\"tag\"
            ORDER BY CAST(extract(isodow from \"public\".\"workouts\".\"date\") AS integer) ASC, \"tags\".\"tag\" ASC"
-   :params [:user-id]
+   :params {:req [:user-id]}
    :resolve
    (fn [res]
      {:all-tags (reduce #(conj %1 (:tag %2)) #{} res)
@@ -58,7 +58,7 @@
            WHERE \"public\".\"workouts\".\"user_id\" = ?
            GROUP BY CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer), \"tags\".\"tag\"
            ORDER BY CAST(extract(month from \"public\".\"workouts\".\"date\") AS integer) ASC, \"tags\".\"tag\" ASC"
-   :params [:user-id]
+   :params {:req [:user-id]}
    :resolve
    (fn [res]
      {:all-tags (reduce #(conj %1 (:tag %2)) #{} res)
@@ -78,25 +78,40 @@
    :workouts-by-day-of-week workouts-by-day-of-week
    :workouts-by-month-of-year workouts-by-month-of-year})
 
+(defn validate-input-params [query input-params]
+  (let [required-params (-> query queries :params :req)
+        missing-param-indexes (keep-indexed #(when (and (nil? %2)
+                                                        (contains? required-params %1))
+                                               %1)
+                                            input-params)]
+    (cond
+      (empty? missing-param-indexes)
+      {:error "Query parameters are missing"
+       :missing-params (map #(get input-params %) missing-param-indexes)}
+
+      :else
+      nil)))
+
+
+
 (defn controller [req]
   (if-let [{:keys [query params resolve] :or {resolve identity}} (queries (-> req :params :query keyword))]
     (let [user-id (create-uuid (-> req :user :user_id))
           req-params (-> (:params req)
                          (dissoc :query)
                          (assoc :user-id user-id))
-          query-params (map #(% req-params) params)
-          missing-param-indexes (keep-indexed #(when (nil? %2) %1) query-params)]
-      
+          input-params (map #(% req-params) (-> params vals flatten))
+          error (validate-input-params query input-params)]
+
       ;; All query params are required
-      (if-not (empty? missing-param-indexes)
+      (if-not error
         {:status 400
-         :body {:error "Query parameters are missing"
-                :missing-params (map #(get params %) missing-param-indexes)}}
+         :body error}
 
         {:status 200
          :body (resolve (sql/query (-> req :deps :postgres)
-                                   (cons query query-params)
+                                   (cons query input-params)
                                    {:builder-fn rs/as-unqualified-maps}))}))
 
     {:status 404
-     :body {:error "Query not found"}}))
+     :body {:error "Query does not exist"}}))
