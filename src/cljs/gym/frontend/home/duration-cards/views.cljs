@@ -62,14 +62,14 @@
    :border-top-right-radius "6px"
    :border-bottom-right-radius "6px"})
 
-(defn duration-card [{:keys [title duration loading]}]
+(defn duration-card [{:keys [title duration loading?]}]
   (let [theme @(subscribe [:theme])]
     [:div {:class (duration-card-style)}
      [:div {:class (duration-card-title-style {:theme theme})}
       [:span
        (str title " ")]]
      [:div {:class (duration-card-duration-style)}
-      (if loading
+      (if loading?
         [loaders/circle]
         [:span
          (if (nil? duration)
@@ -87,7 +87,9 @@
       [:div {:class (duration-cards-style)}
        [duration-card {:duration (-> week-result :data :duration)
                        :title "This month"
-                       :loading (:loading week-result)}]
+                       :loading? (and (:loading week-result)
+                                      (not week-result))}]
        [duration-card {:duration (-> month-result :data :duration)
                        :title "This week"
-                       :loading (:loading month-result)}]])))
+                       :loading? (and (:loading week-result)
+                                      (not week-result))}]])))
