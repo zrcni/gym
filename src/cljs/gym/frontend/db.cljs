@@ -10,6 +10,7 @@
            :theme-color-active styles/theme-color-active
            ;; Changed, but not saved yet
            :preview? false}
+   :user-prefs nil
    :current-route nil
    :user nil
    :token nil

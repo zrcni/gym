@@ -31,8 +31,7 @@
 
 (defn row->workout-and-tags [row]
   (as-> row r
-    (update r :date local-date->string)
-    (assoc r :tags (vec (.getArray (:tags r))))))
+    (update r :date local-date->string)))
 
 ;; gets the tag string from the tag object/row
 (defn row->tag [row]

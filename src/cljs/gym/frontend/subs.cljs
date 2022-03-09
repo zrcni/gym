@@ -28,3 +28,8 @@
  :theme
  (fn [db _]
    (:theme db)))
+
+(reg-sub
+ :user-prefs
+ (fn [db _]
+   (:user-prefs db)))

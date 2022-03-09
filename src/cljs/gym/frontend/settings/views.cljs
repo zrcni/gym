@@ -50,7 +50,7 @@
                       :on-change #(dispatch [::gym.frontend.theme/update-theme-color (.-hex ^js/Color %)])}]
 
        [:button {:class (classes (styles/icon-button-cta {:theme theme}) (save-button-style))
-                 :on-click #(dispatch [::gym.frontend.theme/persist-theme])
+                 :on-click #(dispatch [:save-user-prefs])
                  :disabled (not (:preview? theme))}
         "Save"]]
       

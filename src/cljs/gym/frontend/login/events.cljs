@@ -2,6 +2,7 @@
   (:require
    [gym.frontend.error-reporting]
    [gym.frontend.config :as cfg]
+   [gym.frontend.theme]
    [re-frame.core :refer [reg-event-fx inject-cofx dispatch]]))
 
 (reg-event-fx ::verify-auth
@@ -20,20 +21,41 @@
   (fn [_ [_ _error]]
     {:dispatch [::logout-auth0-success]}))
 
-(reg-event-fx ::login-success
-              (fn [{:keys [db]} [_ body]]
-                (as-> {} events
-                  ;; NOTE: there's probably a better way to conditionally assoc to map and re-bind to a symbol
-                  (assoc events :db (-> db
-                                        (assoc :user (:user body))
-                                        (assoc :auth-status :logged-in)))
-                  (if (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
-                    (assoc events :navigate! [:home])
-                    events)
-                  (if cfg/sentry-dsn
-                    (assoc events ::gym.frontend.error-reporting/set-sentry-user-info! {:id (:user_id (:user body))})
-                    events)
-                  events)))
+
+(reg-event-fx
+ ::login-success
+ (fn [{:keys [db]} [_ body]]
+   (cond-> {}
+     true
+     (assoc :db (-> db
+                    (assoc :user (:user body))
+                    (assoc :auth-status :logged-in)))
+     
+     true
+     (assoc :dispatch [:fetch-user-prefs {:on-success [:fetch-user-prefs-after-login-success]
+                                          :on-failure [:fetch-user-prefs-after-login-failure]}])
+
+     (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
+     (assoc :navigate! [:home])
+
+     cfg/sentry-dsn
+     (assoc ::gym.frontend.error-reporting/set-sentry-user-info! {:id (:user_id (:user body))}))))
+
+
+(reg-event-fx
+ :fetch-user-prefs-after-login-success
+ (fn [_ [_ prefs]]
+   (cond-> {}
+     true
+     (update :dispatch-n conj [:update-user-prefs prefs])
+
+     (:theme_main_color prefs)
+     (update :dispatch-n conj [::gym.frontend.theme/set-theme-color (:theme_main_color prefs)]))))
+
+;; TODO: handle errors
+(reg-event-fx
+ :fetch-user-prefs-after-login-failure
+ (fn [_ _]))
 
 (reg-event-fx ::login-failure
               (fn [_ [_ error]]

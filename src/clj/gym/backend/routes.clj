@@ -7,6 +7,8 @@
             [gym.backend.workouts.get-workout-by-workout-id :as get-workout-by-workout-id]
             [gym.backend.workouts.get-workouts-by-user-id :as get-workouts-by-user-id]
             [gym.backend.users.get-authenticated-user :as get-authenticated-user]
+            [gym.backend.user-prefs.get-user-preferences :as get-user-preferences]
+            [gym.backend.user-prefs.update-user-preferences :as update-user-preferences]
             [gym.backend.auth.login :as login]
             [gym.backend.analytics.analytics-query :as analytics-query]
             [gym.backend.config :as cfg]))
@@ -39,7 +41,12 @@
                        :delete {:handler delete-workout-by-workout-id/controller
                                 :middleware [wrap-user]}}]]
 
-     ["/users/token" {:get {:handler get-authenticated-user/controller}}]
+     ["/users"
+      ["/preferences" {:get {:handler get-user-preferences/controller
+                             :middleware [wrap-user]}
+                       :put {:handler update-user-preferences/controller
+                             :middleware [wrap-user]}}]
+      ["/token" {:get {:handler get-authenticated-user/controller}}]]
 
      ["/auth"
       ["/login" {:post {:handler login/controller}}]]]

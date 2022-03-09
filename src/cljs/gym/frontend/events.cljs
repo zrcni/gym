@@ -5,6 +5,7 @@
    [day8.re-frame.http-fx]
    [gym.frontend.login.events]
    [gym.frontend.home.events]
+   [gym.frontend.settings.events]
    [gym.frontend.analytics.events]
    [parse-color]
    [ajax.core :refer [text-request-format json-response-format]]
@@ -47,5 +48,7 @@
         {:dispatch [:handle-unauthorized-request error]}
         {:dispatch [:handle-request-error error]}))))
 
-;; this is used for http requests that don't need failure or success handlers
-(reg-event-fx :no-op (fn [] nil))
+(reg-event-db
+ :update-user-prefs
+ (fn [db [_ prefs]]
+   (assoc db :user-prefs prefs)))
