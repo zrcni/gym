@@ -5,8 +5,8 @@
 
 (defn controller [req]
   (let [repo (-> req :deps :user-prefs-repo)
-        user-id (create-uuid (get-in req [:user :user_id]))
-        prefs (get-by-user-id repo user-id) 
+        user-id (get-in req [:user :user_id])
+        prefs (get-by-user-id repo (create-uuid user-id))
         prefs (or prefs (create-user-prefs user-id))]
 
     {:status 200

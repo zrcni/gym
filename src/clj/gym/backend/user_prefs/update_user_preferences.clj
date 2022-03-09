@@ -10,9 +10,9 @@
 
 (defn controller [req]
   (let [repo (-> req :deps :user-prefs-repo)
-        user-id (create-uuid (get-in req [:user :user_id]))
+        user-id (get-in req [:user :user_id])
         params (-> req :body keywordize-keys)
-        prefs (get-by-user-id repo user-id)
+        prefs (get-by-user-id repo (create-uuid user-id))
         updated-prefs (-> (or prefs (create-user-prefs user-id))
                           (update-user-prefs params))]
 
