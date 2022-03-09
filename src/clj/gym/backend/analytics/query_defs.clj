@@ -40,10 +40,11 @@
                          [[:>= :public.workouts.date [:date_trunc :'week' [:now]]]]]
                   where (if (empty? exclude)
                           where
-                          (update where 1 conj [:not-in :tag exclude]))]
+                          (conj where [:not-in :tag exclude]))]
 
               (-> (h/select [[:sum :public.workouts.duration] #_as :duration])
                   (h/from :public.workouts)
+                  (h/left-join [:public.workout_tags :tags] [:= :public.workouts.workout_id :tags.workout_id])
                   (h/where where)
                   (sql/format))))
    :params {:req [:user-id]
@@ -61,10 +62,11 @@
                          [[:>= :public.workouts.date [:date_trunc :'month' [:now]]]]]
                   where (if (empty? exclude)
                           where
-                          (update where 1 conj [:not-in :tag exclude]))]
+                          (conj where [:not-in :tag exclude]))]
 
               (-> (h/select [[:sum :public.workouts.duration] #_as :duration])
                   (h/from :public.workouts)
+                  (h/left-join [:public.workout_tags :tags] [:= :public.workouts.workout_id :tags.workout_id])
                   (h/where where)
                   (sql/format))))
    :params {:req [:user-id]

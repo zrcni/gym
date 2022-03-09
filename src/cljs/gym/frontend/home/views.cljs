@@ -10,6 +10,7 @@
             [cljss.core :as css :refer-macros [defstyles]]
             [cljss.reagent :refer-macros [defstyled]]
             [gym.frontend.components.icons :as icons]
+            [gym.frontend.components.chip :refer [chip]]
             [gym.frontend.styles :as styles :refer [classes]]
             [gym.frontend.js-interop :refer [get-value]]
             [gym.frontend.components.emoji-picker :refer [emoji-picker]]
@@ -103,48 +104,6 @@
     (let [n (js/parseInt v)]
       (if (= n js/NaN) 0 n))))
 
-(defstyles tag-delete-style [{:keys [theme]}]
-  {:display "flex"
-   :justify-content "center"
-   :align-items "center"
-   :font-size "20px"
-   :cursor "pointer"
-   :width "35px"
-   :height "35px"
-   :&:hover {:background-color (:theme-color-hover theme)
-             :border-top-right-radius "6px"
-             :border-bottom-right-radius "6px"}})
-
-(defstyles tag-chip-content-style []
-  {:padding "0 8px 0 8px"})
-
-(defstyles tag-style [{:keys [theme]}]
-  {:box-sizing "border-box"
-   :color styles/text-color
-   :display "flex"
-   :align-items "center"
-   :height "35px"
-   :line-height "20px"
-   :white-space "nowrap"
-   :background (:theme-color theme)
-   :border-radius "6px"
-   :cursor "default"
-   :opacity 1
-   :transition "all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86)"
-   :margin "0 4px 0 4px"})
-
-(defn tag-chip [{:keys [value on-delete]}]
-  (let [theme @(subscribe [:theme])]
-    [:div {:class (tag-style {:theme theme})}
-     [:div {:class (tag-chip-content-style)}
-      value]
-     (when on-delete
-       [:button {:class (classes (tag-delete-style {:theme theme}) "tag-chip-delete")
-                 :role "button"
-                 :aria-label "delete"
-                 :on-click #(on-delete value)}
-        [icons/times]])]))
-
 (defstyles tag-add-input-style []
   {:border "none"
    :width "100px"
@@ -202,8 +161,8 @@
    [add-tag {:on-add on-add}]
    [:div {:class (new-exercise-tags-wrapper-style)}
     (map (fn [tag] ^{:key tag}
-           [tag-chip {:value tag
-                      :on-delete on-delete}]) tags)]])
+           [chip {:value tag
+                  :on-delete on-delete}]) tags)]])
 
 (defstyles new-exercise-form-style []
   {:position "relative"
@@ -416,7 +375,7 @@
             (when (> (count (:tags workout)) 0)
               [:div {:class (exercise-tags-wrapper-style)}
                (map
-                (fn [tag] [tag-chip {:value tag}])
+                (fn [tag] [chip {:value tag}])
                 (:tags workout))]
               )])
          workouts)]

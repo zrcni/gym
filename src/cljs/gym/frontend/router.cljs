@@ -70,9 +70,7 @@
        (if (= auth-status :waiting)
          ^{:key current-page}
          [:div {:class (loader-wrapper-style)}
-          [loaders/circle {:size 80}]
-          [:p {:class (loader-description-style)}
-           "The server might be starting right now, if you're the first user in a while..."]]
+          [loaders/circle {:size 160}]]
 
          (when current-route
            ^{:key (:path current-route)}

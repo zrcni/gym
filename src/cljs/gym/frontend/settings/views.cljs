@@ -5,14 +5,8 @@
    [re-frame.core :refer [subscribe dispatch]]
    [gym.frontend.styles :as styles :refer [classes]]
    [cljss.core :refer-macros [defstyles]]
+   [gym.frontend.components.chip :refer [chip-button]]
    [gym.frontend.components.color-picker :refer [color-picker]]))
-
-(defstyles loader-wrapper-style []
-  {:margin-top "1rem"
-   :justify-content "center"
-   :display "flex"
-   :flex-direction "column"
-   :align-items "center"})
 
 (defstyles color-picker-style []
   {:display "flex"
@@ -47,20 +41,42 @@
       [:div {:class (wrapper-style)}
        [color-picker {:class (color-picker-style)
                       :color (:theme-color theme)
-                      :on-change #(dispatch [::gym.frontend.theme/update-theme-color (.-hex ^js/Color %)])}]
-
-       [:button {:class (classes (styles/icon-button-cta {:theme theme}) (save-button-style))
-                 :on-click #(dispatch [:save-user-prefs])
-                 :disabled (not (:preview? theme))}
-        "Save"]]
+                      :on-change #(dispatch [::gym.frontend.theme/update-theme-color (.-hex ^js/Color %)])}]]
       
       (when (:preview? theme)
         [:p {:class (preview-description-style)}
          "Theme color is not saved yet, but you can preview it in other parts of the application."])]]))
 
-(defn main []
-  [:div#settings
-   [theme-color]])
+(defstyles chip-btn-excluded []
+  {:background-color styles/dark-gray})
 
-;; [:div {:class (loader-wrapper-style)}
-;;  [loaders/circle {:size 80}]]
+(defn exclude-tags []
+  (let [all-tags @(subscribe [:all-tags])
+        excluded-tags @(subscribe [:excluded-tags])
+        toggle-tag-exclusion #(dispatch [:toggle-excluded-tag %])]
+    [:div {:class (setting-row-style)}
+     [:h4 "Tags used in all analytics"]
+     [:div
+      [:div {:class (wrapper-style)}
+       (map (fn [tag]
+              [chip-button {:key tag
+                            :value tag
+                            :on-click #(toggle-tag-exclusion tag)
+                            :class (when (some #(= % tag) excluded-tags)
+                                     (chip-btn-excluded))}])
+            all-tags)]]]))
+
+
+
+(defn main []
+  (dispatch [:fetch-all-workout-tags])
+
+  (fn [_]
+    (let [theme @(subscribe [:theme])
+          handle-click-save #(dispatch [:save-user-prefs])]
+      [:div#settings
+       [theme-color]
+       [exclude-tags]
+       [:button {:class (classes (styles/icon-button-cta {:theme theme}) (save-button-style))
+                 :on-click handle-click-save}
+        "Save"]])))

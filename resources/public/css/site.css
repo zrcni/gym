@@ -19,3 +19,9 @@
 .analytics-container > *:first-child {
   margin-top: 0;
 }
+
+.chart-loading-container {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}

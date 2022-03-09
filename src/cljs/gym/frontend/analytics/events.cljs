@@ -29,7 +29,7 @@
  (fn [_ [_ query]]
    (let [[query-name params] (if (vector? query) query [query {}])]
      {:dispatch-n [[:fetch {:method :get
-                            :uri (str cfg/api-url "/api/analytics/query")
+                            :uri (str cfg/api-url "/api/analytics")
                             :params (merge params {:query query-name})
                             :on-success [:analytics-query-succeeded query-name]
                             :on-failure [:analytics-query-failed query-name]}]

@@ -3,7 +3,7 @@
    [gym.frontend.home.subs]
    [gym.frontend.login.subs]
    [gym.frontend.analytics.subs]
-   [re-frame.core :refer [reg-sub]]))
+   [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
  :current-route
@@ -11,12 +11,12 @@
    (:current-route db)))
 
 (reg-sub
- :loading  ;; usage: (subscribe [:loading])
- (fn [db _]
-   (:loading db)))
+ :loading
+ (fn [db [_ kw]]
+   (get-in db [:loading kw])))
 
 (reg-sub
- :error  ;; usage: (subscribe [:error])
+ :error
  (fn [db _]
    (:error db)))
 
@@ -33,3 +33,14 @@
  :user-prefs
  (fn [db _]
    (:user-prefs db)))
+
+(reg-sub
+ :excluded-tags
+ (fn [_ _] (subscribe [:user-prefs]))
+ (fn [user-prefs _]
+   (:excluded_tags user-prefs)))
+
+(reg-sub
+ :all-tags
+ (fn [db _]
+   (-> db :all-tags)))

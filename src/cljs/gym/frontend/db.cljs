@@ -16,4 +16,5 @@
    :token nil
    :auth-status :waiting
    :home home/default-db
-   :analytics analytics/default-db})
+   :analytics analytics/default-db
+   :all-tags nil})

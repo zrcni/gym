@@ -21,6 +21,6 @@
   (dispatch [::gym.frontend.login.events/handle-login-auth0-callback])
   (fn []
     [:div {:class (loader-wrapper-style)}
-     [loaders/circle {:size 80}]
+     [loaders/circle {:size 160}]
      [:p {:class (loader-description-style)}
       "The server might be starting right now, if you're the first user in a while..."]]))

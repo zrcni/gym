@@ -76,20 +76,29 @@
            ":("
            (human-duration duration))])]]))
 
+(defn duration-cards-impl [{:keys [loading?]}]
+  (let [week-result @(subscribe [:analytics-query :workout-duration-this-week])
+        month-result @(subscribe [:analytics-query :workout-duration-this-month])]
+
+    [:div {:class (duration-cards-style)}
+     [duration-card {:duration (-> week-result :data :duration)
+                     :title "This month"
+                     :loading? (or loading?
+                                   (and (:loading week-result)
+                                        (not week-result)))}]
+     [duration-card {:duration (-> month-result :data :duration)
+                     :title "This week"
+                     :loading? (or loading?
+                                   (and (:loading week-result)
+                                        (not week-result)))}]]))
+
 (defn duration-cards []
-  (dispatch [:analytics-query :workout-duration-this-week])
-  (dispatch [:analytics-query :workout-duration-this-month])
+  (let [excluded-tags @(subscribe [:excluded-tags])
+        params (when-not (empty? excluded-tags) {:exclude excluded-tags})
+        init-loading? @(subscribe [:loading :fetch-initial-user-prefs])]
 
-  (fn []
-    (let [week-result @(subscribe [:analytics-query :workout-duration-this-week])
-          month-result @(subscribe [:analytics-query :workout-duration-this-month])]
+    (when-not init-loading?
+      (dispatch [:analytics-query [:workout-duration-this-week params]])
+      (dispatch [:analytics-query [:workout-duration-this-month params]])))
 
-      [:div {:class (duration-cards-style)}
-       [duration-card {:duration (-> week-result :data :duration)
-                       :title "This month"
-                       :loading? (and (:loading week-result)
-                                      (not week-result))}]
-       [duration-card {:duration (-> month-result :data :duration)
-                       :title "This week"
-                       :loading? (and (:loading week-result)
-                                      (not week-result))}]])))
+  [duration-cards-impl])

@@ -14,12 +14,12 @@
                 {}))
 
 (reg-event-fx ::verify-auth-success
-  (fn [_ [_ _]]
-    {:dispatch [::handle-login-auth0-success]}))
+              (fn [_ [_ _]]
+                {:dispatch [::handle-login-auth0-success]}))
 
 (reg-event-fx ::verify-auth-failure
-  (fn [_ [_ _error]]
-    {:dispatch [::logout-auth0-success]}))
+              (fn [_ [_ _error]]
+                {:dispatch [::logout-auth0-success]}))
 
 
 (reg-event-fx
@@ -30,10 +30,11 @@
      (assoc :db (-> db
                     (assoc :user (:user body))
                     (assoc :auth-status :logged-in)))
-     
+
      true
-     (assoc :dispatch [:fetch-user-prefs {:on-success [:fetch-user-prefs-after-login-success]
-                                          :on-failure [:fetch-user-prefs-after-login-failure]}])
+     (assoc :dispatch-n [[:fetch-user-prefs {:on-success [:fetch-user-prefs-after-login-success]
+                                             :on-failure [:fetch-user-prefs-after-login-failure]}]
+                         [:start-loading :fetch-initial-user-prefs]])
 
      (re-matches #"^(/login|/auth0_callback)" (-> js/window .-location .-pathname))
      (assoc :navigate! [:home])
@@ -49,13 +50,17 @@
      true
      (update :dispatch-n conj [:update-user-prefs prefs])
 
+     true
+     (update :dispatch-n conj [:stop-loading :fetch-initial-user-prefs])
+
      (:theme_main_color prefs)
      (update :dispatch-n conj [::gym.frontend.theme/set-theme-color (:theme_main_color prefs)]))))
 
 ;; TODO: handle errors
 (reg-event-fx
  :fetch-user-prefs-after-login-failure
- (fn [_ _]))
+ (fn [_ _]
+   {:dispatch [:stop-loading :fetch-initial-user-prefs]}))
 
 (reg-event-fx ::login-failure
               (fn [_ [_ error]]

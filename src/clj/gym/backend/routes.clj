@@ -6,6 +6,7 @@
             [gym.backend.workouts.delete-workout-by-workout-id :as delete-workout-by-workout-id]
             [gym.backend.workouts.get-workout-by-workout-id :as get-workout-by-workout-id]
             [gym.backend.workouts.get-workouts-by-user-id :as get-workouts-by-user-id]
+            [gym.backend.workouts.get-all-user-workout-tags :as get-all-user-workout-tags]
             [gym.backend.users.get-authenticated-user :as get-authenticated-user]
             [gym.backend.user-prefs.get-user-preferences :as get-user-preferences]
             [gym.backend.user-prefs.update-user-preferences :as update-user-preferences]
@@ -27,9 +28,13 @@
   (reitit-ring/ring-handler
    (reitit-ring/router
     ["/api"
-     ["/analytics"
-      ["/query" {:get {:handler analytics-query/controller
-                       :middleware [wrap-user]}}]]
+     ["/analytics" {:get {:handler analytics-query/controller
+                          :middleware [wrap-user]}}]
+
+
+     ;; /workouts/tags route conflicts with /:workout-id
+     ["/workout_tags" {:get {:handler get-all-user-workout-tags/controller
+                             :middleware [wrap-user]}}]
      
      ["/workouts"
       ["" {:get {:handler get-workouts-by-user-id/controller

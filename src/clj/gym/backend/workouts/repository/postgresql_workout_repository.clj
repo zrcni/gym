@@ -2,9 +2,9 @@
   (:import java.time.LocalDate)
   (:require [gym.util :refer [create-uuid]]
             [gym.backend.workouts.repository.workout-repository :refer [WorkoutRepository]]
+            [next.jdbc.sql :as jdbc-sql]
             [next.jdbc :as jdbc]
-            [next.jdbc.result-set :as rs]
-            [next.jdbc.sql :as sql]))
+            [next.jdbc.result-set :as rs]))
 
 (defn workouts-with-tags-query [& [where limit]]
   (let [where-clause (if where (str " WHERE " where) "")
@@ -44,14 +44,14 @@
 
   (get-workouts-by-user-id
     [_ user_id]
-    (let [workouts (sql/query db-conn
+    (let [workouts (jdbc-sql/query db-conn
                               [(workouts-with-tags-query "workouts.user_id = ?") (create-uuid user_id)]
                               {:builder-fn rs/as-unqualified-maps})]
       (map row->workout-and-tags workouts)))
 
   (get-workout-by-workout-id
     [_ workout_id]
-    (let [workouts (sql/query db-conn
+    (let [workouts (jdbc-sql/query db-conn
                               [(workouts-with-tags-query "workouts.workout_id = ?" 1) (create-uuid workout_id)]
                               {:builder-fn rs/as-unqualified-maps})]
       (if (> (count workouts) 0)
@@ -61,7 +61,7 @@
   (create-workout!
     [_ {:keys [description duration date tags user_id]}]
     (jdbc/with-transaction [tx db-conn]
-      (let [workout (sql/insert! tx
+      (let [workout (jdbc-sql/insert! tx
                                  "workouts"
                                  {:description description
                                   :duration duration
@@ -69,12 +69,12 @@
                                   :user_id (create-uuid user_id)}
                                  {:return-keys true
                                   :builder-fn rs/as-unqualified-maps})
-            tags (sql/insert-multi! tx
-                                    "workout_tags"
-                                    [:workout_id :tag]
-                                    (vec (map #(vector (:workout_id workout) %) tags))
-                                    {:return-keys true
-                                     :builder-fn rs/as-unqualified-maps})]
+            tags (jdbc-sql/insert-multi! tx
+                                         "workout_tags"
+                                         [:workout_id :tag]
+                                         (vec (map #(vector (:workout_id workout) %) tags))
+                                         {:return-keys true
+                                          :builder-fn rs/as-unqualified-maps})]
 
         (-> (row->workout workout)
             (assoc :tags (map #(row->tag %) tags))))))
@@ -83,9 +83,9 @@
    [_ workout_id]
    (jdbc/with-transaction [tx db-conn]
      (let [w-id (create-uuid workout_id)
-           _ (sql/delete! tx
-                          "workout_tags"
-                          ["workout_id = ?" w-id])
+           _ (jdbc-sql/delete! tx
+                               "workout_tags"
+                               ["workout_id = ?" w-id])
            deleted-workout (jdbc/execute-one! tx
                                               ["DELETE FROM workouts WHERE workout_id = ? RETURNING workout_id, user_id, duration, date" w-id]
                                               {:builder-fn rs/as-unqualified-maps})]
