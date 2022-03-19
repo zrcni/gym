@@ -81,12 +81,12 @@
         month-result @(subscribe [:analytics-query :workout-duration-this-month])]
 
     [:div {:class (duration-cards-style)}
-     [duration-card {:duration (-> week-result :data :duration)
+     [duration-card {:duration (-> month-result :data :duration)
                      :title "This month"
                      :loading? (or loading?
-                                   (and (:loading week-result)
-                                        (not week-result)))}]
-     [duration-card {:duration (-> month-result :data :duration)
+                                   (and (:loading month-result)
+                                        (not month-result)))}]
+     [duration-card {:duration (-> week-result :data :duration)
                      :title "This week"
                      :loading? (or loading?
                                    (and (:loading week-result)
