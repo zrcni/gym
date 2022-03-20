@@ -7,7 +7,6 @@
 
 (defstyles calendar-header-style []
   {:margin-bottom "1.3rem"
-   :margin-top "0.65rem"
    :align-self "flex-end"
    :display "grid"
    :grid-template-columns "6rem auto 6rem"})
