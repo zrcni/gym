@@ -1,4 +1,4 @@
-(ns gym.frontend.home.calendar.db
+(ns gym.frontend.calendar.db
   (:require
    [cljs-time.core :as t]
    [gym.frontend.calendar-utils :refer [calculate-weeks calculate-start-date num-weeks]]))

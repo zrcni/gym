@@ -1,4 +1,4 @@
-(ns gym.frontend.home.calendar.events
+(ns gym.frontend.calendar.events
   (:require [gym.workout :refer [validate-workout-new make-workout-new]]
             [gym.frontend.config :as cfg]
             [goog.string :as gstring]

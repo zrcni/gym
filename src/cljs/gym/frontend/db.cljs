@@ -1,7 +1,7 @@
 (ns gym.frontend.db
   (:require
    [gym.frontend.styles :as styles]
-   [gym.frontend.home.calendar.db :as calendar]
+   [gym.frontend.calendar.db :as calendar]
    [gym.frontend.analytics.db :as analytics]))
 
 (def default-db

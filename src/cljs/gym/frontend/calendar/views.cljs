@@ -1,4 +1,4 @@
-(ns gym.frontend.home.calendar.views
+(ns gym.frontend.calendar.views
   (:require [re-frame.core :refer [subscribe dispatch]]
             [reagent.core :as reagent]
             [clojure.string :refer [trim blank?]]

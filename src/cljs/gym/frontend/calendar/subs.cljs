@@ -1,4 +1,4 @@
-(ns gym.frontend.home.calendar.subs
+(ns gym.frontend.calendar.subs
   (:require
    [re-frame.core :refer [reg-sub]]))
 

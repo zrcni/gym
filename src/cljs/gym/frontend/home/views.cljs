@@ -2,8 +2,8 @@
   (:require [re-frame.core :refer [dispatch subscribe]]
             [cljs-time.core :as t]
             [cljss.core :as css :refer-macros [defstyles]]
-            [gym.frontend.home.duration-cards.views :refer [duration-cards]]
-            [gym.frontend.home.calendar.views :refer [calendar]]))
+            [gym.frontend.duration-cards.views :refer [duration-cards]]
+            [gym.frontend.calendar.views :refer [calendar]]))
 
 (defstyles calendar-header-style []
   {:margin-bottom "1.3rem"
