@@ -84,6 +84,7 @@
                                          "react-modal"
                                          "toastr"
                                          "recharts"
+                                         "react-swipeable"
                                          "auth0spa"]
                               :global-exports {react React
                                                react-dom ReactDOM
@@ -94,6 +95,7 @@
                                                react-modal ReactModal
                                                toastr toastr
                                                recharts recharts
+                                               react-swipeable reactSwipeable
                                                auth0spa auth0spa}}]
               :closure-defines {gym.frontend.config/api-url ~(or (System/getenv "API_URL") "")
                                 gym.frontend.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
@@ -126,6 +128,7 @@
                                          "react-modal"
                                          "toastr"
                                          "recharts"
+                                         "react-swipeable"
                                          "auth0spa"]
                               :global-exports {react React
                                                react-dom ReactDOM
@@ -136,6 +139,7 @@
                                                react-modal ReactModal
                                                toastr toastr
                                                recharts recharts
+                                               react-swipeable reactSwipeable
                                                auth0spa auth0spa}}]
               :closure-defines {gym.frontend.config/api-url "http://localhost:3001"
                                 gym.frontend.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"

@@ -28,4 +28,4 @@
         [:div {:class (calendar-year-style)}
          (t/year start-date)]
         [duration-cards]]
-       [calendar]])))
+       [:f> calendar]])))

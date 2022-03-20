@@ -26,7 +26,8 @@
                                                  same-day?
                                                  first-day-of-month?
                                                  human-month-short
-                                                 future?]]))
+                                                 future?]]
+            [react-swipeable :refer [useSwipeable]]))
 
 (defstyles weekdays-style []
   {:display "flex"
@@ -65,14 +66,14 @@
 (defstyles calendar-earlier-later-style [{:keys [theme]}]
   {:&:hover {:background-color (:theme-color theme)}})
 
-(defn calendar-nav [{:keys [show-later on-earlier-click on-later-click]}]
+(defn calendar-nav [{:keys [show-later? on-earlier-click on-later-click]}]
   (let [theme @(subscribe [:theme])]
     [:div {:class (calendar-nav-style)}
      [:button {:on-click on-earlier-click :class (classes (calendar-earlier-later-style {:theme theme})
                                                           (styles/icon-button {:theme theme}))}
       [icons/chevron-up {:class (styles/base-icon)}]
       [:span "Earlier"]]
-     (when show-later
+     (when show-later?
        [:button {:on-click on-later-click :class (classes (calendar-earlier-later-style {:theme theme})
                                                           (styles/icon-button {:theme theme}))}
         [icons/chevron-down {:class (styles/base-icon)}]
@@ -495,13 +496,19 @@
         editing-index @(subscribe [:calendar-editing-index])
         weeks @(subscribe [:calendar-weeks])
         loading @(subscribe [:calendar-loading])
+        show-later? (not (same-day? start-date (calculate-start-date (t/now) num-weeks)))
         handle-edit-day #(dispatch [:calendar-edit-day %])
         handle-stop-editing #(dispatch [:calendar-stop-editing])
         handle-show-earlier #(dispatch [:calendar-show-earlier (t/days (* num-weeks days-in-week))])
-        handle-show-later #(dispatch [:calendar-show-later (t/days (* num-weeks days-in-week))])]
+        handle-show-later #(do (when show-later?
+                                 (dispatch [:calendar-show-later (t/days (* num-weeks days-in-week))])))
+        swipe-props (useSwipeable #js{:onSwipedUp handle-show-earlier
+                                      :onSwipedDown handle-show-later
+                                      :preventDefaultTouchmoveEvent true,
+                                      :trackMouse true})]
 
     [:div
-     [:div#calendar
+     [:div#calendar (js->clj swipe-props)
       [weekdays]
       [:div {:class (calendar-animation-overflow-style)}
        (map-indexed
@@ -557,6 +564,7 @@
                                       :local-date (:local-date day)}])])])))
             (:days week))])
         weeks)]]
-     [calendar-nav {:show-later (not (same-day? start-date (calculate-start-date (t/now) num-weeks)))
+
+     [calendar-nav {:show-later? show-later?
                     :on-earlier-click handle-show-earlier
                     :on-later-click handle-show-later}]]))

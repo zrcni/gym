@@ -9,6 +9,7 @@ import * as auth0spa from '@auth0/auth0-spa-js'
 import * as Sentry from '@sentry/browser'
 import EmojiPickerReact from 'emoji-picker-react'
 import parseColor from 'parse-color'
+import * as reactSwipeable from 'react-swipeable'
 
 window.React = React
 window.ReactDOM = ReactDOM
@@ -21,6 +22,7 @@ window.ReactContenteditable = ReactContenteditable
 window.EmojiPickerReact = EmojiPickerReact
 window.Sentry = Sentry
 window.parseColor = parseColor
+window.reactSwipeable = reactSwipeable
 
 window.getCaretPosition = function(editableDiv) {
   var caretPos = 0,

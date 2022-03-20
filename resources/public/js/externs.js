@@ -72,3 +72,5 @@ var toastr = {
 }
 
 var recharts = {}
+
+var reactSwipeable = {}
