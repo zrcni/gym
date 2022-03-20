@@ -1,8 +1,8 @@
 (ns gym.frontend.db
   (:require
    [gym.frontend.styles :as styles]
-   [gym.frontend.calendar.db :as calendar]
-   [gym.frontend.analytics.db :as analytics]))
+   [gym.frontend.calendar.db :as calendar-db]
+   [gym.frontend.analytics.db :as analytics-db]))
 
 (def default-db
   {:theme {:theme-color styles/theme-color
@@ -15,6 +15,6 @@
    :user nil
    :token nil
    :auth-status :waiting
-   :calendar calendar/default-db
-   :analytics analytics/default-db
+   :calendar calendar-db/default-db
+   :analytics analytics-db/default-db
    :all-tags nil})
