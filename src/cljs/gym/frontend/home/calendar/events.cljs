@@ -1,4 +1,4 @@
-(ns gym.frontend.home.events
+(ns gym.frontend.home.calendar.events
   (:require [gym.workout :refer [validate-workout-new make-workout-new]]
             [gym.frontend.config :as cfg]
             [goog.string :as gstring]
@@ -11,7 +11,7 @@
 
 (reg-event-db :calendar-update-start-date
               (fn [db [_ date]]
-                (assoc-in db [:home :calendar :start-date] date)))
+                (assoc-in db [:calendar :start-date] date)))
 
 ;; reuse logic for updating start date when adding/subtracting a duration from the date
 (defn reg-start-date-update-event-fx
@@ -19,7 +19,7 @@
   [fx-name f]
   (reg-event-fx fx-name
                 (fn [{:keys [db]} [_ duration]]
-                  (let [start-date (get-in db [:home :calendar :start-date])
+                  (let [start-date (get-in db [:calendar :start-date])
                         next-date (f start-date duration)]
                     {:dispatch-n [[:calendar-update-start-date next-date]
                                   [:calendar-update-weeks]]}))))
@@ -29,36 +29,36 @@
 
 (reg-event-db :calendar-update-weeks
               (fn [db]
-                (let [start-date (get-in db [:home :calendar :start-date])
-                      workouts (get-in db [:home :calendar :workouts])
+                (let [start-date (get-in db [:calendar :start-date])
+                      workouts (get-in db [:calendar :workouts])
                       weeks (calculate-weeks start-date workouts)]
-                  (assoc-in db [:home :calendar :weeks] weeks))))
+                  (assoc-in db [:calendar :weeks] weeks))))
 
 (reg-event-db :calendar-edit-day
               (fn [db [_ day-index]]
-                (assoc-in db [:home :calendar :editing-index] day-index)))
+                (assoc-in db [:calendar :editing-index] day-index)))
 
 (reg-event-db :calendar-stop-editing
               (fn [db]
-                (assoc-in db [:home :calendar :editing-index] nil)))
+                (assoc-in db [:calendar :editing-index] nil)))
 
 (reg-event-db :calendar-update-workouts
               (fn [db [_ workouts]]
-                (assoc-in db [:home :calendar :workouts] workouts)))
+                (assoc-in db [:calendar :workouts] workouts)))
 
 (reg-event-fx :fetch-all-workouts-success
               (fn [{:keys [db]} [_ workouts]]
-                {:db (assoc-in db [:home :calendar :loading] false)
+                {:db (assoc-in db [:calendar :loading] false)
                  :dispatch-n [[:calendar-update-workouts workouts]
                               [:calendar-update-weeks]]}))
 
 (reg-event-fx :fetch-all-workouts-failure
               (fn [{:keys [db]} _]
-                {:db (assoc-in db [:home :calendar :loading] false)}))
+                {:db (assoc-in db [:calendar :loading] false)}))
 
 (reg-event-fx :fetch-all-workouts
               (fn [{:keys [db]} _]
-                {:db (assoc-in db [:home :calendar :loading] true)
+                {:db (assoc-in db [:calendar :loading] true)
                  :dispatch [:fetch {:method :get
                                     :uri (str cfg/api-url "/api/workouts")
                                     :on-success [:fetch-all-workouts-success]
@@ -67,7 +67,7 @@
 ;; TODO: update analytics queries that duration cards use?
 (reg-event-fx :create-workout-success
               (fn [{:keys [db]} [_ workout]]
-                {:db (update-in db [:home :calendar :workouts] conj workout)
+                {:db (update-in db [:calendar :workouts] conj workout)
                  :dispatch-n [[:calendar-update-weeks]]}))
 
 (reg-event-fx :create-workout-request
@@ -87,8 +87,8 @@
               (fn [{:keys [db]} [_ workout-id]]
                 {:db (assoc-in
                       db
-                      [:home :calendar :workouts]
-                      (->> (-> db :home :calendar :workouts)
+                      [:calendar :workouts]
+                      (->> (-> db :calendar :workouts)
                            (filter #(not= workout-id (:workout_id %)))))
                  :dispatch-n [[:calendar-update-weeks]]}))
 

@@ -1,6 +1,6 @@
 (ns gym.frontend.subs
   (:require
-   [gym.frontend.home.subs]
+   [gym.frontend.home.calendar.subs]
    [gym.frontend.login.subs]
    [gym.frontend.analytics.subs]
    [re-frame.core :refer [reg-sub subscribe]]))

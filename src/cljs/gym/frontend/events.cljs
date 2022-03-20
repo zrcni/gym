@@ -4,7 +4,7 @@
    [goog.string.format]
    [day8.re-frame.http-fx]
    [gym.frontend.login.events]
-   [gym.frontend.home.events]
+   [gym.frontend.home.calendar.events]
    [gym.frontend.settings.events]
    [gym.frontend.analytics.events]
    [parse-color]

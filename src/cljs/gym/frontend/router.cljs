@@ -45,10 +45,9 @@
         name (-> route :data :name)
         wrapper (-> route :data :wrapper)]
     (if-not (nil? wrapper)
-      ^{:key name} [wrapper
-                    ^{:key name}
-                    [view]]
-      ^{:key name} [view])))
+      [wrapper
+       [view {:key name}]]
+      [view {:key name}])))
 
 (defstyles loader-wrapper-style []
   {:margin-top "1rem"
@@ -57,10 +56,6 @@
    :flex-direction "column"
    :align-items "center"})
 
-(defstyles loader-description-style []
-  {:margin-top "1rem"
-   :text-align "center"})
-
 (defn root []
   (dispatch [:handle-first-load])
   (fn []
@@ -68,13 +63,13 @@
           current-route @(subscribe [:current-route])]
       [layout {:disabled (= auth-status :waiting)}
        (if (= auth-status :waiting)
-         ^{:key current-page}
-         [:div {:class (loader-wrapper-style)}
+         [:div {:key current-page
+                :class (loader-wrapper-style)}
           [loaders/circle {:size 160}]]
 
          (when current-route
-           ^{:key (:path current-route)}
-           [current-page {:route current-route}]))])))
+           [current-page {:key (:path current-route)
+                          :route current-route}]))])))
 
 (defn on-navigate [new-match]
   (let [old-match (subscribe [:current-route])]

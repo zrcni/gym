@@ -1,7 +1,7 @@
 (ns gym.frontend.db
   (:require
    [gym.frontend.styles :as styles]
-   [gym.frontend.home.db :as home]
+   [gym.frontend.home.calendar.db :as calendar]
    [gym.frontend.analytics.db :as analytics]))
 
 (def default-db
@@ -15,6 +15,6 @@
    :user nil
    :token nil
    :auth-status :waiting
-   :home home/default-db
+   :calendar calendar/default-db
    :analytics analytics/default-db
    :all-tags nil})

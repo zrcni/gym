@@ -1,23 +1,23 @@
-(ns gym.frontend.home.subs
+(ns gym.frontend.home.calendar.subs
   (:require
    [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
  :calendar-start-date
  (fn [db _]
-   (-> db :home :calendar :start-date)))
+   (-> db :calendar :start-date)))
 
 (reg-sub
  :calendar-editing-index
  (fn [db _]
-   (-> db :home :calendar :editing-index)))
+   (-> db :calendar :editing-index)))
 
 (reg-sub
  :calendar-weeks
  (fn [db _]
-   (-> db :home :calendar :weeks)))
+   (-> db :calendar :weeks)))
 
 (reg-sub
  :calendar-loading
  (fn [db _]
-   (-> db :home :calendar :loading)))
+   (-> db :calendar :loading)))
