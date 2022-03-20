@@ -3,7 +3,8 @@
             [recharts]
             [gym.frontend.components.loaders :as loaders]
             [clojure.contrib.humanize :as humanize]
-            [clojure.string :refer [capitalize]]))
+            [clojure.string :refer [capitalize]]
+            [gym.frontend.duration-cards.views :refer [duration-cards]]))
 
 (def bar-colors
   ["#176BA0"
@@ -142,6 +143,7 @@
      (if loading?
        [loaders/circle {:size 160}]
        [:div.analytics-container
+        [duration-cards]
         [workout-duration-by-tags-chart {:result workout-duration-by-tag}]
         [workouts-by-day-of-week-chart {:result workouts-by-day-of-week}]
         [workouts-by-month-of-year-chart {:result workouts-by-month-of-year}]])]))
