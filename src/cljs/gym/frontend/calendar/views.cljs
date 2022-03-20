@@ -246,26 +246,26 @@
         handle-description-change #(update-description (get-value %))
         handle-save-caret-pos #(reset! caret-pos (js/window.getCaretPosition (.-target %)))
         handle-minutes-change #(update-minutes (get-value %))
-        inc-minutes #(let [n (to-number (:minutes @state))]
-                       (update-minutes (inc n)))
-        dec-minutes #(let [n (to-number (:minutes @state))]
-                       (when (> n min-minutes)
-                         (update-minutes (dec n))))
-        add-tag #(when-not (or (includes? (:tags @state) %) (blank? %))
-                   (swap! state update :tags conj %))
-        delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
-        create-exercise #(dispatch [:create-workout-request {:date local-date
-                                                             :description (:description @state)
-                                                             :duration (-> (:minutes @state)
-                                                                           (to-number)
-                                                                           (m->ms))
-                                                             :tags (vec (:tags @state))}])
-        on-pick-emoji (fn [_ emoji]
-                        (let [emoji-str (.-emoji ^js/Emoji emoji)]
-                          (if @caret-pos
-                            (do (update-description (str-insert (:description @state) emoji-str @caret-pos))
-                                (swap! caret-pos + (count emoji-str)))
-                            (update-description (str (:description @state) emoji-str)))))]
+        handle-inc-minutes #(let [n (to-number (:minutes @state))]
+                              (update-minutes (inc n)))
+        handle-dec-minutes #(let [n (to-number (:minutes @state))]
+                              (when (> n min-minutes)
+                                (update-minutes (dec n))))
+        handle-add-tag #(when-not (or (includes? (:tags @state) %) (blank? %))
+                          (swap! state update :tags conj %))
+        handle-delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
+        handle-create-exercise #(dispatch [:create-workout-request {:date local-date
+                                                                    :description (:description @state)
+                                                                    :duration (-> (:minutes @state)
+                                                                                  (to-number)
+                                                                                  (m->ms))
+                                                                    :tags (vec (:tags @state))}])
+        handle-pick-emoji (fn [_ emoji]
+                            (let [emoji-str (.-emoji ^js/Emoji emoji)]
+                              (if @caret-pos
+                                (do (update-description (str-insert (:description @state) emoji-str @caret-pos))
+                                    (swap! caret-pos + (count emoji-str)))
+                                (update-description (str (:description @state) emoji-str)))))]
 
     (fn []
       [:div {:class (new-exercise-form-style)}
@@ -277,15 +277,15 @@
                                    :on-blur handle-save-caret-pos}]]
        [:div {:class (new-exercise-form-row)}
         [exercise-tags {:tags (:tags @state)
-                        :on-add add-tag
-                        :on-delete delete-tag}]
+                        :on-add handle-add-tag
+                        :on-delete handle-delete-tag}]
         [:div
-         [emoji-picker {:on-select on-pick-emoji}]]]
+         [emoji-picker {:on-select handle-pick-emoji}]]]
        [:div {:class (new-exercise-form-row)}
         [:div {:class (new-exercise-minutes-style)}
          [:button {:class (classes (styles/icon-button {:theme theme}) "minutes-button")
                    :type "button"
-                   :on-click #(dec-minutes)}
+                   :on-click handle-dec-minutes}
           [icons/minus]]
          [:input {:class (classes (new-exercise-minutes-input-style {:theme theme}) "minutes-input")
                   :type "text"
@@ -293,15 +293,15 @@
                   :on-change handle-minutes-change}]
          [:button {:class (classes (styles/icon-button {:theme theme}) "minutes-button")
                    :type "button"
-                   :on-click #(inc-minutes)}
+                   :on-click handle-inc-minutes}
           [icons/plus]]
          [:label {:class (classes (new-exercise-minutes-label-style) "minutes-label")
                   :for "minutes"}
           "minutes"]]
-
+        
         [:button {:class (classes (styles/icon-button-cta {:theme theme}) (new-exercise-button-style))
                   :type "button"
-                  :on-click create-exercise}
+                  :on-click handle-create-exercise}
          "Create"]]])))
 
 (defstyles exercises-content-style []
@@ -355,7 +355,8 @@
 (defn created-workouts []
   (let [theme @(subscribe [:theme])
         adding (reagent/atom false)
-        delete-workout #(dispatch [:delete-workout %])]
+        handle-delete-workout #(dispatch [:delete-workout %])
+        handle-open-add-new-workout #(reset! adding true)]
 
     (fn [{:keys [local-date workouts]}]
       [:div {:class (exercises-content-style)}
@@ -368,7 +369,7 @@
              [:div {:class (exercise-minutes-style {:theme theme})}
               [:span (str (ms->m (:duration workout)) " minutes")]]
              [:button {:class (styles/icon-button {:theme theme})
-                       :on-click #(delete-workout (:workout_id workout))}
+                       :on-click #(handle-delete-workout (:workout_id workout))}
               [icons/trash {:class (styles/base-icon)}]]]
             [:div {:class (exercise-description-style)}
              (:description workout)]
@@ -385,7 +386,7 @@
 
          [:div {:class (exercise-add-style)}
           [:button {:class (classes (styles/icon-button {:theme theme}) (exercise-add-button-style))
-                    :on-click #(reset! adding true)}
+                    :on-click handle-open-add-new-workout}
            [icons/plus-circle {:class (styles/base-icon)}]
            [:span {:class (exercise-add-button-text-style)} "Add another"]]])])))
 
