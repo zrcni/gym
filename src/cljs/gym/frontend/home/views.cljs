@@ -10,7 +10,7 @@
    :margin-top "0.65rem"
    :align-self "flex-end"
    :display "grid"
-   :grid-template-columns "5rem auto 5rem"})
+   :grid-template-columns "6rem auto 6rem"})
 
 (defstyles calendar-year-style []
   {:align-self "center"
