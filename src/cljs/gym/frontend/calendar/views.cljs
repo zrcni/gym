@@ -495,10 +495,10 @@
         editing-index @(subscribe [:calendar-editing-index])
         weeks @(subscribe [:calendar-weeks])
         loading @(subscribe [:calendar-loading])
-        edit-day #(dispatch [:calendar-edit-day %])
-        stop-editing #(dispatch [:calendar-stop-editing])
-        show-earlier #(dispatch [:calendar-show-earlier (t/days (* num-weeks days-in-week))])
-        show-later #(dispatch [:calendar-show-later (t/days (* num-weeks days-in-week))])]
+        handle-edit-day #(dispatch [:calendar-edit-day %])
+        handle-stop-editing #(dispatch [:calendar-stop-editing])
+        handle-show-earlier #(dispatch [:calendar-show-earlier (t/days (* num-weeks days-in-week))])
+        handle-show-later #(dispatch [:calendar-show-later (t/days (* num-weeks days-in-week))])]
 
     [:div
      [:div#calendar
@@ -539,7 +539,7 @@
                                                                 ; TODO: display data about the date's activities
                    [:div {:class (day-minutes-style)}
                     [:button {:class (calendar-add-exercise-button-style {:theme theme})
-                              :on-click #(edit-day (+ (* week-index days-in-week) day-index))
+                              :on-click #(handle-edit-day (+ (* week-index days-in-week) day-index))
                               :disabled loading}
                      (if (:workouts day)
                        (let [total-minutes (ms->m (calculate-total-workout-minutes (:workouts day)))]
@@ -548,7 +548,7 @@
                        [icons/plus])]]
 
                    (when (= editing-index (+ (* week-index days-in-week) day-index))
-                     [modal {:title (day-title (:local-date day)) :on-close stop-editing}
+                     [modal {:title (day-title (:local-date day)) :on-close handle-stop-editing}
                       (if (:workouts day)
                         [created-workouts {:key "created-workouts"
                                            :local-date (:local-date day)
@@ -558,5 +558,5 @@
             (:days week))])
         weeks)]]
      [calendar-nav {:show-later (not (same-day? start-date (calculate-start-date (t/now) num-weeks)))
-                    :on-earlier-click show-earlier
-                    :on-later-click show-later}]]))
+                    :on-earlier-click handle-show-earlier
+                    :on-later-click handle-show-later}]]))
