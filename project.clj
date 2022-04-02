@@ -104,7 +104,7 @@
                                 gym.frontend.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
                                 gym.frontend.config/auth0-domain ~(or (System/getenv "AUTH0_DOMAIN") "")
                                 gym.frontend.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
-                                gym.frontend.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}
+                                gym.frontend.config/commit-sha ~(or (System/getenv "SOURCE_VERSION") "")}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.frontend.core/mount-root"
@@ -148,7 +148,7 @@
                                 gym.frontend.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"
                                 gym.frontend.config/auth0-domain "samulir.eu.auth0.com"
                                 gym.frontend.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
-                                gym.frontend.config/commit-sha ~(or (System/getenv "COMMIT_REF") "")}}}}}
+                                gym.frontend.config/commit-sha ~(or (System/getenv "SOURCE_VERSION") "")}}}}}
 
   :figwheel
   {:http-server-root "public"
@@ -187,7 +187,7 @@
                          :public-key ~(try
                                         (slurp "./certs/auth0-public-key.pem")
                                         (catch Exception _ ""))
-                         :commit-sha ~(System/getenv "COMMIT_REF")}}
+                         :commit-sha ~(System/getenv "SOURCE_VERSION")}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"] ["minify-assets"]]
@@ -198,7 +198,7 @@
                              :port ~(System/getenv "PORT")
                              :host-url ~(System/getenv "HOST_URL")
                              :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")
-                             :commit-sha ~(System/getenv "COMMIT_REF")}
+                             :commit-sha ~(System/getenv "SOURCE_VERSION")}
                        :aot :all
                        :omit-source true}}
   :migratus {:store :database
