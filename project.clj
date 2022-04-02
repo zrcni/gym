@@ -189,8 +189,7 @@
                                         (catch Exception _ ""))
                          :commit-sha ~(System/getenv "COMMIT_REF")}}
 
-             :uberjar {:jvm-opts ["-Dlogback.configurationFile=resources/logback.prod.xml"]
-                       :source-paths ["env/prod/clj"]
+             :uberjar {:source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"] ["minify-assets"]]
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku

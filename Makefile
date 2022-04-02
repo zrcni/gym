@@ -11,7 +11,7 @@ build-server:
 	lein uberjar
 
 run-prod:
-	java ${JVM_OPTS} -cp target/gym.jar clojure.main -m gym.backend.main
+	java ${JVM_OPTS} -Dlogback.configurationFile=resources/logback.prod.xml -cp target/gym.jar clojure.main -m gym.backend.main
 
 deploy-prod:
 	git push heroku master
