@@ -1,5 +1,6 @@
 (ns gym.backend.system
-  (:require [gym.backend.config :as cfg]
+  (:require [gym.backend.logger :as log]
+            [gym.backend.config :as cfg]
             [integrant.core :as ig]
             [gym.backend.system.handler]
             [gym.backend.system.postgres]
@@ -30,9 +31,9 @@
   ([] (start-system! default-config))
   ([config]
    (let [system (ig/init config)]
-     (println "System started!")
+     (log/info "system started" {:components (keys config)})
      system)))
 
 (defn stop-system! [system]
   (ig/halt! system)
-  (println "System stopped!"))
+  (log/info "system stopped"))

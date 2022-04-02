@@ -11,19 +11,33 @@
    [gym.backend.config :as cfg]
    [gym.backend.users.repository.user-repository :refer [get-user-by-token-user-id]]
    [gym.backend.auth.utils :refer [get-public-key headers->token]]
-   [gym.backend.date-utils :refer [instant]]))
+   [gym.backend.logger :as log]
+   [gym.util :refer [generate-uuid get-url-origin]]))
 
-(defn pretty-request [request]
-  (-> (str "method: " (:request-method request))
-      (str " - uri: " (:uri request))
-      (str " - origin: " (get-in request [:headers "origin"]))
-      (str " - user-agent: " (get-in request [:headers "user-agent"]))
-      (str " - content-length: " (or (get-in request [:headers "content-length"] 0)))
-      (str " - timestamp: " (str (instant)))))
+(defn wrap-req-id
+  "Generates a UUID and adds it to :req-id property of the request object."
+  [handler]
+  (fn [req]
+    (handler (assoc req :req-id (generate-uuid)))))
+
+(defn wrap-logger-context
+  [handler]
+  (fn [req]
+    (log/with-context {:request-id (:req-id req)}
+      (handler req))))
+
+(defn format-request-log [request]
+  {:method (:request-method request)
+   :uri (:uri request)
+   :origin (get-in request [:headers "origin"]
+                   (get-url-origin (get-in request [:headers "referer"])))
+   :referer (get-in request [:headers "referer"])
+   :user-agent (get-in request [:headers "user-agent"])
+   :content-length (get-in request [:headers "content-length"] 0)})
 
 (defn wrap-log [handler]
   (fn [request]
-    (println (pretty-request request))
+    (log/info "request received" (format-request-log request))
     (handler request)))
 
 (def web-middlewares
@@ -77,8 +91,7 @@
       (handler (assoc req kw val)))))
 
 (def api-middlewares
-  [wrap-log
-   #(wrap-cors % :access-control-allow-origin allowed-origins
+  [#(wrap-cors % :access-control-allow-origin allowed-origins
                :access-control-allow-methods [:get :post :put :delete :options])
    wrap-params
    wrap-nested-params
@@ -86,4 +99,7 @@
    wrap-content-type
    wrap-json-response
    wrap-json-body
-   wrap-token])
+   wrap-token
+   wrap-logger-context
+   wrap-req-id
+   wrap-log])

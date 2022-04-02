@@ -1,5 +1,6 @@
 (ns gym.backend.user-prefs.update-user-preferences
-  (:require [gym.backend.user-prefs.repository.user-prefs-repository :refer [get-by-user-id save!]]
+  (:require [gym.backend.logger :as log]
+            [gym.backend.user-prefs.repository.user-prefs-repository :refer [get-by-user-id save!]]
             [gym.backend.user-prefs.core :refer [update-user-prefs create-user-prefs]]
             [clojure.walk :refer [keywordize-keys]]
             [gym.util :refer [create-uuid]]))
@@ -18,6 +19,8 @@
 
     (when-not (= prefs updated-prefs)
       (save! repo updated-prefs))
+
+    (log/info "user preferences updated" {:user-id user-id})
 
     {:status 200
      :body (format-prefs updated-prefs)}))

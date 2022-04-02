@@ -1,6 +1,7 @@
 (ns gym.backend.auth.login
-  (:require [clj-http.client :as http]
-            [gym.backend.auth.utils :refer [get-token-payload headers->token]]
+  (:require [gym.backend.logger :as log]
+            [clj-http.client :as http]
+            [gym.backend.auth.utils :refer [sub->token-source get-token-payload headers->token]]
             [gym.backend.users.repository.user-repository :refer [get-user-by-token-user-id create-user!]]))
 
 (defn parse-auth0-user-info [user-info]
@@ -27,6 +28,12 @@
         user (or
               (get-user-by-token-user-id repo (-> req :token-payload :sub))
               (create-new-user repo req))]
+
+    (log/info "user logged in" {:user-id (:user_id user)
+                                :token-iss (-> req :token-payload :iss)
+                                :token-iat (-> req :token-payload :iat)
+                                :token-exp (-> req :token-payload :exp)
+                                :token-source (-> req :token-payload :sub sub->token-source)})
 
     {:status 200
      :body {:user user}}))

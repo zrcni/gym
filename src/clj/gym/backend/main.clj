@@ -4,7 +4,6 @@
             [gym.backend.config :as cfg])
   (:gen-class))
 
-(log/update-context #(assoc % :commit cfg/commit-sha))
-
 (defn -main [& _args]
+  (log/update-context #(assoc % :commit cfg/commit-sha))
   (start-system!))

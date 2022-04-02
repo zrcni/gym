@@ -25,3 +25,8 @@
       :headers
       (headers->token)
       (parse-token)))
+
+(defn sub->token-source
+  "e.g. \"github|12345\" returns \"github\""
+  [sub]
+  (-> sub  (split #"\|") first))

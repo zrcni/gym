@@ -12,8 +12,12 @@
 
 (integrant.repl/set-prep! (constantly default-config))
 
+(defn restart []
+  (reset)
+  (go))
+
 (comment
 
   (go)
 
-  (reset))
+  (restart))

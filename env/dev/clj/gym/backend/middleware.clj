@@ -11,7 +11,20 @@
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [gym.backend.users.repository.user-repository :refer [get-user-by-token-user-id]]
             [gym.backend.auth.utils :refer [get-public-key headers->token]]
-            [gym.backend.date-utils :refer [instant]]))
+            [gym.backend.logger :as log]
+            [gym.util :refer [generate-uuid get-url-origin]]))
+
+(defn wrap-req-id
+  "Generates a UUID and adds it to :req-id property of the request object."
+  [handler]
+  (fn [req]
+    (handler (assoc req :req-id (generate-uuid)))))
+
+(defn wrap-logger-context
+  [handler]
+  (fn [req]
+    (log/with-context {:request-id (:req-id req)}
+      (handler req))))
 
 (defn parse-token [token]
   (jwt/unsign token (get-public-key) {:alg :rs256}))
@@ -21,17 +34,18 @@
    wrap-exceptions
    wrap-reload])
 
-(defn pretty-request [request]
-  (-> (str "method: " (:request-method request))
-      (str " - uri: " (:uri request))
-      (str " - origin: " (get-in request [:headers "origin"]))
-      (str " - user-agent: " (get-in request [:headers "user-agent"]))
-      (str " - content-length: " (get-in request [:headers "content-length"] 0))
-      (str " - timestamp: " (str (instant)))))
+(defn format-request-log [request]
+  {:method (:request-method request)
+   :uri (:uri request)
+   :origin (get-in request [:headers "origin"]
+                   (get-url-origin (get-in request [:headers "referer"])))
+   :referer (get-in request [:headers "referer"])
+   :user-agent (get-in request [:headers "user-agent"])
+   :content-length (get-in request [:headers "content-length"] 0)})
 
 (defn wrap-log [handler]
   (fn [request]
-    (println (pretty-request request))
+    (log/info "request received" (format-request-log request))
     (handler request)))
 
 (defn unauthorized-response [& [message]]
@@ -66,8 +80,7 @@
       (handler (assoc req kw val)))))
 
 (def api-middlewares
-  [wrap-log
-   #(wrap-cors % :access-control-allow-origin #"http://localhost:3001"
+  [#(wrap-cors % :access-control-allow-origin #"http://localhost:3001"
                :access-control-allow-methods [:get :put :post :delete :options])
    wrap-params
    wrap-nested-params
@@ -75,7 +88,10 @@
    wrap-content-type
    wrap-json-response
    wrap-json-body
-   wrap-token])
+   wrap-token
+   wrap-req-id
+   wrap-logger-context
+   wrap-log])
 
 ;; (defn handle-token [handler request token]
 ;;   (try
