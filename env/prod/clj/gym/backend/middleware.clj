@@ -100,6 +100,6 @@
    wrap-json-response
    wrap-json-body
    wrap-token
-   wrap-logger-context
    wrap-req-id
+   wrap-logger-context
    wrap-log])
