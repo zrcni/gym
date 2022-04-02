@@ -5,6 +5,9 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.10.1"]
+                 [cambium/cambium.core           "1.1.1"]
+                 [cambium/cambium.codec-cheshire "1.0.0"]
+                 [cambium/cambium.logback.json   "0.4.5"]
                  [org.postgresql/postgresql "42.2.11"]
                  [com.github.seancorfield/honeysql "2.2.868"]
                  [ring-server "0.5.0"]
@@ -167,6 +170,7 @@
                                   [re-frisk "1.5.2"]
                                   [pjstadig/humane-test-output "0.10.0"]]
 
+                   :jvm-opts ["-Dlogback.configurationFile=resources/logback.dev.xml"]
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.5.19"]]
 
@@ -185,7 +189,8 @@
                                         (catch Exception _ ""))
                          :commit-sha ~(System/getenv "COMMIT_REF")}}
 
-             :uberjar {:source-paths ["env/prod/clj"]
+             :uberjar {:jvm-opts ["-Dlogback.configurationFile=resources/logback.prod.xml"]
+                       :source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"] ["minify-assets"]]
                        :env {:production true
                              ;; jdbc connection uri supplied by Heroku
