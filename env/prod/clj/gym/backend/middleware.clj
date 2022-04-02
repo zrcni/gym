@@ -23,7 +23,7 @@
 (defn wrap-logger-context
   [handler]
   (fn [req]
-    (log/with-context {:request-id (:req-id req)}
+    (let [handler (log/wrap-context {:request-id (:req-id req)} handler)]
       (handler req))))
 
 (defn format-request-log [request]
