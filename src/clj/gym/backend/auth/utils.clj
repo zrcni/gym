@@ -10,7 +10,7 @@
 
 (defn get-public-key []
   (when-not @cert
-    (reset! cert (keys/str->public-key cfg/public-key)))
+    (reset! cert (keys/str->public-key cfg/auth0-public-key)))
   @cert)
 
 (defn headers->token [headers]

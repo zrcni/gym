@@ -19,6 +19,7 @@ node_modules
 .history
 resources/public/js/compiled
 resources/public/css/*.min.css
+resources/public/env
 certs/*
 !certs/.gitkeep
 !certs/*.md
@@ -32,3 +33,4 @@ site/js
 !site/favicon.ico
 .lsp
 .calva/output-window
+.commit_sha
