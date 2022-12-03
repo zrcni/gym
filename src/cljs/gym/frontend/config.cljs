@@ -1,9 +1,10 @@
-(ns gym.frontend.config
-  (:require [cljs.core :refer [goog-define]]))
+(ns gym.frontend.config)
+
+(def ^:private env js/window.__env__)
 
 (goog-define commit-sha "")
-(goog-define sentry-dsn false)
-(goog-define api-url "http://localhost:3001")
-(goog-define auth0-client-id "")
-(goog-define auth0-domain "")
-(def debug? ^boolean goog.DEBUG)
+(def sentry-dsn (.-SENTRY_DSN env))
+(def api-url (.-API_URL env))
+(def auth0-client-id (.-AUTH0_CLIENT_ID env))
+(def auth0-domain (.-AUTH0_DOMAIN env))
+(def debug? false?)

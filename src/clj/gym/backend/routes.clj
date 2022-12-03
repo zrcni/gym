@@ -14,12 +14,18 @@
             [gym.backend.analytics.analytics-query :as analytics-query]
             [gym.backend.config :as cfg]))
 
-(defn index-handler [_]
-  {:status  200
-   :headers {"Content-Type" "text/html"}
-   :body (-> (if cfg/dev? "public/html/index-dev.html" "public/html/index.html")
-             (io/resource)
-             (io/input-stream))})
+(defn index-handler [req]
+  ;; TODO add this file to S3 or serve it another way
+  (if (= (:uri req) "/env/config.js")
+    {:status 200
+     :headers {"Content-Type" "text/javascript"}
+     :body (slurp "./dist/env.js")}
+
+    {:status  200
+     :headers {"Content-Type" "text/html"}
+     :body (-> (if cfg/dev? "public/html/index-dev.html" "public/html/index.html")
+               (io/resource)
+               (io/input-stream))}))
 
 (defn wrap [handler middleware]
   (middleware handler))
@@ -35,7 +41,7 @@
      ;; /workouts/tags route conflicts with /:workout-id
      ["/workout_tags" {:get {:handler get-all-user-workout-tags/controller
                              :middleware [wrap-user]}}]
-     
+
      ["/workouts"
       ["" {:get {:handler get-workouts-by-user-id/controller
                  :middleware [wrap-user]}

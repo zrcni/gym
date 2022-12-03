@@ -20,11 +20,11 @@ docker-compose up
 ```
 start the server in REPL
 ```
-lein repl
+./dev-server.sh
 ```
 start the frontend's REPL
 ```
-lein figwheel
+./dev-app.sh
 ```
 
 ## Development mode

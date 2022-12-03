@@ -70,41 +70,39 @@
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler
               {:output-to "target/cljsbuild/public/js/app.js"
-              :output-dir "target/cljsbuild/public/js"
-              :source-map "target/cljsbuild/public/js/app.js.map"
-              :externs ["resources/public/js/externs.js"]
-              :optimizations :advanced
-              :infer-externs true
-              :pretty-print false
-              :npm-deps false
-              :foreign-libs [{:file "dist/bundle.js"
-                              :provides ["react"
-                                         "react-dom"
-                                         "parse-color"
-                                         "react-color"
-                                         "emoji-picker-react"
-                                         "react-contenteditable"
-                                         "react-modal"
-                                         "toastr"
-                                         "recharts"
-                                         "react-swipeable"
-                                         "auth0spa"]
-                              :global-exports {react React
-                                               react-dom ReactDOM
-                                               parse-color parseColor
-                                               react-color reactColor
-                                               emoji-picker-react EmojiPickerReact
-                                               react-contenteditable ReactContenteditable
-                                               react-modal ReactModal
-                                               toastr toastr
-                                               recharts recharts
-                                               react-swipeable reactSwipeable
-                                               auth0spa auth0spa}}]
-              :closure-defines {gym.frontend.config/api-url ~(or (System/getenv "API_URL") "")
-                                gym.frontend.config/auth0-client-id ~(or (System/getenv "AUTH0_CLIENT_ID") "")
-                                gym.frontend.config/auth0-domain ~(or (System/getenv "AUTH0_DOMAIN") "")
-                                gym.frontend.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
-                                gym.frontend.config/commit-sha ~(or (System/getenv "SOURCE_VERSION") "")}}}
+               :output-dir "target/cljsbuild/public/js"
+               :source-map "target/cljsbuild/public/js/app.js.map"
+               :externs ["resources/public/js/externs.js"]
+               :optimizations :advanced
+               :infer-externs true
+               :pretty-print false
+               :npm-deps false
+               :foreign-libs [{:file "dist/bundle.js"
+                               :provides ["react"
+                                          "react-dom"
+                                          "parse-color"
+                                          "react-color"
+                                          "emoji-picker-react"
+                                          "react-contenteditable"
+                                          "react-modal"
+                                          "toastr"
+                                          "recharts"
+                                          "react-swipeable"
+                                          "auth0spa"]
+                               :global-exports {react React
+                                                react-dom ReactDOM
+                                                parse-color parseColor
+                                                react-color reactColor
+                                                emoji-picker-react EmojiPickerReact
+                                                react-contenteditable ReactContenteditable
+                                                react-modal ReactModal
+                                                toastr toastr
+                                                recharts recharts
+                                                react-swipeable reactSwipeable
+                                                auth0spa auth0spa}}]
+               :closure-defines {gym.frontend.config/commit-sha ~(try
+                                                                   (slurp "./.commit_sha")
+                                                                   (catch Exception _ ""))}}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
              :figwheel {:on-jsload "gym.frontend.core/mount-root"
@@ -144,11 +142,9 @@
                                                recharts recharts
                                                react-swipeable reactSwipeable
                                                auth0spa auth0spa}}]
-              :closure-defines {gym.frontend.config/api-url "http://localhost:3001"
-                                gym.frontend.config/auth0-client-id "TXEAK5eQSD2ECVStJzdbJPCJ08Q7gWPQ"
-                                gym.frontend.config/auth0-domain "samulir.eu.auth0.com"
-                                gym.frontend.config/sentry-dsn ~(or (System/getenv "SENTRY_DSN") "")
-                                gym.frontend.config/commit-sha ~(or (System/getenv "SOURCE_VERSION") "")}}}}}
+              :closure-defines {gym.frontend.config/commit-sha ~(try
+                                                                  (slurp "./.commit_sha")
+                                                                  (catch Exception _ ""))}}}}}
 
   :figwheel
   {:http-server-root "public"
@@ -179,26 +175,16 @@
                                 (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev true
-                         ;; jdbc connection uri
-                         :jdbc-database-url "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres"
-                         :frontend-urls "http://localhost:3001"
-                         :port "3001"
-                         :host-url "http://localhost:3001"
-                         :public-key ~(try
-                                        (slurp "./certs/auth0-public-key.pem")
-                                        (catch Exception _ ""))
-                         :commit-sha ~(System/getenv "SOURCE_VERSION")}}
+                         :commit-sha ~(try
+                                        (slurp "./.commit_sha")
+                                        (catch Exception _ ""))}}
 
              :uberjar {:source-paths ["env/prod/clj"]
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"] ["minify-assets"]]
                        :env {:production true
-                             ;; jdbc connection uri supplied by Heroku
-                             :jdbc-database-url ~(System/getenv "JDBC_DATABASE_URL")
-                             :frontend-urls ~(System/getenv "FRONTEND_URLS")
-                             :port ~(System/getenv "PORT")
-                             :host-url ~(System/getenv "HOST_URL")
-                             :public-key ~(System/getenv "AUTH0_PUBLIC_KEY")
-                             :commit-sha ~(System/getenv "SOURCE_VERSION")}
+                             :commit-sha ~(try
+                                            (slurp "./.commit_sha")
+                                            (catch Exception _ ""))}
                        :aot :all
                        :omit-source true}}
   :migratus {:store :database
