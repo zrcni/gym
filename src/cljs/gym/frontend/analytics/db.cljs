@@ -1,4 +1,4 @@
 (ns gym.frontend.analytics.db)
 
-(def default-db
+(defn make-default-db []
   {:results {}})

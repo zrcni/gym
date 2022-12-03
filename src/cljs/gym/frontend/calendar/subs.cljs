@@ -21,3 +21,8 @@
  :calendar-loading
  (fn [db _]
    (-> db :calendar :loading)))
+
+(reg-sub
+ :suggested-workout-tags
+ (fn [db _]
+   (-> db :calendar :suggested-workout-tags)))

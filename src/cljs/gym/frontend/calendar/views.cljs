@@ -10,7 +10,7 @@
             [cljss.core :as css :refer-macros [defstyles]]
             [cljss.reagent :refer-macros [defstyled]]
             [gym.frontend.components.icons :as icons]
-            [gym.frontend.components.chip :refer [chip]]
+            [gym.frontend.components.chip :refer [chip-delete chip-add]]
             [gym.frontend.styles :as styles :refer [classes]]
             [gym.frontend.js-interop :refer [get-value]]
             [gym.frontend.components.emoji-picker :refer [emoji-picker]]
@@ -156,14 +156,26 @@
    :align-items "center"
    :margin-left "4px"})
 
+(defn exercise-tag-suggestions [{:keys [suggested-tags on-add]}]
+  [:div {:class (new-exercise-tags-wrapper-style)}
+   (map (fn [tag]
+          [chip-add {:key tag
+                     :value tag
+                     :on-add #(on-add tag)}]) suggested-tags)])
+
 (defn exercise-tags [{:keys [tags on-add on-delete]}]
-  [:div {:class (new-exercise-tags-style)}
-   [add-tag {:on-add on-add}]
-   [:div {:class (new-exercise-tags-wrapper-style)}
-    (map (fn [tag]
-           [chip {:key tag
-                  :value tag
-                  :on-delete on-delete}]) tags)]])
+  ;; TODO move this to root
+  (let [suggested-tags @(subscribe [:suggested-workout-tags])]
+    [:div {:class (new-exercise-tags-style)}
+     [add-tag {:on-add on-add}]
+     [:div {:class (new-exercise-tags-wrapper-style)}
+      (if-not (empty? tags)
+        (map (fn [tag]
+               [chip-delete {:key tag
+                             :value tag
+                             :on-delete on-delete}]) tags)
+        [exercise-tag-suggestions {:suggested-tags suggested-tags
+                                   :on-add on-add}])]]))
 
 (defstyles new-exercise-form-style []
   {:position "relative"
@@ -376,7 +388,7 @@
             (when (> (count (:tags workout)) 0)
               [:div {:class (exercise-tags-wrapper-style)}
                (map
-                (fn [tag] [chip {:key tag
+                (fn [tag] [chip-delete {:key tag
                                  :value tag}])
                 (:tags workout))])])
          workouts)]

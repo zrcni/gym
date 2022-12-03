@@ -1,6 +1,6 @@
 (ns gym.frontend.events
   (:require
-   [gym.frontend.db :refer [default-db]]
+   [gym.frontend.db :refer [make-default-db]]
    [goog.string.format]
    [day8.re-frame.http-fx]
    [gym.frontend.login.events]
@@ -23,7 +23,7 @@
    (update db :loading dissoc kw)))
 
 (reg-event-db :initialize-db
-              (fn [_ _] default-db))
+              (fn [_ _] (make-default-db)))
 
 (reg-event-fx :handle-first-load
               (fn [{:keys [db]} [_ _]]

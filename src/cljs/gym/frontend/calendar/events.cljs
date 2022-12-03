@@ -5,6 +5,7 @@
             [goog.string.format]
             [day8.re-frame.http-fx]
             [gym.frontend.login.events]
+            [gym.frontend.calendar.tags :refer [consolidate-suggested-tags]]
             [gym.frontend.calendar-utils :refer [calculate-weeks add-duration subtract-duration]]
             [ajax.core :refer [json-request-format]]
             [re-frame.core :refer [reg-event-db reg-event-fx]]))
@@ -33,6 +34,17 @@
                       workouts (get-in db [:calendar :workouts])
                       weeks (calculate-weeks start-date workouts)]
                   (assoc-in db [:calendar :weeks] weeks))))
+
+(reg-event-db :set-suggested-workout-tags
+              (fn [db [_ tags]]
+                (assoc-in db [:calendar :suggested-workout-tags] tags)))
+
+(reg-event-fx :add-suggested-workout-tags
+              (fn [{:keys [db]} [_ new-tags]]
+                (let [tags (-> db :calendar :suggested-workout-tags)
+                      new-tags (consolidate-suggested-tags tags new-tags)]
+                  {:dispatch [:set-suggested-workout-tags new-tags]
+                   :set-local-storage! [:suggested-workout-tags new-tags]})))
 
 (reg-event-db :calendar-edit-day
               (fn [db [_ day-index]]
@@ -68,12 +80,13 @@
 (reg-event-fx :create-workout-success
               (fn [{:keys [db]} [_ workout]]
                 {:db (update-in db [:calendar :workouts] conj workout)
-                 :dispatch-n [[:calendar-update-weeks]]}))
+                 :dispatch-n [[:calendar-update-weeks]
+                              [:add-suggested-workout-tags (:tags workout)]]}))
 
 (reg-event-fx :create-workout-request
               (fn [_ [_ workout]]
                 (let [workout-new  (make-workout-new workout)]
-                  (if-let [invalid-keys (validate-workout-new workout-new)]                    
+                  (if-let [invalid-keys (validate-workout-new workout-new)]
                     {:toast-error! (gstring/format "%s is invalid" (first invalid-keys))}
 
                     {:dispatch [:fetch {:method :post

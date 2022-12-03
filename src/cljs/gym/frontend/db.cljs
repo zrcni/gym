@@ -4,7 +4,7 @@
    [gym.frontend.calendar.db :as calendar-db]
    [gym.frontend.analytics.db :as analytics-db]))
 
-(def default-db
+(defn make-default-db []
   {:theme {:theme-color styles/theme-color
            :theme-color-hover styles/theme-color-hover
            :theme-color-active styles/theme-color-active
@@ -15,6 +15,6 @@
    :user nil
    :token nil
    :auth-status :waiting
-   :calendar calendar-db/default-db
-   :analytics analytics-db/default-db
+   :calendar (calendar-db/make-default-db)
+   :analytics (analytics-db/make-default-db)
    :all-tags nil})

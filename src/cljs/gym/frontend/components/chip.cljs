@@ -7,7 +7,7 @@
             [gym.frontend.styles :as styles :refer [classes]]))
 
 
-(defstyles chip-delete-style [{:keys [theme]}]
+(defstyles chip-button-style [{:keys [theme]}]
   {:display "flex"
    :justify-content "center"
    :align-items "center"
@@ -37,18 +37,29 @@
    :transition "all 0.3s cubic-bezier(0.78, 0.14, 0.15, 0.86)"
    :margin "0 4px 0 4px"})
 
-(defn chip [{:keys [value on-delete]}]
+(defn chip-delete [{:keys [value on-delete]}]
   (let [theme @(subscribe [:theme])]
     [:div {:class (chip-container-style {:theme theme})}
      [:div {:class (chip-content-style)}
       value]
      (when on-delete
-       [:button {:class (classes (chip-delete-style {:theme theme}) "chip-delete")
+       [:button {:class (classes (chip-button-style {:theme theme}) "chip-delete")
                  :role "button"
                  :aria-label "delete"
                  :on-click #(on-delete value)}
         [icons/times]])]))
 
+(defn chip-add [{:keys [value on-add]}]
+  (let [theme @(subscribe [:theme])]
+    [:div {:class (chip-container-style {:theme theme})}
+     [:div {:class (chip-content-style)}
+      value]
+     (when on-add
+       [:button {:class (classes (chip-button-style {:theme theme}) "chip-add")
+                 :role "button"
+                 :aria-label "add"
+                 :on-click #(on-add value)}
+        [icons/plus]])]))
 
 (defstyles chip-button-style []
   {:padding "0 8px 0 8px"
