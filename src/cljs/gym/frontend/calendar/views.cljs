@@ -259,10 +259,11 @@
         handle-save-caret-pos #(reset! caret-pos (js/window.getCaretPosition (.-target %)))
         handle-minutes-change #(update-minutes (get-value %))
         handle-inc-minutes #(let [n (to-number (:minutes @state))]
-                              (update-minutes (inc n)))
+                              (update-minutes (+ n 5)))
         handle-dec-minutes #(let [n (to-number (:minutes @state))]
-                              (when (> n min-minutes)
-                                (update-minutes (dec n))))
+                              (if (> n min-minutes)
+                                (update-minutes (- n 5))
+                                (update-minutes 0)))
         handle-add-tag #(when-not (or (includes? (:tags @state) %) (blank? %))
                           (swap! state update :tags conj %))
         handle-delete-tag #(swap! state assoc :tags (filter (fn [tag] (not= tag %)) (:tags @state)))
